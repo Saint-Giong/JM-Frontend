@@ -12,7 +12,8 @@
     "@saint-giong/bamboo-ui": "^0.1.2",
     "next": "16.0.6",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
