@@ -31,7 +31,6 @@ import {
   LogOut,
   PanelLeftClose,
   Search,
-  Send,
   Settings,
   Sparkles,
   User,
@@ -41,7 +40,7 @@ import { usePathname } from 'next/navigation';
 
 const mainNavItems = [
   { title: 'Dashboard', icon: Home, href: '/dashboard' },
-  { title: 'Inbox', icon: Send, href: '/inbox' },
+  // { title: 'Inbox', icon: Send, href: '/inbox' },
   { title: 'Notifications', icon: Bell, href: '/notifications', badge: 2 },
 ];
 
@@ -53,7 +52,7 @@ const recruitmentItems = [
 
 const systemItems = [
   { title: 'Subscription', icon: CreditCard, href: '/subscription' },
-  { title: 'Settings', icon: Settings, href: '/settings' },
+  // { title: 'Settings', icon: Settings, href: '/settings' },
 ];
 
 export function AppSidebar() {
