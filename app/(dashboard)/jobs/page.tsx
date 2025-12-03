@@ -188,10 +188,10 @@ export default function JobsPage() {
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-border px-6 py-4">
+      <header className="flex items-center gap-4 justify-between border-b border-border px-6 py-4">
         <h1 className="text-2xl font-semibold">Jobs</h1>
         <div className="flex items-center gap-4">
-          <div className="relative w-80">
+          <div className="relative w-full md:w-80">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search job"
@@ -210,8 +210,8 @@ export default function JobsPage() {
       {/* Content */}
       <div className="flex-1 overflow-auto p-6">
         {/* Filters and Controls */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
+        <div className="flex md:items-center flex-col md:flex-row gap-2 justify-start items-start md:justify-between mb-6">
+          <div className="flex items-center flex-wrap gap-2">
             {filterTabs.map((tab) => (
               <Button
                 key={tab.id}

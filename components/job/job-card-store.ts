@@ -31,7 +31,9 @@ interface JobCardState {
 interface JobCardActions {
   setJob: (job: Job) => void;
   setOnEdit: (handler: ((job: Job) => void) | undefined) => void;
-  setOnMenuAction: (handler: ((action: string, job: Job) => void) | undefined) => void;
+  setOnMenuAction: (
+    handler: ((action: string, job: Job) => void) | undefined
+  ) => void;
   edit: () => void;
   menuAction: (action: string) => void;
 }
