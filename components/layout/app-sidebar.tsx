@@ -98,7 +98,7 @@ export function AppSidebar() {
               <PanelLeftClose
                 className={cn(
                   'h-4 w-4 transition-all duration-300',
-                  open && 'rotate-180'
+                  open ? 'rotate-0' : 'rotate-180'
                 )}
               />
             </SidebarMenuButton>
