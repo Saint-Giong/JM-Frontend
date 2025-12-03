@@ -39,23 +39,40 @@ import {
   User,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const mainNavItems = [
   { title: 'Dashboard', icon: Home, href: '/dashboard', disabled: true },
   // { title: 'Inbox', icon: Send, href: '/inbox' },
-  { title: 'Notifications', icon: Bell, href: '/notifications', badge: 2, disabled: true },
+  {
+    title: 'Notifications',
+    icon: Bell,
+    href: '/notifications',
+    badge: 2,
+    disabled: true,
+  },
 ];
 
 const recruitmentItems = [
   { title: 'Jobs', icon: Briefcase, href: '/jobs' },
   { title: 'Applicant Search', icon: Search, href: '/applicant-search' },
-  { title: 'Premium feature', icon: Sparkles, href: '/premium', disabled: true },
+  {
+    title: 'Premium feature',
+    icon: Sparkles,
+    href: '/premium',
+    disabled: true,
+  },
 ];
 
 const systemItems = [
-  { title: 'Subscription', icon: CreditCard, href: '/subscription', disabled: true },
+  {
+    title: 'Subscription',
+    icon: CreditCard,
+    href: '/subscription',
+    disabled: true,
+  },
   // { title: 'Settings', icon: Settings, href: '/settings' },
 ];
 
@@ -76,29 +93,24 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem className="flex h-8 items-center gap-2">
+          <SidebarMenuItem className="flex h-14 items-center gap-2">
             {open && (
               <SidebarMenuButton size="lg" asChild tooltip="DEVision">
                 <Link href="/">
-                  <div className="flex aspect-square size-7 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <title>DEVision Logo</title>
-                      <rect x="3" y="3" width="7" height="7" />
-                      <rect x="14" y="3" width="7" height="7" />
-                      <rect x="3" y="14" width="7" height="7" />
-                      <rect x="14" y="14" width="7" height="7" />
-                    </svg>
-                  </div>
-                  <span className="truncate font-semibold text-lg">
-                    DEVision
-                  </span>
+                  <Image
+                    src="/DEVision-light.png"
+                    alt="DEVision Logo"
+                    className="h-6 dark:hidden"
+                    width={120}
+                    height={24}
+                  />
+                  <Image
+                    src="/DEVision-dark.png"
+                    alt="DEVision Logo"
+                    className="hidden h-6 dark:block"
+                    width={120}
+                    height={24}
+                  />
                 </Link>
               </SidebarMenuButton>
             )}
@@ -127,9 +139,13 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild={!item.disabled}
                     isActive={pathname === item.href}
-                    tooltip={item.disabled ? `${item.title} (Coming soon)` : item.title}
+                    tooltip={
+                      item.disabled ? `${item.title} (Coming soon)` : item.title
+                    }
                     disabled={item.disabled}
-                    className={item.disabled ? 'cursor-not-allowed opacity-50' : ''}
+                    className={
+                      item.disabled ? 'cursor-not-allowed opacity-50' : ''
+                    }
                   >
                     {item.disabled ? (
                       <>
@@ -174,9 +190,13 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild={!item.disabled}
                     isActive={pathname === item.href}
-                    tooltip={item.disabled ? `${item.title} (Coming soon)` : item.title}
+                    tooltip={
+                      item.disabled ? `${item.title} (Coming soon)` : item.title
+                    }
                     disabled={item.disabled}
-                    className={item.disabled ? 'cursor-not-allowed opacity-50' : ''}
+                    className={
+                      item.disabled ? 'cursor-not-allowed opacity-50' : ''
+                    }
                   >
                     {item.disabled ? (
                       <>
@@ -205,9 +225,13 @@ export function AppSidebar() {
                   <SidebarMenuButton
                     asChild={!item.disabled}
                     isActive={pathname === item.href}
-                    tooltip={item.disabled ? `${item.title} (Coming soon)` : item.title}
+                    tooltip={
+                      item.disabled ? `${item.title} (Coming soon)` : item.title
+                    }
                     disabled={item.disabled}
-                    className={item.disabled ? 'cursor-not-allowed opacity-50' : ''}
+                    className={
+                      item.disabled ? 'cursor-not-allowed opacity-50' : ''
+                    }
                   >
                     {item.disabled ? (
                       <>
