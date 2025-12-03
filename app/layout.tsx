@@ -1,6 +1,7 @@
 import '@saint-giong/bamboo-ui/globals.css';
 import type { Metadata } from 'next';
 import { Familjen_Grotesk } from 'next/font/google';
+import './globals.css';
 
 const familjenGrotesk = Familjen_Grotesk({
   subsets: ['latin'],
@@ -31,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${familjenGrotesk.variable} font-sans antialiased`}
+        className={`${familjenGrotesk.variable} h-screen overflow-hidden font-sans antialiased`}
         style={{ fontFamily: 'var(--font-familjen)' }}
       >
         {children}
