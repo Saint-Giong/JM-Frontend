@@ -29,12 +29,16 @@ import {
   CreditCard,
   Home,
   LogOut,
+  Monitor,
+  Moon,
   PanelLeftClose,
   Search,
   Settings,
   Sparkles,
+  Sun,
   User,
 } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -58,12 +62,21 @@ const systemItems = [
 export function AppSidebar() {
   const pathname = usePathname();
   const { open, toggleSidebar } = useSidebar();
+  const { theme, setTheme } = useTheme();
+
+  const cycleTheme = () => {
+    if (theme === 'light') setTheme('dark');
+    else if (theme === 'dark') setTheme('system');
+    else setTheme('light');
+  };
+
+  const ThemeIcon = theme === 'light' ? Sun : theme === 'dark' ? Moon : Monitor;
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem className="flex gap-2 h-8 items-center">
+          <SidebarMenuItem className="flex h-8 items-center gap-2">
             {open && (
               <SidebarMenuButton size="lg" asChild tooltip="DEVision">
                 <Link href="/">
@@ -182,6 +195,14 @@ export function AppSidebar() {
 
       <SidebarFooter>
         <SidebarMenu>
+          {/* Theme Toggle */}
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={cycleTheme} tooltip={`Theme: ${theme}`}>
+              <ThemeIcon className="h-4 w-4" />
+              <span className="capitalize">{theme} mode</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
           {/* User Menu */}
           <SidebarMenuItem>
             <DropdownMenu>
@@ -197,7 +218,7 @@ export function AppSidebar() {
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">Saint Giong</span>
-                    <span className="truncate text-xs text-muted-foreground">
+                    <span className="truncate text-muted-foreground text-xs">
                       saint@example.com
                     </span>
                   </div>
