@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback } from 'react';
 import {
     createPasswordToggleStore,
     createFormSubmitStore,
@@ -85,5 +86,40 @@ export function useField<T = string>(initialValue: T) {
             onChange,
             onBlur,
         },
+    } as const;
+}
+
+/**
+ * Hook for wrapping an async service call with loading/error state
+ */
+export function useAsyncAction<TArgs extends any[], TResult>(
+    service: (...args: TArgs) => Promise<TResult>
+) {
+    const useStore = createFormSubmitStore();
+    const { isSubmitting: isLoading, error, setSubmitting, setError, reset } = useStore();
+
+    const execute = useCallback(
+        async (...args: TArgs): Promise<TResult> => {
+            setSubmitting(true);
+            setError(null);
+
+            try {
+                const result = await service(...args);
+                return result;
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'An error occurred');
+                throw err;
+            } finally {
+                setSubmitting(false);
+            }
+        },
+        [service, setSubmitting, setError]
+    );
+
+    return {
+        execute,
+        isLoading,
+        error,
+        reset,
     } as const;
 }
