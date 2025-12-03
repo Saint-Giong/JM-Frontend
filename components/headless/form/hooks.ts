@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
+import type { z } from 'zod';
 import {
     createPasswordToggleStore,
     createFormSubmitStore,
@@ -120,6 +121,77 @@ export function useAsyncAction<TArgs extends any[], TResult>(
         execute,
         isLoading,
         error,
+        reset,
+    } as const;
+}
+
+/**
+ * Hook for form validation with Zod schema
+ */
+export function useFormValidation<T extends z.ZodObject<z.ZodRawShape>>(
+    schema: T,
+    initialValues: z.infer<T>
+) {
+    type FormData = z.infer<T>;
+    type FormErrors = Partial<Record<keyof FormData, string>>;
+
+    const [values, setValues] = useState<FormData>(initialValues);
+    const [errors, setErrors] = useState<FormErrors>({});
+    const [touched, setTouched] = useState<Partial<Record<keyof FormData, boolean>>>({});
+
+    const isValid = useMemo(() => {
+        return schema.safeParse(values).success;
+    }, [schema, values]);
+
+    const setValue = useCallback(<K extends keyof FormData>(field: K, value: FormData[K]) => {
+        setValues((prev) => ({ ...prev, [field]: value }));
+    }, []);
+
+    const setFieldTouched = useCallback((field: keyof FormData) => {
+        setTouched((prev) => ({ ...prev, [field]: true }));
+    }, []);
+
+    const validate = useCallback((): FormData | null => {
+        const result = schema.safeParse(values);
+
+        if (!result.success) {
+            const fieldErrors: FormErrors = {};
+            result.error.issues.forEach((issue) => {
+                const field = issue.path[0] as keyof FormData;
+                fieldErrors[field] = issue.message;
+            });
+            setErrors(fieldErrors);
+            return null;
+        }
+
+        setErrors({});
+        return result.data;
+    }, [schema, values]);
+
+    const getFieldProps = useCallback(
+        <K extends keyof FormData>(field: K) => ({
+            value: values[field] as string,
+            onChange: (e: React.ChangeEvent<HTMLInputElement>) => setValue(field, e.target.value as FormData[K]),
+            onBlur: () => setFieldTouched(field),
+        }),
+        [values, setValue, setFieldTouched]
+    );
+
+    const reset = useCallback(() => {
+        setValues(initialValues);
+        setErrors({});
+        setTouched({});
+    }, [initialValues]);
+
+    return {
+        values,
+        errors,
+        touched,
+        isValid,
+        setValue,
+        setFieldTouched,
+        validate,
+        getFieldProps,
         reset,
     } as const;
 }
