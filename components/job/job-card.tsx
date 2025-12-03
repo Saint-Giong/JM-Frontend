@@ -11,22 +11,10 @@ import {
   Users,
   Wallet,
 } from 'lucide-react';
-import {
-  useJobCard,
-  type JobStatus,
-  type UseJobCardOptions,
-} from './use-job-card';
+import { JobBadge } from './job-badge';
+import { type UseJobCardOptions, useJobCard } from './use-job-card';
 
-// Re-export types for convenience
 export type { Job, JobStatus } from './use-job-card';
-
-// Status styling configuration
-const STATUS_STYLES: Record<JobStatus, string> = {
-  archived: 'bg-zinc-800 text-white hover:bg-zinc-800',
-  draft: 'bg-zinc-100 text-zinc-800 hover:bg-zinc-100',
-  hiring: 'bg-lime-100 text-lime-800 hover:bg-lime-100',
-  published: 'bg-lime-200 text-lime-900 hover:bg-lime-200',
-};
 
 interface JobCardProps extends UseJobCardOptions {
   className?: string;
@@ -63,7 +51,7 @@ export function JobCard({
       {/* Header: Status, Applicants, Actions */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <Badge className={STATUS_STYLES[status.value]}>{status.label}</Badge>
+          <JobBadge status={status.value} label={status.label} />
           <div className="flex items-center gap-1 text-muted-foreground text-sm">
             <Users className="h-4 w-4" />
             <span>{applicants.count}</span>
@@ -137,5 +125,4 @@ export function JobCard({
   );
 }
 
-// Export the headless hook for custom implementations
 export { useJobCard } from './use-job-card';

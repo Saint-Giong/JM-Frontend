@@ -1,16 +1,24 @@
-// Headless hook - the core of the headless architecture
+// Headless hooks
 export {
   useJobCard,
   type Job,
-  type JobStatus,
   type UseJobCardOptions,
-  type JobCardStatus,
   type JobCardApplicants,
-  type JobCardSalary,
-  type JobCardMeta,
   type JobCardActions,
   type JobCardReturn,
 } from './use-job-card';
+export {
+  useJobStatus,
+  type JobStatus,
+  type JobStatusState,
+} from './use-job-status';
+export {
+  useJobMeta,
+  type JobMetaInput,
+  type JobMetaState,
+  type JobSalary,
+} from './use-job-meta';
 
-// Styled UI component - example implementation using the headless hook
+// Styled UI components
 export { JobCard } from './job-card';
+export { JobBadge } from './job-badge';

@@ -15,7 +15,6 @@ export const mockJobs: Job[] = [
     jobType: 'Full-time',
     salaryMin: 30000,
     salaryMax: 80000,
-    currency: 'USD',
     skills: ['Skill', 'Tag'],
   },
   {
@@ -32,7 +31,6 @@ export const mockJobs: Job[] = [
     jobType: 'Full-time',
     salaryMin: 30000,
     salaryMax: 80000,
-    currency: 'USD',
     skills: ['Skill', 'Tag'],
   },
   {
@@ -49,7 +47,6 @@ export const mockJobs: Job[] = [
     jobType: 'Full-time',
     salaryMin: 30000,
     salaryMax: 80000,
-    currency: 'USD',
     skills: ['Skill', 'Tag'],
   },
   {
@@ -66,7 +63,6 @@ export const mockJobs: Job[] = [
     jobType: 'Full-time',
     salaryMin: 30000,
     salaryMax: 80000,
-    currency: 'USD',
     skills: ['Skill', 'Tag'],
   },
   {
@@ -83,7 +79,6 @@ export const mockJobs: Job[] = [
     jobType: 'Full-time',
     salaryMin: 30000,
     salaryMax: 80000,
-    currency: 'USD',
     skills: ['Skill', 'Tag'],
   },
   {
@@ -100,7 +95,6 @@ export const mockJobs: Job[] = [
     jobType: 'Full-time',
     salaryMin: 30000,
     salaryMax: 80000,
-    currency: 'USD',
     skills: ['Skill', 'Tag'],
   },
   {
@@ -117,7 +111,6 @@ export const mockJobs: Job[] = [
     jobType: 'Full-time',
     salaryMin: 30000,
     salaryMax: 80000,
-    currency: 'USD',
     skills: ['Skill', 'Tag'],
   },
   {
@@ -134,7 +127,6 @@ export const mockJobs: Job[] = [
     jobType: 'Full-time',
     salaryMin: 30000,
     salaryMax: 80000,
-    currency: 'USD',
     skills: ['Skill', 'Tag'],
   },
 ];

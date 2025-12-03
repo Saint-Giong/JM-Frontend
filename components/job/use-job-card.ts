@@ -1,6 +1,14 @@
 import { useMemo, useCallback } from 'react';
+import {
+  useJobStatus,
+  type JobStatus,
+  type JobStatusState,
+} from './use-job-status';
+import { useJobMeta, type JobMetaState } from './use-job-meta';
 
-export type JobStatus = 'archived' | 'draft' | 'hiring' | 'published';
+// Re-export types
+export type { JobStatus, JobStatusState } from './use-job-status';
+export type { JobMetaState, JobSalary } from './use-job-meta';
 
 export interface Job {
   id: string;
@@ -15,7 +23,6 @@ export interface Job {
   jobType: string;
   salaryMin: number;
   salaryMax: number;
-  currency: string;
   skills: string[];
 }
 
@@ -25,33 +32,9 @@ export interface UseJobCardOptions {
   onMenuAction?: (action: string, job: Job) => void;
 }
 
-export interface JobCardStatus {
-  value: JobStatus;
-  label: string;
-  isArchived: boolean;
-  isDraft: boolean;
-  isHiring: boolean;
-  isPublished: boolean;
-}
-
 export interface JobCardApplicants {
   count: number;
   hasNew: boolean;
-}
-
-export interface JobCardSalary {
-  min: number;
-  max: number;
-  currency: string;
-  formatted: string;
-}
-
-export interface JobCardMeta {
-  postedAt: string;
-  deadline: string;
-  location: string;
-  jobType: string;
-  salary: JobCardSalary;
 }
 
 export interface JobCardActions {
@@ -60,19 +43,12 @@ export interface JobCardActions {
 }
 
 export interface JobCardReturn {
-  // Raw data
   job: Job;
-
-  // Computed state
-  status: JobCardStatus;
+  status: JobStatusState;
   applicants: JobCardApplicants;
-  meta: JobCardMeta;
+  meta: JobMetaState;
   skills: string[];
-
-  // Actions
   actions: JobCardActions;
-
-  // Props getters for accessibility
   getRootProps: () => {
     'data-job-id': string;
     'data-status': JobStatus;
@@ -93,36 +69,20 @@ export interface JobCardReturn {
   };
 }
 
-const STATUS_LABELS: Record<JobStatus, string> = {
-  archived: 'Archived',
-  draft: 'Draft',
-  hiring: 'Hiring',
-  published: 'Published',
-};
-
-function formatSalary(min: number, max: number, currency: string): string {
-  const formatter = new Intl.NumberFormat('en-US', {
-    notation: 'compact',
-    maximumFractionDigits: 0,
-  });
-  return `${formatter.format(min)} - ${formatter.format(max)} ${currency}`;
-}
-
 export function useJobCard(options: UseJobCardOptions): JobCardReturn {
   const { job, onEdit, onMenuAction } = options;
 
-  // Computed: Status
-  const status = useMemo<JobCardStatus>(
-    () => ({
-      value: job.status,
-      label: STATUS_LABELS[job.status],
-      isArchived: job.status === 'archived',
-      isDraft: job.status === 'draft',
-      isHiring: job.status === 'hiring',
-      isPublished: job.status === 'published',
-    }),
-    [job.status]
-  );
+  // Compose smaller hooks
+  const status = useJobStatus(job.status);
+
+  const meta = useJobMeta({
+    postedAt: job.postedAt,
+    deadline: job.deadline,
+    location: job.location,
+    jobType: job.jobType,
+    salaryMin: job.salaryMin,
+    salaryMax: job.salaryMax,
+  });
 
   // Computed: Applicants
   const applicants = useMemo<JobCardApplicants>(
@@ -131,31 +91,6 @@ export function useJobCard(options: UseJobCardOptions): JobCardReturn {
       hasNew: job.hasNewApplicants ?? false,
     }),
     [job.applicants, job.hasNewApplicants]
-  );
-
-  // Computed: Meta
-  const meta = useMemo<JobCardMeta>(
-    () => ({
-      postedAt: job.postedAt,
-      deadline: job.deadline,
-      location: job.location,
-      jobType: job.jobType,
-      salary: {
-        min: job.salaryMin,
-        max: job.salaryMax,
-        currency: job.currency,
-        formatted: formatSalary(job.salaryMin, job.salaryMax, job.currency),
-      },
-    }),
-    [
-      job.postedAt,
-      job.deadline,
-      job.location,
-      job.jobType,
-      job.salaryMin,
-      job.salaryMax,
-      job.currency,
-    ]
   );
 
   // Actions
