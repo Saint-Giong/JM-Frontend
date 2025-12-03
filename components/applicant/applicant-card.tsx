@@ -1,5 +1,6 @@
 'use client';
 
+import { DEGREE_LABELS } from '@/lib/constants/education';
 import {
   Avatar,
   AvatarFallback,
@@ -31,12 +32,6 @@ interface ApplicantCardProps {
   isSelected?: boolean;
 }
 
-const degreeLabels: Record<string, string> = {
-  bachelor: 'Bachelor',
-  master: 'Master',
-  doctorate: 'Doctorate',
-};
-
 export function ApplicantCard({
   applicant,
   onClick,
@@ -46,8 +41,8 @@ export function ApplicantCard({
   const initials = `${applicant.firstName[0]}${applicant.lastName[0]}`;
   const fullName = `${applicant.firstName} ${applicant.lastName}`;
   const educationSummary = applicant.education[0]
-    ? `${degreeLabels[applicant.education[0].degree]} of ${applicant.education[0].field} (${applicant.education[0].institution})`
-    : degreeLabels[applicant.highestDegree];
+    ? `${DEGREE_LABELS[applicant.education[0].degree]} of ${applicant.education[0].field} (${applicant.education[0].institution})`
+    : DEGREE_LABELS[applicant.highestDegree];
 
   return (
     <Card

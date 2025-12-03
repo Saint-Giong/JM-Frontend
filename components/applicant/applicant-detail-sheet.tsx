@@ -1,5 +1,6 @@
 'use client';
 
+import { DEGREE_LABELS } from '@/lib/constants/education';
 import {
   Avatar,
   AvatarFallback,
@@ -29,12 +30,6 @@ interface ApplicantDetailSheetProps {
   onOpenChange: (open: boolean) => void;
   onMark?: (id: string, mark: 'favorite' | 'warning' | null) => void;
 }
-
-const degreeLabels: Record<string, string> = {
-  bachelor: 'Bachelor',
-  master: 'Master',
-  doctorate: 'Doctorate',
-};
 
 export function ApplicantDetailSheet({
   applicant,
@@ -125,7 +120,7 @@ export function ApplicantDetailSheet({
                 </div>
                 <div className="flex items-center gap-2">
                   <GraduationCap className="h-4 w-4 text-muted-foreground" />
-                  <span>{degreeLabels[applicant.highestDegree]} Degree</span>
+                  <span>{DEGREE_LABELS[applicant.highestDegree]} Degree</span>
                 </div>
               </div>
             </section>
@@ -211,7 +206,7 @@ export function ApplicantDetailSheet({
                     </div>
                     <div>
                       <h4 className="font-medium text-sm">
-                        {degreeLabels[edu.degree]} in {edu.field}
+                        {DEGREE_LABELS[edu.degree]} in {edu.field}
                       </h4>
                       <p className="text-muted-foreground text-sm">
                         {edu.institution}

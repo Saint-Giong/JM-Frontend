@@ -8,3 +8,5 @@ export {
   type SortOption,
   type ViewMode,
 } from './use-job-list';
+
+export { useSearchProfiles } from './use-search-profiles';
