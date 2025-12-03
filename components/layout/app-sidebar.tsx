@@ -5,6 +5,11 @@ import {
   AvatarFallback,
   AvatarImage,
   Badge,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -15,10 +20,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
 } from '@saint-giong/bamboo-ui';
 import {
   Bell,
   Briefcase,
+  ChevronRight,
   CreditCard,
   Home,
   Search,
@@ -29,7 +36,6 @@ import { usePathname } from 'next/navigation';
 
 const mainNavItems = [
   { title: 'Dashboard', icon: Home, href: '/dashboard' },
-  // { title: 'Inbox', icon: Inbox, href: '/inbox' },
   { title: 'Notifications', icon: Bell, href: '/notifications', badge: 2 },
 ];
 
@@ -41,34 +47,44 @@ const recruitmentItems = [
 
 const systemItems = [
   { title: 'Subscription', icon: CreditCard, href: '/subscription' },
-  // { title: 'Settings', icon: Settings, href: '/settings' },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="border-border border-r">
-      <SidebarHeader className="p-4">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md border border-border">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <title>DEVision Logo</title>
-              <rect x="3" y="3" width="7" height="7" />
-              <rect x="14" y="3" width="7" height="7" />
-              <rect x="3" y="14" width="7" height="7" />
-              <rect x="14" y="14" width="7" height="7" />
-            </svg>
-          </div>
-          <span className="font-semibold text-xl">DEVision</span>
-        </Link>
+    <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <Link href="/">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <title>DEVision Logo</title>
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                  </svg>
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">DEVision</span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    Job Manager
+                  </span>
+                </div>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
 
       <SidebarContent>
@@ -77,14 +93,18 @@ export function AppSidebar() {
             <SidebarMenu>
               {mainNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={pathname === item.href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.href}
+                    tooltip={item.title}
+                  >
                     <Link href={item.href}>
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
                       {item.badge && (
                         <Badge
                           variant="destructive"
-                          className="ml-auto flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
+                          className="ml-auto flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs group-data-[collapsible=icon]:hidden"
                         >
                           {item.badge}
                         </Badge>
@@ -105,7 +125,11 @@ export function AppSidebar() {
             <SidebarMenu>
               {recruitmentItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={pathname === item.href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.href}
+                    tooltip={item.title}
+                  >
                     <Link href={item.href}>
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
@@ -125,7 +149,11 @@ export function AppSidebar() {
             <SidebarMenu>
               {systemItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={pathname === item.href}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname === item.href}
+                    tooltip={item.title}
+                  >
                     <Link href={item.href}>
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>
@@ -139,14 +167,44 @@ export function AppSidebar() {
       </SidebarContent>
 
       <SidebarFooter className="p-4">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-9 w-9">
-            <AvatarImage src="/avatars/user.jpg" alt="Saint Giong" />
-            <AvatarFallback>SG</AvatarFallback>
-          </Avatar>
-          <span className="font-medium text-sm">Saint Giong</span>
-        </div>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src="/avatars/user.jpg" alt="Saint Giong" />
+                    <AvatarFallback>SG</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
+                    <span className="truncate font-semibold">Saint Giong</span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      saint@example.com
+                    </span>
+                  </div>
+                  <ChevronRight className="ml-auto h-4 w-4 group-data-[collapsible=icon]:hidden" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-[--radix-dropdown-menu-trigger-width] min-w-56"
+                side="right"
+                align="end"
+                sideOffset={4}
+              >
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Log out</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
+
+      <SidebarRail />
     </Sidebar>
   );
 }
