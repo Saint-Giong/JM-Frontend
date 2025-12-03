@@ -8,14 +8,22 @@ function createMockResponse(
   data: unknown,
   options: { status?: number; statusText?: string; contentType?: string } = {}
 ) {
-  const { status = 200, statusText = 'OK', contentType = 'application/json' } = options;
+  const {
+    status = 200,
+    statusText = 'OK',
+    contentType = 'application/json',
+  } = options;
   return {
     ok: status >= 200 && status < 300,
     status,
     statusText,
     headers: new Headers({ 'content-type': contentType }),
     json: vi.fn().mockResolvedValue(data),
-    text: vi.fn().mockResolvedValue(typeof data === 'string' ? data : JSON.stringify(data)),
+    text: vi
+      .fn()
+      .mockResolvedValue(
+        typeof data === 'string' ? data : JSON.stringify(data)
+      ),
   };
 }
 
@@ -81,7 +89,9 @@ describe('HttpClient', () => {
       mockFetch.mockResolvedValueOnce(createMockResponse([]));
 
       const client = new HttpClient({ baseUrl: 'https://api.example.com' });
-      await client.get('/users', { params: { page: 1, limit: 10, active: true } });
+      await client.get('/users', {
+        params: { page: 1, limit: 10, active: true },
+      });
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('page=1'),
@@ -109,13 +119,15 @@ describe('HttpClient', () => {
     it('should make a POST request with body', async () => {
       const requestBody = { name: 'New User', email: 'user@example.com' };
       const responseData = { id: 1, ...requestBody };
-      mockFetch.mockResolvedValueOnce(createMockResponse(responseData, { status: 201 }));
+      mockFetch.mockResolvedValueOnce(
+        createMockResponse(responseData, { status: 201 })
+      );
 
       const client = new HttpClient({ baseUrl: 'https://api.example.com' });
-      const response = await client.post<typeof responseData, typeof requestBody>(
-        '/users',
-        requestBody
-      );
+      const response = await client.post<
+        typeof responseData,
+        typeof requestBody
+      >('/users', requestBody);
 
       expect(response.data).toEqual(responseData);
       expect(response.status).toBe(201);
@@ -132,7 +144,9 @@ describe('HttpClient', () => {
   describe('PUT requests', () => {
     it('should make a PUT request', async () => {
       const requestBody = { name: 'Updated User' };
-      mockFetch.mockResolvedValueOnce(createMockResponse({ id: 1, ...requestBody }));
+      mockFetch.mockResolvedValueOnce(
+        createMockResponse({ id: 1, ...requestBody })
+      );
 
       const client = new HttpClient({ baseUrl: 'https://api.example.com' });
       await client.put('/users/1', requestBody);
@@ -147,7 +161,9 @@ describe('HttpClient', () => {
   describe('PATCH requests', () => {
     it('should make a PATCH request', async () => {
       const requestBody = { name: 'Patched User' };
-      mockFetch.mockResolvedValueOnce(createMockResponse({ id: 1, ...requestBody }));
+      mockFetch.mockResolvedValueOnce(
+        createMockResponse({ id: 1, ...requestBody })
+      );
 
       const client = new HttpClient({ baseUrl: 'https://api.example.com' });
       await client.patch('/users/1', requestBody);
@@ -181,7 +197,9 @@ describe('HttpClient', () => {
         baseUrl: 'https://api.example.com',
         headers: { Authorization: 'Bearer default-token' },
       });
-      await client.get('/users', { headers: { 'X-Custom-Header': 'custom-value' } });
+      await client.get('/users', {
+        headers: { 'X-Custom-Header': 'custom-value' },
+      });
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.any(String),
@@ -262,7 +280,9 @@ describe('HttpClient', () => {
         timeout: 50,
       });
 
-      await expect(client.get('/slow-endpoint')).rejects.toThrow('Request timeout');
+      await expect(client.get('/slow-endpoint')).rejects.toThrow(
+        'Request timeout'
+      );
     });
   });
 

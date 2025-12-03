@@ -1,4 +1,4 @@
-import { HttpClient, HttpError } from './http';
+import { type HttpClient, HttpError } from './http';
 
 type QueryParams = Record<string, string | number | boolean | undefined>;
 
@@ -13,10 +13,7 @@ interface MutationContext<TBody> {
 }
 
 // Base fetch function with error handling
-async function baseFetch<T>(
-  url: string,
-  options?: RequestInit
-): Promise<T> {
+async function baseFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, {
     headers: { 'Content-Type': 'application/json' },
     ...options,
@@ -101,13 +98,13 @@ export function createDeleteFn<TResponse>(endpoint: string, baseUrl?: string) {
 }
 
 // API client factory for React Query
-export function createApiClient(options: { baseUrl: string; getToken?: () => string | null | Promise<string | null> }) {
+export function createApiClient(options: {
+  baseUrl: string;
+  getToken?: () => string | null | Promise<string | null>;
+}) {
   const { baseUrl, getToken } = options;
 
-  async function fetchWithAuth<T>(
-    url: string,
-    init?: RequestInit
-  ): Promise<T> {
+  async function fetchWithAuth<T>(url: string, init?: RequestInit): Promise<T> {
     const token = getToken ? await getToken() : null;
 
     const response = await fetch(url, {

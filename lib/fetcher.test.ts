@@ -90,7 +90,10 @@ describe('createQueryFn', () => {
 
   it('should throw HttpError on failure', async () => {
     mockFetch.mockResolvedValueOnce(
-      createMockResponse({ message: 'Not found' }, { status: 404, statusText: 'Not Found' })
+      createMockResponse(
+        { message: 'Not found' },
+        { status: 404, statusText: 'Not Found' }
+      )
     );
 
     const queryFn = createQueryFn('https://api.example.com/users/999');
@@ -126,7 +129,10 @@ describe('createMutationFn', () => {
   it('should support custom HTTP method', async () => {
     mockFetch.mockResolvedValueOnce(createMockResponse({}));
 
-    const mutationFn = createMutationFn('https://api.example.com/users/1', 'PUT');
+    const mutationFn = createMutationFn(
+      'https://api.example.com/users/1',
+      'PUT'
+    );
     await mutationFn({ body: { name: 'Updated' } });
 
     expect(mockFetch).toHaveBeenCalledWith(
