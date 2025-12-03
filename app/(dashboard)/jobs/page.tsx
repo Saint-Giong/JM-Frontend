@@ -1,6 +1,6 @@
 'use client';
 
-import { JobCard, type Job } from '@/components/job/job-card';
+import { type Job, JobCard } from '@/components/job/job-card';
 import { useJobList } from '@/hooks/use-job-list';
 import { mockJobs } from '@/mocks';
 import {
