@@ -1,5 +1,6 @@
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import '@saint-giong/bamboo-ui/globals.css';
+import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import { Familjen_Grotesk } from 'next/font/google';
 import './globals.css';
@@ -36,6 +37,7 @@ export default function RootLayout({
         className={`${familjenGrotesk.variable} h-screen overflow-hidden font-sans antialiased`}
         style={{ fontFamily: 'var(--font-familjen)' }}
       >
+        <Analytics />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
