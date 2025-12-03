@@ -38,15 +38,19 @@ export function useJobCard() {
 }
 
 // Optional hook that returns null if not in provider
+// Note: Uses getState() instead of useStore to safely handle missing provider
+// This means the component won't re-render on state changes
 export function useJobCardContext() {
   const store = useContext(JobCardStoreContext);
+
   if (!store) return null;
 
-  const job = useStore(store, (state) => state.job);
-  const edit = useStore(store, (state) => state.edit);
-  const menuAction = useStore(store, (state) => state.menuAction);
+  const state = store.getState();
+  const { job, edit, menuAction } = state;
 
-  return job ? { job, edit, menuAction } : null;
+  if (!job) return null;
+
+  return { job, edit, menuAction };
 }
 
 interface JobCardProviderProps {

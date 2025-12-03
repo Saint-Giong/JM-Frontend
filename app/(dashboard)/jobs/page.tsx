@@ -186,13 +186,13 @@ export default function JobsPage() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       {/* Header */}
-      <header className="flex items-center gap-4 justify-between border-b border-border px-6 py-4">
-        <h1 className="text-2xl font-semibold">Jobs</h1>
+      <header className="flex items-center justify-between gap-4 border-border border-b px-6 py-4">
+        <h1 className="font-semibold text-2xl">Jobs</h1>
         <div className="flex items-center gap-4">
           <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search job"
               className="pl-10"
@@ -210,8 +210,8 @@ export default function JobsPage() {
       {/* Content */}
       <div className="flex-1 overflow-auto p-6">
         {/* Filters and Controls */}
-        <div className="flex md:items-center flex-col md:flex-row gap-2 justify-start items-start md:justify-between mb-6">
-          <div className="flex items-center flex-wrap gap-2">
+        <div className="mb-6 flex flex-col items-start justify-start gap-2 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap items-center gap-2">
             {filterTabs.map((tab) => (
               <Button
                 key={tab.id}
@@ -266,7 +266,7 @@ export default function JobsPage() {
         <div
           className={
             viewMode === 'grid'
-              ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+              ? 'grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
               : 'flex flex-col gap-4'
           }
         >

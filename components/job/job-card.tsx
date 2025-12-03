@@ -1,6 +1,6 @@
 'use client';
 
-import { Badge, Button, Card } from '@saint-giong/bamboo-ui';
+import { Badge, Card } from '@saint-giong/bamboo-ui';
 import {
   Briefcase,
   Calendar,
@@ -54,7 +54,7 @@ export function JobCard({
     <JobCardProvider job={job} onEdit={onEdit} onMenuAction={onMenuAction}>
       <JobCardRoot>
         <Card
-          className={`p-5 flex flex-col gap-4 hover:shadow-md transition-shadow ${className ?? ''}`}
+          className={`flex flex-col gap-4 p-5 transition-shadow hover:shadow-md ${className ?? ''}`}
         >
           {/* Header: Status, Applicants, Actions */}
           <div className="flex items-start justify-between">
@@ -66,7 +66,7 @@ export function JobCard({
               </JobCardStatus>
               <JobCardApplicants>
                 {(count, hasNew) => (
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1 text-muted-foreground text-sm">
                     <Users className="h-4 w-4" />
                     <span>{count}</span>
                     {hasNew && (
@@ -77,10 +77,10 @@ export function JobCard({
               </JobCardApplicants>
             </div>
             <div className="flex items-center gap-1">
-              <JobCardEditButton className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-accent hover:text-accent-foreground">
+              <JobCardEditButton className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
                 <Pencil className="h-4 w-4" />
               </JobCardEditButton>
-              <JobCardMenuButton className="inline-flex items-center justify-center h-8 w-8 rounded-md hover:bg-accent hover:text-accent-foreground">
+              <JobCardMenuButton className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground">
                 <MoreVertical className="h-4 w-4" />
               </JobCardMenuButton>
             </div>
@@ -88,8 +88,8 @@ export function JobCard({
 
           {/* Content: Title and Description */}
           <div className="space-y-2">
-            <JobCardTitle className="text-lg font-semibold leading-tight" />
-            <JobCardDescription className="text-sm text-muted-foreground line-clamp-2" />
+            <JobCardTitle className="font-semibold text-lg leading-tight" />
+            <JobCardDescription className="line-clamp-2 text-muted-foreground text-sm" />
           </div>
 
           {/* Tags: Skills and Tags */}
@@ -117,7 +117,7 @@ export function JobCard({
           {/* Metadata */}
           <JobCardMeta>
             {(meta) => (
-              <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <div className="flex flex-col gap-2 text-muted-foreground text-sm">
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 flex-shrink-0" />
                   <span>{meta.postedAt}</span>

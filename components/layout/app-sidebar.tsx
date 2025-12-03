@@ -48,7 +48,7 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="border-r border-border">
+    <Sidebar className="border-border border-r">
       <SidebarHeader className="p-4">
         <Link href="/" className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-md border border-border">
@@ -60,13 +60,14 @@ export function AppSidebar() {
               stroke="currentColor"
               strokeWidth="2"
             >
+              <title>DEVision Logo</title>
               <rect x="3" y="3" width="7" height="7" />
               <rect x="14" y="3" width="7" height="7" />
               <rect x="3" y="14" width="7" height="7" />
               <rect x="14" y="14" width="7" height="7" />
             </svg>
           </div>
-          <span className="text-xl font-semibold">DEVision</span>
+          <span className="font-semibold text-xl">DEVision</span>
         </Link>
       </SidebarHeader>
 
@@ -83,7 +84,7 @@ export function AppSidebar() {
                       {item.badge && (
                         <Badge
                           variant="destructive"
-                          className="ml-auto h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center"
+                          className="ml-auto flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
                         >
                           {item.badge}
                         </Badge>
@@ -97,7 +98,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <SidebarGroupLabel className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
             Recruitment
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -117,7 +118,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <SidebarGroupLabel className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
             System
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -143,7 +144,7 @@ export function AppSidebar() {
             <AvatarImage src="/avatars/user.jpg" alt="Saint Giong" />
             <AvatarFallback>SG</AvatarFallback>
           </Avatar>
-          <span className="text-sm font-medium">Saint Giong</span>
+          <span className="font-medium text-sm">Saint Giong</span>
         </div>
       </SidebarFooter>
     </Sidebar>
