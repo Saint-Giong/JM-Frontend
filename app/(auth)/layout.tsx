@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import DevisionLogo from '@/public/DEVision.png';
 import { Button } from '@saint-giong/bamboo-ui';
+import { TermsPrivacy } from './_components/TermsPrivacy';
 
 export default function AuthLayout({
     children,
@@ -12,6 +13,7 @@ export default function AuthLayout({
 }) {
     const pathname = usePathname();
     const isLogin = pathname === '/login';
+    const isSignup = pathname === '/signup';
 
     return (
         <div className="flex h-screen overflow-hidden p-5">
@@ -21,9 +23,9 @@ export default function AuthLayout({
             </div>
 
             {/* form section */}
-            <div className="flex flex-1 flex-col px-10 pt-5">
+            <div className="flex flex-1 flex-col lg:px-10 pt-5 overflow-y-auto">
                 {/* header */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-20">
                     <Image src={DevisionLogo} alt="DEVision Logo" />
                     <div className="flex items-center gap-3">
                         <span className="text-sm text-muted-foreground">
@@ -43,6 +45,13 @@ export default function AuthLayout({
                         {children}
                     </div>
                 </div>
+
+                {/* footer */}
+                {isSignup && (
+                    <div className="pb-5">
+                        <TermsPrivacy />
+                    </div>
+                )}
             </div>
         </div>
     );
