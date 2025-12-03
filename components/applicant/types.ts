@@ -25,6 +25,12 @@ export interface WorkExperience {
   description: string;
 }
 
+export interface SalaryRange {
+  min?: number;
+  max?: number;
+  currency?: string;
+}
+
 export interface Applicant {
   id: string;
   firstName: string;
@@ -40,6 +46,7 @@ export interface Applicant {
   employmentTypes: EmploymentType[];
   mark: ApplicantMark;
   avatarUrl?: string;
+  expectedSalary?: SalaryRange;
 }
 
 export interface LocationFilter {
@@ -59,6 +66,7 @@ export interface ApplicantSearchFilters {
   employmentTypes: EmploymentType[];
   skills: string[];
   fullTextSearch: string;
+  salaryRange?: SalaryRange;
 }
 
 export const EDUCATION_OPTIONS: { value: EducationDegree; label: string }[] = [
@@ -77,28 +85,17 @@ export const EMPLOYMENT_TYPE_OPTIONS: {
   { value: 'contract', label: 'Contract' },
 ];
 
-export const COMMON_SKILLS = [
-  'Python',
-  'Java',
-  'JavaScript',
-  'TypeScript',
-  'Go',
-  'Rust',
-  'React',
-  'Angular',
-  'Vue.js',
-  'Spring Boot',
-  'Django',
-  'Node.js',
-  'MongoDB',
-  'PostgreSQL',
-  'MySQL',
-  'Redis',
-  'Docker',
-  'Kubernetes',
-  'Kafka',
-  'Git',
-  'AWS',
-  'GCP',
-  'Azure',
-];
+export interface ApplicantSearchProfile {
+  id: string;
+  name: string;
+  skills: string[];
+  employmentTypes: EmploymentType[];
+  country?: string;
+  salaryRange?: SalaryRange;
+  education: EducationDegree[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Re-export from lib for backwards compatibility
+export { COMMON_SKILLS } from '@/lib/constants/skills';

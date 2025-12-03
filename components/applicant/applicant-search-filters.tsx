@@ -1,5 +1,7 @@
 'use client';
 
+import { CountryCombobox } from '@/components/ui/country-combobox';
+import { SkillCombobox } from '@/components/ui/skill-combobox';
 import {
   type ApplicantSearchFilters,
   COMMON_SKILLS,
@@ -8,6 +10,7 @@ import {
   type EducationDegree,
   type EmploymentType,
   type LocationFilter,
+  type SalaryRange,
   type WorkExperienceFilter,
 } from './types';
 import {
@@ -18,14 +21,8 @@ import {
   Label,
   RadioGroup,
   RadioGroupItem,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
 } from '@saint-giong/bamboo-ui';
 import { RotateCcw, Search, X } from 'lucide-react';
-import { useState } from 'react';
 
 interface ApplicantSearchFiltersProps {
   filters: ApplicantSearchFilters;
@@ -35,26 +32,9 @@ interface ApplicantSearchFiltersProps {
   onEmploymentTypesChange: (types: EmploymentType[]) => void;
   onSkillsChange: (skills: string[]) => void;
   onFullTextSearchChange: (search: string) => void;
+  onSalaryRangeChange?: (salaryRange: SalaryRange | undefined) => void;
   onReset: () => void;
 }
-
-const COUNTRIES = [
-  'Vietnam',
-  'Singapore',
-  'Thailand',
-  'Malaysia',
-  'Indonesia',
-  'Philippines',
-];
-const CITIES = [
-  'Ho Chi Minh City',
-  'Hanoi',
-  'Da Nang',
-  'Singapore',
-  'Bangkok',
-  'Kuala Lumpur',
-  'Jakarta',
-];
 
 export function ApplicantSearchFilters({
   filters,
@@ -64,10 +44,9 @@ export function ApplicantSearchFilters({
   onEmploymentTypesChange,
   onSkillsChange,
   onFullTextSearchChange,
+  onSalaryRangeChange,
   onReset,
 }: ApplicantSearchFiltersProps) {
-  const [skillInput, setSkillInput] = useState('');
-
   const handleEducationToggle = (degree: EducationDegree) => {
     const newEducation = filters.education.includes(degree)
       ? filters.education.filter((d) => d !== degree)
@@ -86,18 +65,10 @@ export function ApplicantSearchFilters({
     if (skill && !filters.skills.includes(skill)) {
       onSkillsChange([...filters.skills, skill]);
     }
-    setSkillInput('');
   };
 
   const handleRemoveSkill = (skill: string) => {
     onSkillsChange(filters.skills.filter((s) => s !== skill));
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleAddSkill(skillInput.trim());
-    }
   };
 
   return (
@@ -124,7 +95,7 @@ export function ApplicantSearchFilters({
           onValueChange={(value) =>
             onLocationChange({
               type: value as 'city' | 'country',
-              value: filters.location?.value || '',
+              value: '',
             })
           }
           className="flex gap-4"
@@ -142,30 +113,28 @@ export function ApplicantSearchFilters({
             </Label>
           </div>
         </RadioGroup>
-        <Select
-          value={filters.location?.value || ''}
-          onValueChange={(value) =>
-            onLocationChange({
-              type: filters.location?.type || 'country',
-              value,
-            })
-          }
-        >
-          <SelectTrigger>
-            <SelectValue
-              placeholder={`Select ${filters.location?.type || 'country'}`}
-            />
-          </SelectTrigger>
-          <SelectContent>
-            {(filters.location?.type === 'city' ? CITIES : COUNTRIES).map(
-              (loc) => (
-                <SelectItem key={loc} value={loc}>
-                  {loc}
-                </SelectItem>
-              )
-            )}
-          </SelectContent>
-        </Select>
+        {filters.location?.type === 'city' ? (
+          <Input
+            placeholder="Enter city name..."
+            value={filters.location?.value || ''}
+            onChange={(e) =>
+              onLocationChange({
+                type: 'city',
+                value: e.target.value,
+              })
+            }
+          />
+        ) : (
+          <CountryCombobox
+            value={filters.location?.value}
+            onValueChange={(value) =>
+              onLocationChange({
+                type: 'country',
+                value,
+              })
+            }
+          />
+        )}
       </div>
 
       {/* Education */}
@@ -258,23 +227,10 @@ export function ApplicantSearchFilters({
         <Label className="text-sm font-medium">
           Technical Skills (OR logic)
         </Label>
-        <div className="flex gap-2">
-          <Input
-            placeholder="Add skill..."
-            value={skillInput}
-            onChange={(e) => setSkillInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            className="flex-1"
-          />
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => handleAddSkill(skillInput.trim())}
-            disabled={!skillInput.trim()}
-          >
-            Add
-          </Button>
-        </div>
+        <SkillCombobox
+          selectedSkills={filters.skills}
+          onSelectSkill={handleAddSkill}
+        />
 
         {/* Selected Skills */}
         {filters.skills.length > 0 && (
@@ -315,6 +271,42 @@ export function ApplicantSearchFilters({
           </div>
         </div>
       </div>
+
+      {/* Salary Range */}
+      {onSalaryRangeChange && (
+        <div className="space-y-3">
+          <Label className="text-sm font-medium">Salary Range (USD)</Label>
+          <div className="flex items-center gap-2">
+            <Input
+              type="number"
+              placeholder="Min"
+              value={filters.salaryRange?.min || ''}
+              onChange={(e) =>
+                onSalaryRangeChange({
+                  ...filters.salaryRange,
+                  min: e.target.value ? Number(e.target.value) : undefined,
+                  currency: 'USD',
+                })
+              }
+              className="flex-1"
+            />
+            <span className="text-muted-foreground">-</span>
+            <Input
+              type="number"
+              placeholder="Max"
+              value={filters.salaryRange?.max || ''}
+              onChange={(e) =>
+                onSalaryRangeChange({
+                  ...filters.salaryRange,
+                  max: e.target.value ? Number(e.target.value) : undefined,
+                  currency: 'USD',
+                })
+              }
+              className="flex-1"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Reset */}
       <Button variant="outline" className="w-full" onClick={onReset}>

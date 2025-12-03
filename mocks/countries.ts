@@ -1,0 +1,18 @@
+export const COUNTRIES = [
+  'Vietnam',
+  'Singapore',
+  'Thailand',
+  'Malaysia',
+  'Indonesia',
+  'Philippines',
+  'Japan',
+  'South Korea',
+  'China',
+  'India',
+  'Australia',
+  'United States',
+  'United Kingdom',
+  'Germany',
+  'France',
+  'Canada',
+];

@@ -3,6 +3,7 @@ import type {
   ApplicantMark,
   EducationDegree,
   EmploymentType,
+  SalaryRange,
 } from '@/components/applicant/types';
 
 const firstNames = [
@@ -137,12 +138,32 @@ const objectiveSummaries = [
   'Product-minded engineer who loves building user-centric applications. Strong communication and collaboration skills.',
 ];
 
+// Valid employment type combinations:
+// - Full-time OR Part-time (mutually exclusive)
+// - Internship and Contract can coexist with each other or with full-time/part-time
 const employmentTypeSets: EmploymentType[][] = [
   ['full-time'],
+  ['part-time'],
   ['full-time', 'contract'],
-  ['full-time', 'part-time'],
   ['full-time', 'internship'],
+  ['full-time', 'internship', 'contract'],
+  ['part-time', 'contract'],
+  ['part-time', 'internship'],
+  ['internship'],
   ['contract'],
+  ['internship', 'contract'],
+];
+
+// Salary expectations in USD
+const salaryRanges: SalaryRange[] = [
+  { min: 1000, max: 2000, currency: 'USD' },
+  { min: 1500, max: 2500, currency: 'USD' },
+  { min: 2000, max: 3500, currency: 'USD' },
+  { min: 2500, max: 4000, currency: 'USD' },
+  { min: 3000, max: 5000, currency: 'USD' },
+  { min: 4000, max: 6000, currency: 'USD' },
+  { min: 5000, max: 8000, currency: 'USD' },
+  { min: 6000, max: 10000, currency: 'USD' },
 ];
 
 const marks: ApplicantMark[] = [
@@ -170,6 +191,7 @@ function generateApplicant(id: number): Applicant {
   const summary = objectiveSummaries[id % objectiveSummaries.length];
   const employmentTypes = employmentTypeSets[id % employmentTypeSets.length];
   const mark = marks[id % marks.length];
+  const expectedSalary = salaryRanges[id % salaryRanges.length];
 
   const hasExperience = id % 5 !== 0; // 20% have no experience
   const graduationYear = 2018 + (id % 6);
@@ -226,6 +248,7 @@ function generateApplicant(id: number): Applicant {
     skills,
     employmentTypes,
     mark,
+    expectedSalary,
   };
 }
 

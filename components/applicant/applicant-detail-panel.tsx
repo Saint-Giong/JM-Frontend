@@ -1,5 +1,6 @@
 'use client';
 
+import { DEGREE_LABELS } from '@/lib/constants/education';
 import {
   Avatar,
   AvatarFallback,
@@ -9,20 +10,16 @@ import {
   ScrollArea,
   Separator,
 } from '@saint-giong/bamboo-ui';
-import { AlertTriangle, Clock, Heart, X } from 'lucide-react';
+import { Clock, X } from 'lucide-react';
+import { FavoriteButton } from './favorite-button';
 import type { Applicant, ApplicantMark } from './types';
+import { WarningButton } from './warning-button';
 
 interface ApplicantDetailPanelProps {
   applicant: Applicant | null;
   onClose: () => void;
   onMark?: (id: string, mark: ApplicantMark) => void;
 }
-
-const degreeLabels: Record<string, string> = {
-  bachelor: 'Bachelor',
-  master: 'Master',
-  doctorate: 'Doctorate',
-};
 
 export function ApplicantDetailPanel({
   applicant,
@@ -34,8 +31,8 @@ export function ApplicantDetailPanel({
   const fullName = `${applicant.firstName} ${applicant.lastName}`;
   const initials = `${applicant.firstName[0]}${applicant.lastName[0]}`;
   const educationSummary = applicant.education[0]
-    ? `${degreeLabels[applicant.education[0].degree]} of ${applicant.education[0].field} (${applicant.education[0].institution})`
-    : degreeLabels[applicant.highestDegree];
+    ? `${DEGREE_LABELS[applicant.education[0].degree]} of ${applicant.education[0].field} (${applicant.education[0].institution})`
+    : DEGREE_LABELS[applicant.highestDegree];
 
   return (
     <div className="flex h-full flex-col bg-background">
@@ -69,36 +66,26 @@ export function ApplicantDetailPanel({
 
             {/* Action buttons */}
             <div className="mt-4 flex items-center gap-2">
-              <Button
-                size="sm"
-                variant="ghost"
+              <FavoriteButton
+                isFavorite={applicant.mark === 'favorite'}
                 onClick={() =>
                   onMark?.(
                     applicant.id,
                     applicant.mark === 'favorite' ? null : 'favorite'
                   )
                 }
-              >
-                <Heart
-                  className={`mr-1 h-4 w-4 ${applicant.mark === 'favorite' ? 'fill-current text-red-500' : ''}`}
-                />
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
+              />
+              <WarningButton
+                hasWarning={applicant.mark === 'warning'}
                 onClick={() =>
                   onMark?.(
                     applicant.id,
                     applicant.mark === 'warning' ? null : 'warning'
                   )
                 }
-              >
-                <AlertTriangle
-                  className={`mr-1 h-4 w-4 ${applicant.mark === 'warning' ? 'fill-current text-orange-500' : ''}`}
-                />
-              </Button>
+              />
               <div className="flex-1" />
-              <Button size="sm" variant="outline">
+              <Button size="sm" variant="outline" className="border-black">
                 Inbox
               </Button>
               <Button size="sm">Hire</Button>
@@ -195,7 +182,7 @@ export function ApplicantDetailPanel({
               {applicant.education.map((edu, index) => (
                 <div key={index}>
                   <h4 className="font-medium text-sm">
-                    {degreeLabels[edu.degree]} in {edu.field}
+                    {DEGREE_LABELS[edu.degree]} in {edu.field}
                   </h4>
                   <p className="text-muted-foreground text-sm">
                     {edu.institution}
