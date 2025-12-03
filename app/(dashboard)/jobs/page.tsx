@@ -1,6 +1,6 @@
 'use client';
 
-import { JobCard, type Job } from '@/components/job/job-card';
+import { type Job, JobCard } from '@/components/job/job-card';
 import { useJobList } from '@/hooks/use-job-list';
 import { mockJobs } from '@/mocks';
 import {
@@ -41,7 +41,7 @@ export default function JobsPage() {
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between gap-4 border-border border-b px-6 py-4">
+      <header className="flex h-[4rem] items-center justify-between gap-4 border-border border-b px-6 py-4">
         <h1 className="font-semibold text-2xl">Jobs</h1>
         <div className="flex items-center gap-4">
           <div className="relative w-full md:w-80">
