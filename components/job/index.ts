@@ -1,35 +1,16 @@
-// Zustand store
+// Headless hook - the core of the headless architecture
 export {
-  createJobCardStore,
-  type JobCardStore,
-  type UseJobCardStore,
-} from './job-card-store';
-
-// Headless context and hooks
-export {
-  JobCardProvider,
   useJobCard,
-  useJobCardContext,
-  useJobCardStore,
   type Job,
   type JobStatus,
-} from './job-card-context';
+  type UseJobCardOptions,
+  type JobCardStatus,
+  type JobCardApplicants,
+  type JobCardSalary,
+  type JobCardMeta,
+  type JobCardActions,
+  type JobCardReturn,
+} from './use-job-card';
 
-// Headless composable parts
-export {
-  JobCardRoot,
-  JobCardStatus,
-  JobCardApplicants,
-  JobCardTitle,
-  JobCardDescription,
-  JobCardSkills,
-  JobCardTags,
-  JobCardMeta,
-  JobCardEditButton,
-  JobCardMenuButton,
-  useJobData,
-  defaultStatusConfig,
-} from './job-card-parts';
-
-// Default styled composition
+// Styled UI component - example implementation using the headless hook
 export { JobCard } from './job-card';

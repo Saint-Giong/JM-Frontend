@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { Job, JobStatus } from '@/components/job/job-card-context';
+import type { Job, JobStatus } from '@/components/job';
 
 export type FilterTab = 'all' | 'drafts' | 'published' | 'hiring' | 'archived';
 export type SortOption = 'newest' | 'oldest' | 'salary-high' | 'salary-low';
