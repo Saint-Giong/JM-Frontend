@@ -1,15 +1,10 @@
 import '@saint-giong/bamboo-ui/globals.css';
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Familjen_Grotesk } from 'next/font/google';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const familjenGrotesk = Familjen_Grotesk({
   subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+  variable: '--font-familjen',
 });
 
 export const metadata: Metadata = {
@@ -25,7 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${familjenGrotesk.variable} font-sans antialiased`}
+        style={{ fontFamily: 'var(--font-familjen)' }}
       >
         {children}
       </body>
