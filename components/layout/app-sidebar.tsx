@@ -43,19 +43,19 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const mainNavItems = [
-  { title: 'Dashboard', icon: Home, href: '/dashboard' },
+  { title: 'Dashboard', icon: Home, href: '/dashboard', disabled: true },
   // { title: 'Inbox', icon: Send, href: '/inbox' },
-  { title: 'Notifications', icon: Bell, href: '/notifications', badge: 2 },
+  { title: 'Notifications', icon: Bell, href: '/notifications', badge: 2, disabled: true },
 ];
 
 const recruitmentItems = [
   { title: 'Jobs', icon: Briefcase, href: '/jobs' },
   { title: 'Applicant Search', icon: Search, href: '/applicant-search' },
-  { title: 'Premium feature', icon: Sparkles, href: '/premium' },
+  { title: 'Premium feature', icon: Sparkles, href: '/premium', disabled: true },
 ];
 
 const systemItems = [
-  { title: 'Subscription', icon: CreditCard, href: '/subscription' },
+  { title: 'Subscription', icon: CreditCard, href: '/subscription', disabled: true },
   // { title: 'Settings', icon: Settings, href: '/settings' },
 ];
 
@@ -125,22 +125,39 @@ export function AppSidebar() {
               {mainNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
-                    asChild
+                    asChild={!item.disabled}
                     isActive={pathname === item.href}
-                    tooltip={item.title}
+                    tooltip={item.disabled ? `${item.title} (Coming soon)` : item.title}
+                    disabled={item.disabled}
+                    className={item.disabled ? 'cursor-not-allowed opacity-50' : ''}
                   >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                      {item.badge && (
-                        <Badge
-                          variant="destructive"
-                          className="ml-auto flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
-                        >
-                          {item.badge}
-                        </Badge>
-                      )}
-                    </Link>
+                    {item.disabled ? (
+                      <>
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                        {item.badge && (
+                          <Badge
+                            variant="destructive"
+                            className="ml-auto flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
+                          >
+                            {item.badge}
+                          </Badge>
+                        )}
+                      </>
+                    ) : (
+                      <Link href={item.href}>
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                        {item.badge && (
+                          <Badge
+                            variant="destructive"
+                            className="ml-auto flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
+                          >
+                            {item.badge}
+                          </Badge>
+                        )}
+                      </Link>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -155,14 +172,23 @@ export function AppSidebar() {
               {recruitmentItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
-                    asChild
+                    asChild={!item.disabled}
                     isActive={pathname === item.href}
-                    tooltip={item.title}
+                    tooltip={item.disabled ? `${item.title} (Coming soon)` : item.title}
+                    disabled={item.disabled}
+                    className={item.disabled ? 'cursor-not-allowed opacity-50' : ''}
                   >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
+                    {item.disabled ? (
+                      <>
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </>
+                    ) : (
+                      <Link href={item.href}>
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -177,14 +203,23 @@ export function AppSidebar() {
               {systemItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
-                    asChild
+                    asChild={!item.disabled}
                     isActive={pathname === item.href}
-                    tooltip={item.title}
+                    tooltip={item.disabled ? `${item.title} (Coming soon)` : item.title}
+                    disabled={item.disabled}
+                    className={item.disabled ? 'cursor-not-allowed opacity-50' : ''}
                   >
-                    <Link href={item.href}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
+                    {item.disabled ? (
+                      <>
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </>
+                    ) : (
+                      <Link href={item.href}>
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
