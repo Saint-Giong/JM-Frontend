@@ -49,7 +49,6 @@ export function JobCard({
     applicants,
     meta,
     skills,
-    tags,
     getRootProps,
     getTitleProps,
     getEditButtonProps,
@@ -102,16 +101,11 @@ export function JobCard({
         </p>
       </div>
 
-      {/* Tags: Skills and Tags */}
+      {/* Skills */}
       <div className="flex flex-wrap gap-2">
         {skills.map((skill) => (
           <Badge key={skill} variant="outline" className="font-normal">
             {skill}
-          </Badge>
-        ))}
-        {tags.map((tag) => (
-          <Badge key={tag} variant="outline" className="font-normal">
-            {tag}
           </Badge>
         ))}
       </div>

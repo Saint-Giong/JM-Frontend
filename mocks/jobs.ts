@@ -16,8 +16,7 @@ export const mockJobs: Job[] = [
     salaryMin: 30000,
     salaryMax: 80000,
     currency: 'USD',
-    skills: ['Skill'],
-    tags: ['Tag'],
+    skills: ['Skill', 'Tag'],
   },
   {
     id: '2',
@@ -34,8 +33,7 @@ export const mockJobs: Job[] = [
     salaryMin: 30000,
     salaryMax: 80000,
     currency: 'USD',
-    skills: ['Skill'],
-    tags: ['Tag'],
+    skills: ['Skill', 'Tag'],
   },
   {
     id: '3',
@@ -52,8 +50,7 @@ export const mockJobs: Job[] = [
     salaryMin: 30000,
     salaryMax: 80000,
     currency: 'USD',
-    skills: ['Skill'],
-    tags: ['Tag'],
+    skills: ['Skill', 'Tag'],
   },
   {
     id: '4',
@@ -70,8 +67,7 @@ export const mockJobs: Job[] = [
     salaryMin: 30000,
     salaryMax: 80000,
     currency: 'USD',
-    skills: ['Skill'],
-    tags: ['Tag'],
+    skills: ['Skill', 'Tag'],
   },
   {
     id: '5',
@@ -88,8 +84,7 @@ export const mockJobs: Job[] = [
     salaryMin: 30000,
     salaryMax: 80000,
     currency: 'USD',
-    skills: ['Skill'],
-    tags: ['Tag'],
+    skills: ['Skill', 'Tag'],
   },
   {
     id: '6',
@@ -106,8 +101,7 @@ export const mockJobs: Job[] = [
     salaryMin: 30000,
     salaryMax: 80000,
     currency: 'USD',
-    skills: ['Skill'],
-    tags: ['Tag'],
+    skills: ['Skill', 'Tag'],
   },
   {
     id: '7',
@@ -124,8 +118,7 @@ export const mockJobs: Job[] = [
     salaryMin: 30000,
     salaryMax: 80000,
     currency: 'USD',
-    skills: ['Skill'],
-    tags: ['Tag'],
+    skills: ['Skill', 'Tag'],
   },
   {
     id: '8',
@@ -142,7 +135,6 @@ export const mockJobs: Job[] = [
     salaryMin: 30000,
     salaryMax: 80000,
     currency: 'USD',
-    skills: ['Skill'],
-    tags: ['Tag'],
+    skills: ['Skill', 'Tag'],
   },
 ];

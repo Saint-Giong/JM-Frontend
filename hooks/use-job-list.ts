@@ -72,8 +72,7 @@ export function useJobList(jobs: Job[], options: UseJobListOptions = {}) {
           job.title.toLowerCase().includes(query) ||
           job.description.toLowerCase().includes(query) ||
           job.location.toLowerCase().includes(query) ||
-          job.skills.some((s) => s.toLowerCase().includes(query)) ||
-          job.tags.some((t) => t.toLowerCase().includes(query))
+          job.skills.some((s) => s.toLowerCase().includes(query))
       );
     }
 

@@ -17,7 +17,6 @@ export interface Job {
   salaryMax: number;
   currency: string;
   skills: string[];
-  tags: string[];
 }
 
 export interface UseJobCardOptions {
@@ -69,7 +68,6 @@ export interface JobCardReturn {
   applicants: JobCardApplicants;
   meta: JobCardMeta;
   skills: string[];
-  tags: string[];
 
   // Actions
   actions: JobCardActions;
@@ -218,7 +216,6 @@ export function useJobCard(options: UseJobCardOptions): JobCardReturn {
     applicants,
     meta,
     skills: job.skills,
-    tags: job.tags,
     actions,
     getRootProps,
     getTitleProps,
