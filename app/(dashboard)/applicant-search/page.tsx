@@ -11,6 +11,9 @@ import {
   Badge,
   Button,
   Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   ScrollArea,
   Select,
   SelectContent,
@@ -25,6 +28,9 @@ export default function ApplicantSearchPage() {
   const [jobTitleSearch, setJobTitleSearch] = useState('');
   const [skillInput, setSkillInput] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageInputValue, setPageInputValue] = useState('');
+  const [pagePopoverOpen, setPagePopoverOpen] = useState(false);
+  const [pageInputError, setPageInputError] = useState(false);
   const pageSize = 10;
 
   const {
@@ -306,10 +312,92 @@ export default function ApplicantSearchPage() {
                 </svg>
               </Button>
 
-              {/* Page info */}
-              <span className="ml-4 text-muted-foreground text-sm">
-                {currentPage} / {totalPages}
-              </span>
+              {/* Page popover */}
+              <Popover
+                open={pagePopoverOpen}
+                onOpenChange={(open) => {
+                  setPagePopoverOpen(open);
+                  if (!open) setPageInputError(false);
+                }}
+              >
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="ml-2 tabular-nums"
+                    onClick={() => {
+                      setPageInputValue(String(currentPage));
+                      setPageInputError(false);
+                    }}
+                  >
+                    {currentPage} / {totalPages}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-3" align="center">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">Go to page</p>
+                    <div className="flex gap-2">
+                      <Input
+                        type="number"
+                        min={1}
+                        max={totalPages}
+                        value={pageInputValue}
+                        onChange={(e) => {
+                          setPageInputValue(e.target.value);
+                          setPageInputError(false);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            const page = parseInt(pageInputValue, 10);
+                            if (page >= 1 && page <= totalPages) {
+                              setCurrentPage(page);
+                              setPagePopoverOpen(false);
+                              setPageInputError(false);
+                            } else {
+                              setPageInputError(true);
+                              setTimeout(() => {
+                                setPageInputError(false);
+                                setPageInputValue(String(currentPage));
+                              }, 500);
+                            }
+                          }
+                        }}
+                        className={`h-8 transition-all ${
+                          pageInputError
+                            ? 'border-red-500 text-red-500 focus-visible:ring-red-500 animate-[shake_0.5s_ease-in-out]'
+                            : ''
+                        }`}
+                        autoFocus
+                      />
+                      <Button
+                        size="sm"
+                        className="h-8"
+                        onClick={() => {
+                          const page = parseInt(pageInputValue, 10);
+                          if (page >= 1 && page <= totalPages) {
+                            setCurrentPage(page);
+                            setPagePopoverOpen(false);
+                            setPageInputError(false);
+                          } else {
+                            setPageInputError(true);
+                            setTimeout(() => {
+                              setPageInputError(false);
+                              setPageInputValue(String(currentPage));
+                            }, 500);
+                          }
+                        }}
+                      >
+                        Go
+                      </Button>
+                    </div>
+                    {pageInputError && (
+                      <p className="text-xs text-red-500">
+                        Enter 1-{totalPages}
+                      </p>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           )}
         </main>

@@ -1,4 +1,5 @@
 import '@saint-giong/bamboo-ui/globals.css';
+import './globals.css';
 import type { Metadata } from 'next';
 import { Familjen_Grotesk } from 'next/font/google';
 
