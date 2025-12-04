@@ -7,6 +7,7 @@ import {
     FormActions,
     FormSubmitButton,
 } from '@/components/common/Form';
+import { CountryPhoneRow } from '@/components/common/CountryPhoneRow';
 import { GoogleSSOButton } from '@/app/(auth)/_components/SSOButton';
 import { useSignupForm } from './useSignupForm';
 import { X } from 'lucide-react';
@@ -71,7 +72,15 @@ export default function SignupForm() {
                 </div>
 
                 {/* Country and Phone */}
-                {/* TODO: wait for combobox in bamboo-ui */}
+                <CountryPhoneRow
+                    countryValue={form.values.country}
+                    dialCode={form.values.dialCode ?? ''}
+                    phoneNumber={form.values.phoneNumber ?? ''}
+                    phoneError={form.errors.phoneNumber}
+                    onCountryNameChange={(name) => form.setValue('country', name)}
+                    onDialCodeChange={(code) => form.setValue('dialCode', code)}
+                    onPhoneNumberChange={(num) => form.setValue('phoneNumber', num)}
+                />
 
                 {/* City and Address */}
                 <div className="flex gap-4">

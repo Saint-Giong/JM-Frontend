@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { countries } from '@/mocks/countries';
+
+const validDialCodes = countries.map((c) => c.dialCode);
 
 export const signupSchema = z.object({
     companyName: z.string().optional(),
@@ -10,8 +13,24 @@ export const signupSchema = z.object({
         .regex(/[!@#$%^&*(),.?":{}|<>]/, 'At least 1 special character')
         .regex(/[A-Z]/, 'At least 1 capitalized letter'),
     country: z.string().min(1, 'Country is required'),
-    phoneCode: z.string().optional(),
-    phoneNumber: z.string().optional(),
+    dialCode: z
+        .string()
+        .optional()
+        .refine(
+            (val) => !val || validDialCodes.includes(val),
+            'Invalid international dial code'
+        ),
+    phoneNumber: z
+        .string()
+        .optional()
+        .refine(
+            (val) => !val || /^\d+$/.test(val),
+            'Phone number must contain only digits'
+        )
+        .refine(
+            (val) => !val || val.length <= 13,
+            'Phone number must not exceed 13 digits'
+        ),
     city: z.string().optional(),
     address: z.string().optional(),
 });

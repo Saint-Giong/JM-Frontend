@@ -177,10 +177,7 @@ export function FormLink({ href, children, className = '' }: FormLinkProps) {
     );
 }
 
-// ============================================================================
 // Form Container
-// ============================================================================
-
 interface FormProps {
     children: ReactNode;
     onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
