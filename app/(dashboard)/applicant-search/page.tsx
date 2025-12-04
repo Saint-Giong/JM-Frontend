@@ -35,16 +35,6 @@ export default function ApplicantSearchPage() {
     currentPage * pageSize
   );
 
-  const handleAddSkill = (skill: string) => {
-    if (skill && !filters.skills.includes(skill)) {
-      setSkills([...filters.skills, skill]);
-    }
-  };
-
-  const handleRemoveSkill = (skill: string) => {
-    setSkills(filters.skills.filter((s) => s !== skill));
-  };
-
   const handleSearch = () => {
     setFullTextSearch(jobTitleSearch);
     setCurrentPage(1);
@@ -58,8 +48,7 @@ export default function ApplicantSearchPage() {
         jobTitleSearch={jobTitleSearch}
         setJobTitleSearch={setJobTitleSearch}
         skills={filters.skills}
-        onAddSkill={handleAddSkill}
-        onRemoveSkill={handleRemoveSkill}
+        onSkillsChange={setSkills}
         onSearch={handleSearch}
       />
 

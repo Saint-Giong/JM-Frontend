@@ -61,12 +61,6 @@ export function ApplicantSearchFilters({
     onEmploymentTypesChange(newTypes);
   };
 
-  const handleAddSkill = (skill: string) => {
-    if (skill && !filters.skills.includes(skill)) {
-      onSkillsChange([...filters.skills, skill]);
-    }
-  };
-
   const handleRemoveSkill = (skill: string) => {
     onSkillsChange(filters.skills.filter((s) => s !== skill));
   };
@@ -227,10 +221,7 @@ export function ApplicantSearchFilters({
         <Label className="text-sm font-medium">
           Technical Skills (OR logic)
         </Label>
-        <SkillCombobox
-          selectedSkills={filters.skills}
-          onSelectSkill={handleAddSkill}
-        />
+        <SkillCombobox value={filters.skills} onValueChange={onSkillsChange} />
 
         {/* Selected Skills */}
         {filters.skills.length > 0 && (
@@ -261,8 +252,8 @@ export function ApplicantSearchFilters({
                 className="cursor-pointer text-xs"
                 onClick={() =>
                   filters.skills.includes(skill)
-                    ? handleRemoveSkill(skill)
-                    : handleAddSkill(skill)
+                    ? onSkillsChange(filters.skills.filter((s) => s !== skill))
+                    : onSkillsChange([...filters.skills, skill])
                 }
               >
                 {skill}

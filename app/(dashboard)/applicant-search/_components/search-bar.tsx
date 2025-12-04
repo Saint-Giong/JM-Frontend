@@ -8,8 +8,7 @@ interface SearchBarProps {
   jobTitleSearch: string;
   setJobTitleSearch: (value: string) => void;
   skills: string[];
-  onAddSkill: (skill: string) => void;
-  onRemoveSkill: (skill: string) => void;
+  onSkillsChange: (skills: string[]) => void;
   onSearch: () => void;
 }
 
@@ -17,8 +16,7 @@ export function SearchBar({
   jobTitleSearch,
   setJobTitleSearch,
   skills,
-  onAddSkill,
-  onRemoveSkill,
+  onSkillsChange,
   onSearch,
 }: SearchBarProps) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -52,8 +50,8 @@ export function SearchBar({
         <div className="flex flex-1 items-center gap-2">
           <div className="w-48">
             <SkillCombobox
-              selectedSkills={skills}
-              onSelectSkill={onAddSkill}
+              value={skills}
+              onValueChange={onSkillsChange}
               placeholder="Search..."
             />
           </div>
@@ -65,7 +63,9 @@ export function SearchBar({
                 {skill}
                 <button
                   type="button"
-                  onClick={() => onRemoveSkill(skill)}
+                  onClick={() =>
+                    onSkillsChange(skills.filter((s) => s !== skill))
+                  }
                   className="ml-1 hover:text-destructive"
                 >
                   <X className="h-3 w-3" />

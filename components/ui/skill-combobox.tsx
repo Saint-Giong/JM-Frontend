@@ -2,75 +2,47 @@
 
 import { COMMON_SKILLS } from '@/lib/constants/skills';
 import {
-  Button,
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxTrigger,
 } from '@saint-giong/bamboo-ui';
-import { ChevronsUpDown } from 'lucide-react';
-import { useState } from 'react';
 
 interface SkillComboboxProps {
-  selectedSkills: string[];
-  onSelectSkill: (skill: string) => void;
+  value: string[];
+  onValueChange: (value: string[]) => void;
   placeholder?: string;
 }
 
 export function SkillCombobox({
-  selectedSkills,
-  onSelectSkill,
+  value,
+  onValueChange,
   placeholder = 'Search skills...',
 }: SkillComboboxProps) {
-  const [open, setOpen] = useState(false);
-
-  const availableSkills = COMMON_SKILLS.filter(
-    (skill) => !selectedSkills.includes(skill)
-  );
-
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between font-normal"
-        >
-          {placeholder}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-[--radix-popover-trigger-width] p-0"
-        align="start"
-      >
-        <Command>
-          <CommandInput placeholder="Search skills..." className="h-9" />
-          <CommandList>
-            <CommandEmpty>No skill found.</CommandEmpty>
-            <CommandGroup>
-              {availableSkills.map((skill) => (
-                <CommandItem
-                  key={skill}
-                  value={skill}
-                  onSelect={(currentValue) => {
-                    onSelectSkill(currentValue);
-                    setOpen(false);
-                  }}
-                >
-                  {skill}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <Combobox multiple value={value} onValueChange={onValueChange}>
+      <ComboboxTrigger
+        className="w-full"
+        placeholder={placeholder}
+        displayValue={(v) => COMMON_SKILLS.find((s) => s === v)}
+      />
+      <ComboboxContent className="w-[--radix-popover-trigger-width]">
+        <ComboboxInput placeholder="Search skills..." />
+        <ComboboxList>
+          <ComboboxEmpty>No skill found.</ComboboxEmpty>
+          <ComboboxGroup>
+            {COMMON_SKILLS.map((skill) => (
+              <ComboboxItem key={skill} value={skill}>
+                {skill}
+              </ComboboxItem>
+            ))}
+          </ComboboxGroup>
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
   );
 }
