@@ -1,11 +1,5 @@
-'use client';
-
-import { Button } from '@saint-giong/bamboo-ui';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <div className="h-screen w-screen flex items-center justify-center text-center">
-      <Button>Hello, Bamboo UI!</Button>
-    </div>
-  );
+  redirect('/jobs');
 }
