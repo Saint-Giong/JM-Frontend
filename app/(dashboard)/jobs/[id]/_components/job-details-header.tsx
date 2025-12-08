@@ -12,26 +12,26 @@ interface JobDetailsHeaderProps {
 export function JobDetailsHeader({ job }: JobDetailsHeaderProps) {
   return (
     <header className="flex items-center justify-between border-b px-6 py-4">
-      <div className="flex items-center gap-1">
-        <Link href="/jobs" className="-translate-y-0.5 hover:underline">
+      <div>
+        <Link href="/jobs" className="hover:underline">
           <span className="text-muted-foreground">Jobs</span>
         </Link>
-        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-        <span className="-translate-y-0.5 font-medium">{job.title}</span>
+        <ChevronRight className="mx-3 inline size-4 text-muted-foreground" />
+        <span className="font-medium">{job.title}</span>
       </div>
 
-      <div className="flex items-center gap-2">
-        <Button variant="outline" className="gap-2">
-          <Eye className="h-4 w-4" />
+      <div className="flex gap-2">
+        <Button variant="outline">
+          <Eye className="size-4" />
           View as Applicants
         </Button>
-        <Button variant="outline" className="gap-2">
-          <Share2 className="h-4 w-4" />
+        <Button variant="outline">
+          <Share2 className="size-4" />
           Share
         </Button>
         <Link href={`/jobs/${job.id}/edit`}>
-          <Button className="gap-2">
-            <Pencil className="h-4 w-4" />
+          <Button>
+            <Pencil className="size-4" />
             Edit
           </Button>
         </Link>
