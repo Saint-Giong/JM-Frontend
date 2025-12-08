@@ -8,21 +8,11 @@ function Breadcrumb({ className, ...props }: ComponentProps<'nav'>) {
 }
 
 function BreadcrumbList({ className, ...props }: ComponentProps<'ol'>) {
-  return (
-    <ol
-      className={cn('flex gap-2', className)}
-      {...props}
-    />
-  );
+  return <ol className={cn('flex gap-2', className)} {...props} />;
 }
 
 function BreadcrumbItem({ className, ...props }: ComponentProps<'li'>) {
-  return (
-    <li
-      className={cn('inline-flex', className)}
-      {...props}
-    />
-  );
+  return <li className={cn('inline-flex', className)} {...props} />;
 }
 
 function BreadcrumbLink({
@@ -69,4 +59,3 @@ export {
   BreadcrumbPage,
   BreadcrumbSeparator,
 };
-

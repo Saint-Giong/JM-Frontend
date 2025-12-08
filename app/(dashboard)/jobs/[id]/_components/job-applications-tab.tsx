@@ -53,11 +53,7 @@ const SORT_OPTIONS = [
   { value: 'oldest', label: 'Oldest first' },
 ];
 
-export function JobApplicationsTab({
-  jobId,
-  applications,
-  counts: initialCounts,
-}: JobApplicationsTabProps) {
+export function JobApplicationsTab({ applications }: JobApplicationsTabProps) {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');

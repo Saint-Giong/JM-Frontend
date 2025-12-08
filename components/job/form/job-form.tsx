@@ -1,10 +1,6 @@
 'use client';
 
 import { SkillCombobox } from '@/components/ui/skill-combobox';
-import type { JobFormData } from '../types';
-import { EmploymentTypeSelector } from './employment-type-selector';
-import { SalaryFormatSelector } from './salary-format-selector';
-import { useJobForm, type UseJobFormOptions } from './use-job-form';
 import {
   Badge,
   Button,
@@ -14,6 +10,10 @@ import {
   Textarea,
 } from '@saint-giong/bamboo-ui';
 import { CalendarIcon, Loader2, X } from 'lucide-react';
+import type { JobFormData } from '../types';
+import { EmploymentTypeSelector } from './employment-type-selector';
+import { SalaryFormatSelector } from './salary-format-selector';
+import { useJobForm } from './use-job-form';
 
 interface JobFormProps {
   initialData?: Partial<JobFormData>;
@@ -62,7 +62,7 @@ export function JobForm({
     <form onSubmit={handleFormSubmit} className="space-y-6">
       {/* Title */}
       <div className="space-y-2">
-        <Label htmlFor="title" className="text-sm font-medium">
+        <Label htmlFor="title" className="font-medium text-sm">
           Title <span className="text-destructive">*</span>
         </Label>
         <Input
@@ -73,13 +73,13 @@ export function JobForm({
           className={errors.title ? 'border-destructive' : ''}
         />
         {errors.title && (
-          <p className="text-sm text-destructive">{errors.title}</p>
+          <p className="text-destructive text-sm">{errors.title}</p>
         )}
       </div>
 
       {/* Description */}
       <div className="space-y-2">
-        <Label htmlFor="description" className="text-sm font-medium">
+        <Label htmlFor="description" className="font-medium text-sm">
           Description <span className="text-destructive">*</span>
         </Label>
         <Textarea
@@ -90,7 +90,7 @@ export function JobForm({
           className={`min-h-[200px] ${errors.description ? 'border-destructive' : ''}`}
         />
         {errors.description && (
-          <p className="text-sm text-destructive">{errors.description}</p>
+          <p className="text-destructive text-sm">{errors.description}</p>
         )}
       </div>
 
@@ -116,7 +116,7 @@ export function JobForm({
 
       {/* Location */}
       <div className="space-y-2">
-        <Label htmlFor="location" className="text-sm font-medium">
+        <Label htmlFor="location" className="font-medium text-sm">
           Location <span className="text-destructive">*</span>
         </Label>
         <Input
@@ -127,7 +127,7 @@ export function JobForm({
           className={errors.location ? 'border-destructive' : ''}
         />
         {errors.location && (
-          <p className="text-sm text-destructive">{errors.location}</p>
+          <p className="text-destructive text-sm">{errors.location}</p>
         )}
       </div>
 
@@ -135,7 +135,7 @@ export function JobForm({
 
       {/* Skills */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Technical Skills</Label>
+        <Label className="font-medium text-sm">Technical Skills</Label>
         <SkillCombobox value={formData.skills} onValueChange={setSkills} />
 
         {formData.skills.length > 0 && (
@@ -160,7 +160,7 @@ export function JobForm({
 
       {/* Expiry Date */}
       <div className="space-y-2">
-        <Label htmlFor="expiryDate" className="text-sm font-medium">
+        <Label htmlFor="expiryDate" className="font-medium text-sm">
           Expiry Date (Optional)
         </Label>
         <div className="relative">
@@ -171,9 +171,9 @@ export function JobForm({
             onChange={(e) => setExpiryDate(e.target.value || undefined)}
             className="pr-10"
           />
-          <CalendarIcon className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <CalendarIcon className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 h-4 w-4 text-muted-foreground" />
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-muted-foreground text-xs">
           Leave empty for no expiry date
         </p>
       </div>

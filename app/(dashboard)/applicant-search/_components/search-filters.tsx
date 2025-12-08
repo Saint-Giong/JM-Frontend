@@ -30,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@saint-giong/bamboo-ui';
-import { Filter, Search, SlidersHorizontal, X } from 'lucide-react';
+import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface SearchFiltersProps {

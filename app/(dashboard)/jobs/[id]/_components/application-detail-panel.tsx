@@ -1,8 +1,8 @@
 'use client';
 
-import type { ApplicationStatus, JobApplication } from '@/components/job/types';
 import { FavoriteButton } from '@/components/applicant/favorite-button';
 import { WarningButton } from '@/components/applicant/warning-button';
+import type { ApplicationStatus, JobApplication } from '@/components/job/types';
 import { DEGREE_LABELS } from '@/lib/constants/education';
 import {
   Avatar,
@@ -13,7 +13,7 @@ import {
   ScrollArea,
   Separator,
 } from '@saint-giong/bamboo-ui';
-import { ChevronRight, Clock, X } from 'lucide-react';
+import { ChevronRight, Clock } from 'lucide-react';
 
 interface ApplicationDetailPanelProps {
   application: JobApplication | null;

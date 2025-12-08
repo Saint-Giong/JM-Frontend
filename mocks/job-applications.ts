@@ -2,9 +2,7 @@ import type {
   ApplicationStatus,
   JobApplication,
   JobPost,
-  JobSalary,
 } from '@/components/job/types';
-import type { EmploymentType } from '@/components/applicant/types';
 import { mockApplicants } from './applicants';
 
 // Cover letter templates
