@@ -1,5 +1,6 @@
 'use client';
 
+import type { ApplicationStatus, JobApplication } from '@/components/job/types';
 import { DEGREE_LABELS } from '@/lib/constants/education';
 import {
   Avatar,
@@ -15,46 +16,61 @@ import {
   DropdownMenuTrigger,
 } from '@saint-giong/bamboo-ui';
 import {
-  AlertTriangle,
+  Archive,
   Clock,
   GraduationCap,
   Mail,
   MapPin,
   MoreVertical,
   Star,
+  UserCheck,
 } from 'lucide-react';
-import type { Applicant, ApplicantMark } from './types';
 
-interface ApplicantCardProps {
-  applicant: Applicant;
+interface ApplicationCardProps {
+  application: JobApplication;
   onClick?: () => void;
-  onMark?: (mark: ApplicantMark) => void;
+  onStatusChange?: (status: ApplicationStatus) => void;
   isSelected?: boolean;
 }
 
-export function ApplicantCard({
-  applicant,
+const STATUS_BADGE_STYLES: Record<ApplicationStatus, string> = {
+  pending: 'border-blue-200 bg-blue-50 text-blue-700',
+  favorite: 'border-amber-200 bg-amber-50 text-amber-700',
+  archived: 'border-gray-200 bg-gray-50 text-gray-700',
+  hiring: 'border-green-200 bg-green-50 text-green-700',
+};
+
+const STATUS_LABELS: Record<ApplicationStatus, string> = {
+  pending: 'Pending',
+  favorite: 'Favorited',
+  archived: 'Archived',
+  hiring: 'Hiring',
+};
+
+export function ApplicationCard({
+  application,
   onClick,
-  onMark,
+  onStatusChange,
   isSelected,
-}: ApplicantCardProps) {
+}: ApplicationCardProps) {
+  const { applicant, status, submittedAt } = application;
   const initials = `${applicant.firstName[0]}${applicant.lastName[0]}`;
   const fullName = `${applicant.firstName} ${applicant.lastName}`;
   const educationSummary = applicant.education[0]
-    ? `${DEGREE_LABELS[applicant.education[0].degree]} of ${applicant.education[0].field} (${applicant.education[0].institution})`
+    ? `${DEGREE_LABELS[applicant.education[0].degree]} (${applicant.education[0].field})`
     : DEGREE_LABELS[applicant.highestDegree];
 
   return (
     <Card
-      className={`group cursor-pointer overflow-hidden transition-all hover:shadow-md ${
+      className={`group cursor-pointer transition-all hover:shadow-md ${
         isSelected ? 'ring-2 ring-primary' : ''
       }`}
       onClick={onClick}
     >
-      <div className="p-3 sm:p-4">
-        <div className="flex items-start gap-3 sm:gap-4">
+      <div className="p-4">
+        <div className="flex items-start gap-4">
           {/* Avatar */}
-          <Avatar className="h-10 w-10 flex-shrink-0 sm:h-12 sm:w-12">
+          <Avatar className="h-12 w-12 flex-shrink-0">
             <AvatarImage src={applicant.avatarUrl} alt={fullName} />
             <AvatarFallback className="bg-amber-100 text-amber-800">
               {initials}
@@ -67,22 +83,12 @@ export function ApplicantCard({
             <div className="mb-2 flex items-start justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="font-semibold text-base">{fullName}</h3>
-                {applicant.mark === 'favorite' && (
-                  <Badge
-                    variant="outline"
-                    className="border-amber-200 bg-amber-50 text-amber-700 text-xs"
-                  >
-                    Favorited
-                  </Badge>
-                )}
-                {applicant.mark === 'warning' && (
-                  <Badge
-                    variant="outline"
-                    className="border-orange-200 bg-orange-50 text-orange-700 text-xs"
-                  >
-                    Warning
-                  </Badge>
-                )}
+                <Badge
+                  variant="outline"
+                  className={`text-xs ${STATUS_BADGE_STYLES[status]}`}
+                >
+                  {STATUS_LABELS[status]}
+                </Badge>
               </div>
 
               {/* Menu */}
@@ -103,21 +109,26 @@ export function ApplicantCard({
                   align="end"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <DropdownMenuItem onClick={() => onMark?.('favorite')}>
+                  <DropdownMenuItem
+                    onClick={() => onStatusChange?.('favorite')}
+                  >
                     <Star className="mr-2 h-4 w-4" />
-                    {applicant.mark === 'favorite'
-                      ? 'Remove favorite'
-                      : 'Mark as favorite'}
+                    {status === 'favorite'
+                      ? 'Remove from favorites'
+                      : 'Add to favorites'}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onMark?.('warning')}>
-                    <AlertTriangle className="mr-2 h-4 w-4" />
-                    {applicant.mark === 'warning'
-                      ? 'Remove warning'
-                      : 'Add warning'}
+                  <DropdownMenuItem onClick={() => onStatusChange?.('hiring')}>
+                    <UserCheck className="mr-2 h-4 w-4" />
+                    {status === 'hiring'
+                      ? 'Remove from hiring'
+                      : 'Move to hiring'}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => onMark?.(null)}>
-                    Clear mark
+                  <DropdownMenuItem
+                    onClick={() => onStatusChange?.('archived')}
+                  >
+                    <Archive className="mr-2 h-4 w-4" />
+                    {status === 'archived' ? 'Unarchive' : 'Archive'}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -126,27 +137,25 @@ export function ApplicantCard({
             {/* Info Row */}
             <div className="mb-2 flex flex-wrap gap-x-4 gap-y-1 text-muted-foreground text-sm">
               <span className="flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5 flex-shrink-0" />
-                An hour ago
+                <Clock className="h-3.5 w-3.5" />
+                {submittedAt}
               </span>
               <span className="flex items-center gap-1">
-                <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-                <span className="truncate">
-                  {applicant.city}, {applicant.country}
-                </span>
+                <MapPin className="h-3.5 w-3.5" />
+                {applicant.city}, {applicant.country}
               </span>
-              <span className="hidden items-center gap-1 sm:flex">
+              <span className="flex items-center gap-1 truncate">
                 <GraduationCap className="h-3.5 w-3.5 flex-shrink-0" />
                 <span className="truncate">{educationSummary}</span>
               </span>
-              <span className="hidden items-center gap-1 sm:flex">
-                <Mail className="h-3.5 w-3.5 flex-shrink-0" />
-                <span className="truncate">{applicant.email}</span>
+              <span className="flex items-center gap-1">
+                <Mail className="h-3.5 w-3.5" />
+                {applicant.email}
               </span>
             </div>
 
             {/* Skills Row - Responsive */}
-            <div className="mb-3 flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1.5">
               {/* Mobile: 2 skills, Tablet: 3 skills, Desktop: 4+ skills */}
               {applicant.skills.slice(0, 2).map((skill) => (
                 <Badge
@@ -202,10 +211,12 @@ export function ApplicantCard({
               )}
             </div>
 
-            {/* Description */}
-            <p className="line-clamp-2 text-muted-foreground text-sm">
-              {applicant.objectiveSummary}
-            </p>
+            {/* Cover Letter Preview */}
+            {application.coverLetter && (
+              <p className="mt-3 line-clamp-2 text-muted-foreground text-sm">
+                {application.coverLetter}
+              </p>
+            )}
           </div>
         </div>
       </div>

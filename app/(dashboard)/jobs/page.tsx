@@ -15,8 +15,11 @@ import {
   ToggleGroupItem,
 } from '@saint-giong/bamboo-ui';
 import { Grid, List, Plus, Search } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function JobsPage() {
+  const router = useRouter();
   const {
     jobs,
     filterTabs,
@@ -31,11 +34,15 @@ export default function JobsPage() {
   } = useJobList(mockJobs);
 
   const handleEdit = (job: Job) => {
-    console.log('Edit job:', job.id);
+    router.push(`/jobs/${job.id}/edit`);
   };
 
   const handleMenuAction = (action: string, job: Job) => {
     console.log('Menu action:', action, 'for job:', job.id);
+  };
+
+  const handleJobClick = (job: Job) => {
+    router.push(`/jobs/${job.id}`);
   };
 
   return (
@@ -53,10 +60,12 @@ export default function JobsPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Post a Job
-          </Button>
+          <Link href="/jobs/new">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              Post a Job
+            </Button>
+          </Link>
         </div>
       </header>
 
@@ -129,6 +138,7 @@ export default function JobsPage() {
               job={job}
               onEdit={handleEdit}
               onMenuAction={handleMenuAction}
+              onClick={() => handleJobClick(job)}
             />
           ))}
         </div>

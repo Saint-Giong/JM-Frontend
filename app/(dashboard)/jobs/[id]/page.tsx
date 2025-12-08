@@ -1,0 +1,103 @@
+'use client';
+
+import {
+  getApplicationCountsByStatus,
+  getApplicationsForJob,
+  getJobPostById,
+} from '@/mocks';
+import {
+  Button,
+  Separator,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@saint-giong/bamboo-ui';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { JobDetailsContent, JobDetailsHeader } from './_components';
+import { JobApplicationsTab } from './_components/job-applications-tab';
+
+export default function JobDetailsPage() {
+  const params = useParams();
+  const jobId = params.id as string;
+  const [activeTab, setActiveTab] = useState('job-post');
+
+  // Get job data
+  const jobPost = useMemo(() => getJobPostById(jobId), [jobId]);
+  const applications = useMemo(() => getApplicationsForJob(jobId), [jobId]);
+  const applicationCounts = useMemo(
+    () => getApplicationCountsByStatus(jobId),
+    [jobId]
+  );
+
+  if (!jobPost) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <h1 className="font-semibold text-2xl">Job not found</h1>
+        <p className="text-muted-foreground">
+          The job post you&apos;re looking for doesn&apos;t exist.
+        </p>
+        <Link href="/jobs">
+          <Button>Back to Jobs</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const hasNewApplicants = jobPost.hasNewApplicants;
+
+  return (
+    <div className="flex h-[calc(100vh-4rem)] flex-col overflow-hidden md:h-screen">
+      <JobDetailsHeader job={jobPost} />
+
+      <Tabs
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="flex flex-1 flex-col overflow-hidden"
+      >
+        <div className="border-b">
+          <TabsList className="h-12 w-full justify-start bg-transparent p-0">
+            <TabsTrigger
+              value="job-post"
+              className="w-full rounded-none border-0"
+            >
+              JOB POST
+            </TabsTrigger>
+            <Separator orientation="vertical" />
+            <TabsTrigger
+              value="applicants"
+              className="w-full rounded-none border-0"
+            >
+              <span className="flex items-center gap-2">
+                APPLICANTS ({applicationCounts.all})
+                {hasNewApplicants && (
+                  <span className="h-2 w-2 rounded-full bg-red-500" />
+                )}
+              </span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        <TabsContent
+          value="job-post"
+          className="flex-1 overflow-y-auto data-[state=inactive]:hidden"
+        >
+          <JobDetailsContent job={jobPost} />
+        </TabsContent>
+
+        <TabsContent
+          value="applicants"
+          className="flex-1 overflow-hidden data-[state=inactive]:hidden"
+        >
+          <JobApplicationsTab
+            jobId={jobId}
+            applications={applications}
+            counts={applicationCounts}
+          />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}

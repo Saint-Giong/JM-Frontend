@@ -1,5 +1,8 @@
 'use client';
 
+import type { ApplicationStatus, JobApplication } from '@/components/job/types';
+import { FavoriteButton } from '@/components/applicant/favorite-button';
+import { WarningButton } from '@/components/applicant/warning-button';
 import { DEGREE_LABELS } from '@/lib/constants/education';
 import {
   Avatar,
@@ -10,36 +13,62 @@ import {
   ScrollArea,
   Separator,
 } from '@saint-giong/bamboo-ui';
-import { Clock, X } from 'lucide-react';
-import { FavoriteButton } from './favorite-button';
-import type { Applicant, ApplicantMark } from './types';
-import { WarningButton } from './warning-button';
+import { ChevronRight, Clock, X } from 'lucide-react';
 
-interface ApplicantDetailPanelProps {
-  applicant: Applicant | null;
+interface ApplicationDetailPanelProps {
+  application: JobApplication | null;
   onClose: () => void;
-  onMark?: (id: string, mark: ApplicantMark) => void;
+  onStatusChange?: (applicationId: string, status: ApplicationStatus) => void;
   hideCloseButton?: boolean;
 }
 
-export function ApplicantDetailPanel({
-  applicant,
-  onClose,
-  onMark,
-  hideCloseButton,
-}: ApplicantDetailPanelProps) {
-  if (!applicant) return null;
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex gap-4">
+      <span className="w-32 flex-shrink-0 text-muted-foreground text-sm">
+        {label}
+      </span>
+      <span className="text-sm">{value}</span>
+    </div>
+  );
+}
 
+export function ApplicationDetailPanel({
+  application,
+  onClose,
+  onStatusChange,
+  hideCloseButton,
+}: ApplicationDetailPanelProps) {
+  if (!application) return null;
+
+  const { applicant, status, submittedAt, coverLetter } = application;
   const fullName = `${applicant.firstName} ${applicant.lastName}`;
   const initials = `${applicant.firstName[0]}${applicant.lastName[0]}`;
   const educationSummary = applicant.education[0]
-    ? `${DEGREE_LABELS[applicant.education[0].degree]} of ${applicant.education[0].field} (${applicant.education[0].institution})`
+    ? `${DEGREE_LABELS[applicant.education[0].degree]} (${applicant.education[0].field})`
     : DEGREE_LABELS[applicant.highestDegree];
+
+  const isFavorite = status === 'favorite';
+  const isHiring = status === 'hiring';
 
   return (
     <div className="flex h-full flex-col bg-background">
       {/* Header */}
       <div className="p-6 pb-4">
+        {/* Collapse button */}
+        {!hideCloseButton && (
+          <div className="mb-4 flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              className="h-8 w-8"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+
         <div className="flex items-start gap-4">
           <Avatar className="h-16 w-16 flex-shrink-0">
             <AvatarImage src={applicant.avatarUrl} alt={fullName} />
@@ -53,46 +82,39 @@ export function ApplicantDetailPanel({
                 <h2 className="font-semibold text-xl">{fullName}</h2>
                 <p className="mt-1 flex items-center gap-1 text-muted-foreground text-sm">
                   <Clock className="h-3.5 w-3.5" />
-                  An hour ago
+                  {submittedAt}
                 </p>
               </div>
-              {!hideCloseButton && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={onClose}
-                  className="flex-shrink-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
             </div>
 
             {/* Action buttons */}
             <div className="mt-4 flex items-center gap-2">
               <FavoriteButton
-                isFavorite={applicant.mark === 'favorite'}
+                isFavorite={isFavorite}
                 onClick={() =>
-                  onMark?.(
-                    applicant.id,
-                    applicant.mark === 'favorite' ? null : 'favorite'
+                  onStatusChange?.(
+                    application.id,
+                    isFavorite ? 'pending' : 'favorite'
                   )
                 }
               />
-              <WarningButton
-                hasWarning={applicant.mark === 'warning'}
-                onClick={() =>
-                  onMark?.(
-                    applicant.id,
-                    applicant.mark === 'warning' ? null : 'warning'
-                  )
-                }
-              />
+              <WarningButton hasWarning={false} onClick={() => {}} />
               <div className="flex-1" />
               <Button size="sm" variant="outline" className="border-black">
                 Inbox
               </Button>
-              <Button size="sm">Hire</Button>
+              <Button
+                size="sm"
+                variant={isHiring ? 'outline' : 'default'}
+                onClick={() =>
+                  onStatusChange?.(
+                    application.id,
+                    isHiring ? 'pending' : 'hiring'
+                  )
+                }
+              >
+                {isHiring ? 'Remove from Hiring' : 'Hire'}
+              </Button>
             </div>
           </div>
         </div>
@@ -111,6 +133,12 @@ export function ApplicantDetailPanel({
               label="Location"
               value={`${applicant.city}, ${applicant.country}`}
             />
+          </div>
+
+          <Separator />
+
+          {/* Education and Work */}
+          <div className="space-y-4">
             <InfoRow label="Education" value={educationSummary} />
             <InfoRow
               label="Work experience"
@@ -134,6 +162,19 @@ export function ApplicantDetailPanel({
             </p>
           </div>
 
+          {/* Cover Letter */}
+          {coverLetter && (
+            <>
+              <Separator />
+              <div>
+                <h3 className="mb-2 font-medium text-muted-foreground text-sm">
+                  Cover Letter
+                </h3>
+                <p className="text-sm leading-relaxed">{coverLetter}</p>
+              </div>
+            </>
+          )}
+
           <Separator />
 
           {/* Skills */}
@@ -156,7 +197,7 @@ export function ApplicantDetailPanel({
               <Separator />
               <div>
                 <h3 className="mb-3 font-medium text-muted-foreground text-sm">
-                  Work experience
+                  Work experience details
                 </h3>
                 <div className="space-y-4">
                   {applicant.workExperience.map((exp, index) => (
@@ -180,7 +221,7 @@ export function ApplicantDetailPanel({
           <Separator />
           <div>
             <h3 className="mb-3 font-medium text-muted-foreground text-sm">
-              Education
+              Education details
             </h3>
             <div className="space-y-4">
               {applicant.education.map((edu, index) => (
@@ -200,17 +241,6 @@ export function ApplicantDetailPanel({
           </div>
         </div>
       </ScrollArea>
-    </div>
-  );
-}
-
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex gap-4">
-      <span className="w-32 flex-shrink-0 text-muted-foreground text-sm">
-        {label}
-      </span>
-      <span className="text-sm">{value}</span>
     </div>
   );
 }

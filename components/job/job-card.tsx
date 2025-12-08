@@ -18,6 +18,7 @@ export type { Job, JobStatus } from './use-job-card';
 
 interface JobCardProps extends UseJobCardOptions {
   className?: string;
+  onClick?: () => void;
 }
 
 /**
@@ -30,6 +31,7 @@ export function JobCard({
   job,
   onEdit,
   onMenuAction,
+  onClick,
   className,
 }: JobCardProps) {
   const {
@@ -43,10 +45,20 @@ export function JobCard({
     getMenuButtonProps,
   } = useJobCard({ job, onEdit, onMenuAction });
 
+  const handleCardClick = () => {
+    onClick?.();
+  };
+
+  const handleButtonClick = (e: React.MouseEvent, callback: () => void) => {
+    e.stopPropagation();
+    callback();
+  };
+
   return (
     <Card
       {...getRootProps()}
-      className={`flex flex-col gap-4 p-5 transition-shadow hover:shadow-md ${className ?? ''}`}
+      onClick={handleCardClick}
+      className={`flex cursor-pointer flex-col gap-4 p-5 transition-shadow hover:shadow-md ${className ?? ''}`}
     >
       {/* Header: Status, Applicants, Actions */}
       <div className="flex items-start justify-between">
@@ -63,12 +75,14 @@ export function JobCard({
         <div className="flex items-center gap-1">
           <button
             {...getEditButtonProps()}
+            onClick={(e) => handleButtonClick(e, getEditButtonProps().onClick)}
             className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
           >
             <Pencil className="h-4 w-4" />
           </button>
           <button
             {...getMenuButtonProps()}
+            onClick={(e) => handleButtonClick(e, getMenuButtonProps().onClick)}
             className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
           >
             <MoreVertical className="h-4 w-4" />
