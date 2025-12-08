@@ -42,6 +42,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const mainNavItems = [
   { title: 'Dashboard', icon: Home, href: '/dashboard', disabled: true },
@@ -80,6 +81,12 @@ export function AppSidebar() {
   const pathname = usePathname();
   const { open, toggleSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   const cycleTheme = () => {
     if (theme === 'light') setTheme('dark');
@@ -87,7 +94,13 @@ export function AppSidebar() {
     else setTheme('light');
   };
 
-  const ThemeIcon = theme === 'light' ? Sun : theme === 'dark' ? Moon : Monitor;
+  const ThemeIcon = !mounted
+    ? Monitor
+    : theme === 'light'
+      ? Sun
+      : theme === 'dark'
+        ? Moon
+        : Monitor;
 
   return (
     <Sidebar collapsible="icon">
@@ -256,9 +269,14 @@ export function AppSidebar() {
         <SidebarMenu>
           {/* Theme Toggle */}
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={cycleTheme} tooltip={`Theme: ${theme}`}>
+            <SidebarMenuButton
+              onClick={cycleTheme}
+              tooltip={`Theme: ${mounted ? theme : 'system'}`}
+            >
               <ThemeIcon className="h-4 w-4" />
-              <span className="capitalize">{theme} mode</span>
+              <span className="capitalize">
+                {mounted ? theme : 'system'} mode
+              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
