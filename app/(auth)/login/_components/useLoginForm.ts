@@ -1,38 +1,40 @@
 'use client';
 
-import { useAsyncAction, useFormValidation } from '@/components/headless/form';
-import { login, loginWithGoogle } from '../api/login';
+import { useRouter } from 'next/navigation';
+import { useFormValidation } from '@/components/headless/form';
+import { useAuthStore } from '@/stores';
 import { loginSchema } from '../api/schema';
 
 /**
- * Headless hook for login form - wires validation, state, and services
+ * Login form hook
  */
 export function useLoginForm() {
-    // Validation
+    const router = useRouter();
+    const { login, loginWithGoogle, isLoading, error, clearError } = useAuthStore();
     const form = useFormValidation(loginSchema, { email: '', password: '' });
 
-    // Actions (hooks call services)
-    const loginAction = useAsyncAction(login);
-    const googleAction = useAsyncAction(loginWithGoogle);
-
-    // Submit handler
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const data = form.validate();
-        if (data) {
-            await loginAction.execute(data);
+
+        const result = await login(form.values);
+        if (result.success) {
+            router.push('/');
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        const result = await loginWithGoogle();
+        if (result.success) {
+            router.push('/');
         }
     };
 
     return {
-        // Form state
         form,
-        // Submit
         handleSubmit,
-        isSubmitting: loginAction.isLoading,
-        // Google SSO
-        handleGoogleLogin: googleAction.execute,
-        isGoogleLoading: googleAction.isLoading,
+        isSubmitting: isLoading,
+        loginError: error,
+        clearError,
+        handleGoogleLogin,
     };
 }
-

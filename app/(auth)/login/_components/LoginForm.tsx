@@ -12,7 +12,7 @@ import { GoogleSSOButton } from '@/app/(auth)/_components/SSOButton';
 import { useLoginForm } from './useLoginForm';
 
 export default function LoginForm() {
-    const { form, handleSubmit, isSubmitting, handleGoogleLogin } = useLoginForm();
+    const { form, handleSubmit, isSubmitting, handleGoogleLogin, loginError } = useLoginForm();
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -20,6 +20,10 @@ export default function LoginForm() {
                 title="Welcome!"
                 subtitle="Please enter your details."
             />
+
+            {loginError && (
+                <p className="text-sm text-red-500">{loginError}</p>
+            )}
 
             <div className="space-y-6 pt-4">
                 <div>
@@ -30,9 +34,6 @@ export default function LoginForm() {
                         required
                         {...form.getFieldProps('email')}
                     />
-                    {form.errors.email && (
-                        <p className="text-sm text-red-500 mt-1">{form.errors.email}</p>
-                    )}
                 </div>
 
                 <div className="space-y-1">
@@ -41,11 +42,9 @@ export default function LoginForm() {
                         type="password"
                         placeholder="••••••••"
                         required
+                        minLength={8}
                         {...form.getFieldProps('password')}
                     />
-                    {form.errors.password && (
-                        <p className="text-sm text-red-500 mt-1">{form.errors.password}</p>
-                    )}
                     <div className="flex justify-end">
                         <FormLink href="/forgot-password">
                             Forgot password?
@@ -55,7 +54,7 @@ export default function LoginForm() {
             </div>
 
             <FormActions>
-                <FormSubmitButton isSubmitting={isSubmitting} disabled={!form.isValid}>
+                <FormSubmitButton isSubmitting={isSubmitting}>
                     Log in
                 </FormSubmitButton>
                 <GoogleSSOButton onAuth={handleGoogleLogin}>

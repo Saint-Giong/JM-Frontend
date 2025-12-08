@@ -1,7 +1,8 @@
 'use client';
 
-import { useAsyncAction, useFormValidation } from '@/components/headless/form';
-import { signup, signupWithGoogle } from '../api/signup';
+import { useRouter } from 'next/navigation';
+import { useFormValidation } from '@/components/headless/form';
+import { useAuthStore } from '@/stores';
 import { signupSchema, passwordRequirements } from '../api/schema';
 
 const initialValues = {
@@ -16,18 +17,28 @@ const initialValues = {
 };
 
 /**
- * Headless hook for signup form
+ * Signup form hook
  */
 export function useSignupForm() {
+    const router = useRouter();
+    const { signup, signupWithGoogle, isLoading, error, clearError } = useAuthStore();
     const form = useFormValidation(signupSchema, initialValues);
-    const signupAction = useAsyncAction(signup);
-    const googleAction = useAsyncAction(signupWithGoogle);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const data = form.validate();
         if (data) {
-            await signupAction.execute(data);
+            const result = await signup(data);
+            if (result.success) {
+                router.push('/');
+            }
+        }
+    };
+
+    const handleGoogleSignup = async () => {
+        const result = await signupWithGoogle();
+        if (result.success) {
+            router.push('/');
         }
     };
 
@@ -43,10 +54,10 @@ export function useSignupForm() {
     return {
         form,
         handleSubmit,
-        isSubmitting: signupAction.isLoading,
-        handleGoogleSignup: googleAction.execute,
-        isGoogleLoading: googleAction.isLoading,
+        isSubmitting: isLoading,
+        signupError: error,
+        clearError,
+        handleGoogleSignup,
         passwordRequirements: getPasswordRequirements(),
     };
 }
-

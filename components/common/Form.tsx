@@ -30,7 +30,7 @@ export function FormInput({
                     {required && <span className="text-foreground"> *</span>}
                 </Label>
                 <div className="relative">
-                    <PasswordInput className={className} {...props} />
+                    <PasswordInput className={className} required={required} {...props} />
                     <PasswordToggleButton />
                 </div>
             </PasswordField>
@@ -46,6 +46,7 @@ export function FormInput({
             <div className="relative">
                 <input
                     type={type}
+                    required={required}
                     className={`w-full border-0 border-b border-muted-foreground/30 bg-transparent py-2 text-foreground placeholder:text-muted-foreground/50 focus:border-foreground focus:outline-none transition-colors ${className}`}
                     {...props}
                 />

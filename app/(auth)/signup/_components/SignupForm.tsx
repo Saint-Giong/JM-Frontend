@@ -13,7 +13,7 @@ import { useSignupForm } from './useSignupForm';
 import { X } from 'lucide-react';
 
 export default function SignupForm() {
-    const { form, handleSubmit, isSubmitting, handleGoogleSignup, passwordRequirements } = useSignupForm();
+    const { form, handleSubmit, isSubmitting, handleGoogleSignup, passwordRequirements, signupError } = useSignupForm();
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -21,6 +21,12 @@ export default function SignupForm() {
                 title="Create account"
                 subtitle="Enter your details to get started."
             />
+
+            {signupError && (
+                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
+                    {signupError}
+                </div>
+            )}
 
             <div className="space-y-5 pt-4">
                 {/* Company Name */}
