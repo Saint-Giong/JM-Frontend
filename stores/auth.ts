@@ -1,104 +1,111 @@
 'use client';
 
 import { create } from 'zustand';
-import { login, loginWithGoogle, type LoginResponse } from '@/app/(auth)/login/api/login';
-import { signup, signupWithGoogle, type SignupResponse } from '@/app/(auth)/signup/api/signup';
+import {
+  login,
+  loginWithGoogle,
+  type LoginResponse,
+} from '@/app/(auth)/login/api/login';
+import {
+  signup,
+  signupWithGoogle,
+  type SignupResponse,
+} from '@/app/(auth)/signup/api/signup';
 import type { LoginFormData } from '@/app/(auth)/login/api/schema';
 import type { SignupFormData } from '@/app/(auth)/signup/api/schema';
 import type { MockUser } from '@/mocks/users';
 
 export interface AuthState {
-    // State
-    user: Omit<MockUser, 'password'> | null;
-    isLoading: boolean;
-    error: string | null;
+  // State
+  user: Omit<MockUser, 'password'> | null;
+  isLoading: boolean;
+  error: string | null;
 
-    // Actions
-    login: (data: LoginFormData) => Promise<LoginResponse>;
-    loginWithGoogle: () => Promise<LoginResponse>;
-    signup: (data: SignupFormData) => Promise<SignupResponse>;
-    signupWithGoogle: () => Promise<SignupResponse>;
-    logout: () => void;
-    clearError: () => void;
+  // Actions
+  login: (data: LoginFormData) => Promise<LoginResponse>;
+  loginWithGoogle: () => Promise<LoginResponse>;
+  signup: (data: SignupFormData) => Promise<SignupResponse>;
+  signupWithGoogle: () => Promise<SignupResponse>;
+  logout: () => void;
+  clearError: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
-    // Initial state
-    user: null,
-    isLoading: false,
-    error: null,
+export const useAuthStore = create<AuthState>((set) => ({
+  // Initial state
+  user: null,
+  isLoading: false,
+  error: null,
 
-    // Actions
-    login: async (data) => {
-        set({ error: null, isLoading: true });
+  // Actions
+  login: async (data) => {
+    set({ error: null, isLoading: true });
 
-        const result = await login(data);
+    const result = await login(data);
 
-        if (result.success && result.user) {
-            set({ user: result.user, isLoading: false });
-        } else if (result.error) {
-            set({ error: result.error, isLoading: false });
-        } else {
-            set({ isLoading: false });
-        }
+    if (result.success && result.user) {
+      set({ user: result.user, isLoading: false });
+    } else if (result.error) {
+      set({ error: result.error, isLoading: false });
+    } else {
+      set({ isLoading: false });
+    }
 
-        return result;
-    },
+    return result;
+  },
 
-    loginWithGoogle: async () => {
-        set({ error: null, isLoading: true });
+  loginWithGoogle: async () => {
+    set({ error: null, isLoading: true });
 
-        const result = await loginWithGoogle();
+    const result = await loginWithGoogle();
 
-        if (result.success && result.user) {
-            set({ user: result.user, isLoading: false });
-        } else if (result.error) {
-            set({ error: result.error, isLoading: false });
-        } else {
-            set({ isLoading: false });
-        }
+    if (result.success && result.user) {
+      set({ user: result.user, isLoading: false });
+    } else if (result.error) {
+      set({ error: result.error, isLoading: false });
+    } else {
+      set({ isLoading: false });
+    }
 
-        return result;
-    },
+    return result;
+  },
 
-    signup: async (data) => {
-        set({ error: null, isLoading: true });
+  signup: async (data) => {
+    set({ error: null, isLoading: true });
 
-        const result = await signup(data);
+    const result = await signup(data);
 
-        if (result.success && result.user) {
-            set({ user: result.user, isLoading: false });
-        } else if (result.error) {
-            set({ error: result.error, isLoading: false });
-        } else {
-            set({ isLoading: false });
-        }
+    if (result.success && result.user) {
+      set({ user: result.user, isLoading: false });
+    } else if (result.error) {
+      set({ error: result.error, isLoading: false });
+    } else {
+      set({ isLoading: false });
+    }
 
-        return result;
-    },
+    return result;
+  },
 
-    signupWithGoogle: async () => {
-        set({ error: null, isLoading: true });
+  signupWithGoogle: async () => {
+    set({ error: null, isLoading: true });
 
-        const result = await signupWithGoogle();
+    const result = await signupWithGoogle();
 
-        if (result.success && result.user) {
-            set({ user: result.user, isLoading: false });
-        } else if (result.error) {
-            set({ error: result.error, isLoading: false });
-        } else {
-            set({ isLoading: false });
-        }
+    if (result.success && result.user) {
+      set({ user: result.user, isLoading: false });
+    } else if (result.error) {
+      set({ error: result.error, isLoading: false });
+    } else {
+      set({ isLoading: false });
+    }
 
-        return result;
-    },
+    return result;
+  },
 
-    logout: () => {
-        set({ user: null, isLoading: false, error: null });
-    },
+  logout: () => {
+    set({ user: null, isLoading: false, error: null });
+  },
 
-    clearError: () => {
-        set({ error: null });
-    },
+  clearError: () => {
+    set({ error: null });
+  },
 }));
-
