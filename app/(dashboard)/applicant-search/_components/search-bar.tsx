@@ -27,15 +27,15 @@ export function SearchBar({
   };
 
   return (
-    <div className="flex h-[4.375rem] items-center gap-4 border-b px-6 py-4">
+    <div className="flex flex-col gap-3 border-b px-4 py-3 sm:px-6 sm:py-4 md:h-[4.375rem] md:flex-row md:items-center md:gap-4">
       {/* Job Title Search */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2">
         <span className="whitespace-nowrap text-muted-foreground text-sm">
           Job title
         </span>
         <Input
           placeholder="Search"
-          className="w-48"
+          className="w-full sm:w-48"
           value={jobTitleSearch}
           onChange={(e) => setJobTitleSearch(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -43,12 +43,12 @@ export function SearchBar({
       </div>
 
       {/* Skill Tags */}
-      <div className="flex flex-1 items-center gap-2">
+      <div className="flex flex-1 flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2">
         <span className="whitespace-nowrap text-muted-foreground text-sm">
           Skill tags
         </span>
-        <div className="flex flex-1 items-center gap-2">
-          <div className="w-48">
+        <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="w-full sm:w-48">
             <SkillCombobox
               value={skills}
               onValueChange={onSkillsChange}
@@ -57,27 +57,29 @@ export function SearchBar({
           </div>
 
           {/* Selected Skills */}
-          <div className="flex flex-wrap items-center gap-1.5">
-            {skills.map((skill) => (
-              <Badge key={skill} variant="secondary" className="gap-1">
-                {skill}
-                <button
-                  type="button"
-                  onClick={() =>
-                    onSkillsChange(skills.filter((s) => s !== skill))
-                  }
-                  className="ml-1 hover:text-destructive"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            ))}
-          </div>
+          {skills.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5">
+              {skills.map((skill) => (
+                <Badge key={skill} variant="secondary" className="gap-1">
+                  {skill}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onSkillsChange(skills.filter((s) => s !== skill))
+                    }
+                    className="ml-1 hover:text-destructive"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Search Button */}
-      <Button onClick={onSearch}>
+      <Button onClick={onSearch} className="w-full sm:w-auto">
         <Search className="mr-2 h-4 w-4" />
         Search
       </Button>

@@ -1,3 +1,9 @@
+// Types
+export * from './types';
+
+// Form components
+export * from './form';
+
 // Headless hooks
 export {
   useJobCard,
@@ -16,7 +22,7 @@ export {
   useJobMeta,
   type JobMetaInput,
   type JobMetaState,
-  type JobSalary,
+  type JobSalary as JobSalaryDisplay,
 } from './use-job-meta';
 
 // Styled UI components

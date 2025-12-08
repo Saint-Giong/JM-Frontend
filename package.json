@@ -13,11 +13,10 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@saint-giong/bamboo-ui": "^0.2.4",
+    "@saint-giong/bamboo-ui": "^0.5.0",
     "@tanstack/react-query": "^5.90.12",
     "@vercel/analytics": "^1.6.1",
     "next": "^16.0.7",
-    "next-themes": "^0.4.6",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "zod": "^4.1.13",

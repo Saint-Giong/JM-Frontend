@@ -2,7 +2,7 @@
 
 import type { Applicant, ApplicantMark } from '@/components/applicant';
 import { ApplicantCard } from '@/components/applicant';
-import { Button, ScrollArea } from '@saint-giong/bamboo-ui';
+import { Button } from '@saint-giong/bamboo-ui';
 import { Users } from 'lucide-react';
 
 interface ResultsSectionProps {
@@ -13,6 +13,7 @@ interface ResultsSectionProps {
   onMarkApplicant: (id: string, mark: ApplicantMark) => void;
   onResetFilters: () => void;
   children?: React.ReactNode; // For pagination
+  disableScroll?: boolean; // For mobile where parent scrolls
 }
 
 export function ResultsSection({
@@ -23,15 +24,16 @@ export function ResultsSection({
   onMarkApplicant,
   onResetFilters,
   children,
+  disableScroll,
 }: ResultsSectionProps) {
   return (
     <main
-      className={`flex h-[calc(100vh-8.375rem)] flex-1 flex-col overflow-y-auto ${
-        selectedApplicant ? 'w-1/2' : 'w-full'
+      className={`flex flex-1 flex-col ${disableScroll ? '' : 'overflow-hidden'} ${
+        selectedApplicant ? 'lg:w-1/2' : 'w-full'
       }`}
     >
-      <ScrollArea className="flex-1">
-        <div className="p-6">
+      <div className={disableScroll ? '' : 'flex-1 overflow-y-auto'}>
+        <div className="p-3 sm:p-4 md:p-6">
           {/* Results Header */}
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-semibold text-lg">Best match</h2>
@@ -72,7 +74,7 @@ export function ResultsSection({
             </div>
           )}
         </div>
-      </ScrollArea>
+      </div>
 
       {/* Pagination slot */}
       {children}

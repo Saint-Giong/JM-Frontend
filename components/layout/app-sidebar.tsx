@@ -21,6 +21,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
+  useTheme,
 } from '@saint-giong/bamboo-ui';
 import { cn } from '@saint-giong/bamboo-ui/utils';
 import {
@@ -38,10 +39,10 @@ import {
   Sun,
   User,
 } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const mainNavItems = [
   { title: 'Dashboard', icon: Home, href: '/dashboard', disabled: true },
@@ -80,6 +81,12 @@ export function AppSidebar() {
   const pathname = usePathname();
   const { open, toggleSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   const cycleTheme = () => {
     if (theme === 'light') setTheme('dark');
@@ -87,7 +94,13 @@ export function AppSidebar() {
     else setTheme('light');
   };
 
-  const ThemeIcon = theme === 'light' ? Sun : theme === 'dark' ? Moon : Monitor;
+  const ThemeIcon = !mounted
+    ? Monitor
+    : theme === 'light'
+      ? Sun
+      : theme === 'dark'
+        ? Moon
+        : Monitor;
 
   return (
     <Sidebar collapsible="icon">
@@ -256,54 +269,75 @@ export function AppSidebar() {
         <SidebarMenu>
           {/* Theme Toggle */}
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={cycleTheme} tooltip={`Theme: ${theme}`}>
+            <SidebarMenuButton
+              onClick={cycleTheme}
+              tooltip={`Theme: ${mounted ? theme : 'system'}`}
+            >
               <ThemeIcon className="h-4 w-4" />
-              <span className="capitalize">{theme} mode</span>
+              <span className="capitalize">
+                {mounted ? theme : 'system'} mode
+              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
 
           {/* User Menu */}
           <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  tooltip="Saint Giong"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            {mounted ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuButton
+                    size="lg"
+                    tooltip="Saint Giong"
+                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                  >
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="/avatars/user.jpg" alt="Saint Giong" />
+                      <AvatarFallback>SG</AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">
+                        Saint Giong
+                      </span>
+                      <span className="truncate text-muted-foreground text-xs">
+                        saint@example.com
+                      </span>
+                    </div>
+                  </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-[--radix-dropdown-menu-trigger-width] min-w-56"
+                  side="top"
+                  align="start"
+                  sideOffset={4}
                 >
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="/avatars/user.jpg" alt="Saint Giong" />
-                    <AvatarFallback>SG</AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Saint Giong</span>
-                    <span className="truncate text-muted-foreground text-xs">
-                      saint@example.com
-                    </span>
-                  </div>
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56"
-                side="top"
-                align="start"
-                sideOffset={4}
-              >
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Log out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuItem>
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <SidebarMenuButton size="lg" tooltip="Saint Giong">
+                <Avatar className="h-8 w-8">
+                  <AvatarFallback>SG</AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">Saint Giong</span>
+                  <span className="truncate text-muted-foreground text-xs">
+                    saint@example.com
+                  </span>
+                </div>
+              </SidebarMenuButton>
+            )}
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
