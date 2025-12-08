@@ -1,8 +1,16 @@
 'use client';
 
 import type { JobPost } from '@/components/job/types';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/common/breadcrumb';
 import { Button } from '@saint-giong/bamboo-ui';
-import { ChevronRight, Eye, Pencil, Share2 } from 'lucide-react';
+import { Eye, Pencil, Share2 } from 'lucide-react';
 import Link from 'next/link';
 
 interface JobDetailsHeaderProps {
@@ -12,13 +20,17 @@ interface JobDetailsHeaderProps {
 export function JobDetailsHeader({ job }: JobDetailsHeaderProps) {
   return (
     <header className="flex items-center justify-between border-b px-6 py-4">
-      <div>
-        <Link href="/jobs" className="hover:underline">
-          <span className="text-muted-foreground">Jobs</span>
-        </Link>
-        <ChevronRight className="mx-3 inline size-4 text-muted-foreground" />
-        <span className="font-medium">{job.title}</span>
-      </div>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/jobs">Jobs</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{job.title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
       <div className="flex gap-2">
         <Button variant="outline">
