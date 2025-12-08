@@ -1,19 +1,19 @@
 'use client';
 
-import { create } from 'zustand';
 import {
+  type LoginResponse,
   login,
   loginWithGoogle,
-  type LoginResponse,
 } from '@/app/(auth)/login/api/login';
-import {
-  signup,
-  signupWithGoogle,
-  type SignupResponse,
-} from '@/app/(auth)/signup/api/signup';
 import type { LoginFormData } from '@/app/(auth)/login/api/schema';
 import type { SignupFormData } from '@/app/(auth)/signup/api/schema';
+import {
+  type SignupResponse,
+  signup,
+  signupWithGoogle,
+} from '@/app/(auth)/signup/api/signup';
 import type { MockUser } from '@/mocks/users';
+import { create } from 'zustand';
 
 export interface AuthState {
   // State

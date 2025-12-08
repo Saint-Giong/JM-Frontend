@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useCallback } from 'react';
+import { type Country, countries } from '@/mocks/countries';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'zustand';
-import { countries, type Country } from '@/mocks/countries';
-import { createCountryPhoneStore, type CountryPhoneStore } from './stores';
+import { type CountryPhoneStore, createCountryPhoneStore } from './stores';
 
 // Types
 export interface UseCountryPhoneOptions {
