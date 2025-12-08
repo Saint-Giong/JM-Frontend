@@ -21,6 +21,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
+  useTheme,
 } from '@saint-giong/bamboo-ui';
 import { cn } from '@saint-giong/bamboo-ui/utils';
 import {
@@ -38,7 +39,6 @@ import {
   Sun,
   User,
 } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
