@@ -1,6 +1,6 @@
 'use client';
 
-import { COUNTRIES } from '@/mocks/countries';
+import { countries } from '@/mocks/countries';
 import {
   Combobox,
   ComboboxContent,
@@ -35,9 +35,9 @@ export function CountryCombobox({
         <ComboboxList>
           <ComboboxEmpty>No country found.</ComboboxEmpty>
           <ComboboxGroup>
-            {COUNTRIES.map((country) => (
-              <ComboboxItem key={country} value={country}>
-                {country}
+            {countries.map((country) => (
+              <ComboboxItem key={country.name} value={country.name}>
+                {country.name}
               </ComboboxItem>
             ))}
           </ComboboxGroup>
