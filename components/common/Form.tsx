@@ -1,16 +1,16 @@
 'use client';
 
 import {
-  type InputHTMLAttributes,
-  type ReactNode,
-  type ButtonHTMLAttributes,
-} from 'react';
-import { Button, Label } from '@saint-giong/bamboo-ui';
-import { Eye, EyeOff } from 'lucide-react';
-import {
   PasswordField,
   usePasswordFieldContext,
 } from '@/components/headless/form';
+import { Button, cn, Label } from '@saint-giong/bamboo-ui';
+import { Eye, EyeOff } from 'lucide-react';
+import type {
+  ButtonHTMLAttributes,
+  InputHTMLAttributes,
+  ReactNode,
+} from 'react';
 
 // Styled Form Input
 interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -32,7 +32,7 @@ export function FormInput({
   if (isPassword) {
     return (
       <PasswordField className="space-y-2">
-        <Label className="block text-sm font-medium text-foreground">
+        <Label className="block font-medium text-foreground text-sm">
           {label}
           {required && <span className="text-foreground"> *</span>}
         </Label>
@@ -46,7 +46,7 @@ export function FormInput({
 
   return (
     <div className="space-y-2">
-      <Label className="block text-sm font-medium text-foreground">
+      <Label className="block font-medium text-foreground text-sm">
         {label}
         {required && <span className="text-foreground"> *</span>}
       </Label>
@@ -54,11 +54,11 @@ export function FormInput({
         <input
           type={type}
           required={required}
-          className={`w-full border-0 border-b border-muted-foreground/30 bg-transparent py-2 text-foreground placeholder:text-muted-foreground/50 focus:border-foreground focus:outline-none transition-colors ${className}`}
+          className={`w-full border-0 border-muted-foreground/30 border-b bg-transparent py-2 text-foreground transition-colors placeholder:text-muted-foreground/50 focus:border-foreground focus:outline-none ${className}`}
           {...props}
         />
         {rightElement && (
-          <div className="absolute right-0 top-1/2 -translate-y-1/2">
+          <div className="-translate-y-1/2 absolute top-1/2 right-0">
             {rightElement}
           </div>
         )}
@@ -77,7 +77,7 @@ function PasswordInput({
   return (
     <input
       type={inputType}
-      className={`w-full border-0 border-b border-muted-foreground/30 bg-transparent py-2 pr-10 text-foreground placeholder:text-muted-foreground/50 focus:border-foreground focus:outline-none transition-colors [&::-ms-reveal]:hidden [&::-ms-clear]:hidden [&::-webkit-credentials-auto-fill-button]:hidden ${className}`}
+      className={`w-full border-0 border-muted-foreground/30 border-b bg-transparent py-2 pr-10 text-foreground transition-colors placeholder:text-muted-foreground/50 focus:border-foreground focus:outline-none [&::-ms-clear]:hidden [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden ${className}`}
       {...props}
     />
   );
@@ -91,7 +91,7 @@ function PasswordToggleButton() {
     <button
       type="button"
       onClick={toggle}
-      className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+      className="-translate-y-1/2 absolute top-1/2 right-0 text-muted-foreground transition-colors hover:text-foreground"
       tabIndex={-1}
     >
       {isVisible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -109,12 +109,12 @@ export function FormHeader({ title, subtitle }: FormHeaderProps) {
   return (
     <div className="space-y-2">
       <h1
-        className="text-3xl font-normal"
+        className="font-normal text-3xl"
         style={{ fontFamily: 'Georgia, serif' }}
       >
         {title}
       </h1>
-      {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
+      {subtitle && <p className="text-muted-foreground text-sm">{subtitle}</p>}
     </div>
   );
 }
@@ -132,13 +132,13 @@ export function FormSubmitButton({
   className = '',
   ...props
 }: FormSubmitButtonProps) {
-  const buttonStyle = { width: '17.5rem', height: '2.625rem' };
-
   return (
     <Button
       type="submit"
-      className={`bg-foreground text-background hover:bg-foreground/90 rounded-sm ${className}`}
-      style={buttonStyle}
+      className={cn(
+        'h-[2.625rem] w-[17.5rem] rounded-sm bg-foreground text-background hover:bg-foreground/90',
+        className
+      )}
       disabled={isSubmitting}
       {...props}
     >
@@ -172,7 +172,7 @@ export function FormLink({ href, children, className = '' }: FormLinkProps) {
   return (
     <a
       href={href}
-      className={`text-xs text-muted-foreground hover:text-foreground transition-colors ${className}`}
+      className={`text-muted-foreground text-xs transition-colors hover:text-foreground ${className}`}
     >
       {children}
     </a>

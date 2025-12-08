@@ -1,9 +1,9 @@
 'use client';
 
+import { useAuthStore } from '@/stores';
 import {
   Avatar,
   AvatarFallback,
-  AvatarImage,
   Badge,
   DropdownMenu,
   DropdownMenuContent,
@@ -41,8 +41,23 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function getDisplayName(user: { email: string; companyName?: string }): string {
+  if (user.companyName) return user.companyName;
+  // Use email username as fallback
+  return user.email.split('@')[0];
+}
 
 const mainNavItems = [
   { title: 'Dashboard', icon: Home, href: '/dashboard', disabled: true },
@@ -74,19 +89,30 @@ const systemItems = [
     href: '/subscription',
     disabled: true,
   },
-  // { title: 'Settings', icon: Settings, href: '/settings' },
+  { title: 'Settings', icon: Settings, href: '/settings' },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { open, toggleSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
+  const { user, logout } = useAuthStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
+
+  const displayName = user ? getDisplayName(user) : 'Guest';
+  const userEmail = user?.email ?? 'Not signed in';
+  const initials = user ? getInitials(displayName) : 'G';
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   const cycleTheme = () => {
     if (theme === 'light') setTheme('dark');
@@ -287,19 +313,18 @@ export function AppSidebar() {
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton
                     size="lg"
-                    tooltip="Saint Giong"
+                    tooltip={displayName}
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                   >
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src="/avatars/user.jpg" alt="Saint Giong" />
-                      <AvatarFallback>SG</AvatarFallback>
+                      <AvatarFallback>{initials}</AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        Saint Giong
+                        {displayName}
                       </span>
                       <span className="truncate text-muted-foreground text-xs">
-                        saint@example.com
+                        {userEmail}
                       </span>
                     </div>
                   </SidebarMenuButton>
@@ -310,30 +335,30 @@ export function AppSidebar() {
                   align="start"
                   sideOffset={4}
                 >
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push('/settings')}>
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push('/settings')}>
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <SidebarMenuButton size="lg" tooltip="Saint Giong">
+              <SidebarMenuButton size="lg" tooltip={displayName}>
                 <Avatar className="h-8 w-8">
-                  <AvatarFallback>SG</AvatarFallback>
+                  <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Saint Giong</span>
+                  <span className="truncate font-semibold">{displayName}</span>
                   <span className="truncate text-muted-foreground text-xs">
-                    saint@example.com
+                    {userEmail}
                   </span>
                 </div>
               </SidebarMenuButton>

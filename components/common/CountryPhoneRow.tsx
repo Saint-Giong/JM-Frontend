@@ -1,23 +1,24 @@
 'use client';
 
-import { Label } from '@saint-giong/bamboo-ui';
 import {
-  Combobox,
-  ComboboxTrigger,
-  ComboboxContent,
-  ComboboxInput,
-  ComboboxList,
-  ComboboxEmpty,
-  ComboboxGroup,
-  ComboboxItem,
-} from '@saint-giong/bamboo-ui';
-import {
-  useCountryPhone,
   type UseCountryPhoneOptions,
+  useCountryPhone,
 } from '@/components/headless/country-phone';
 import type { Country } from '@/mocks/countries';
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxTrigger,
+  Label,
+} from '@saint-giong/bamboo-ui';
+import { forwardRef, useRef } from 'react';
 
-const MAX_PHONE_LENGTH = 13;
+const MAX_PHONE_LENGTH = 9;
 
 // Types
 interface CountryPhoneRowProps {
@@ -40,6 +41,8 @@ export function CountryPhoneRow({
   onDialCodeChange,
   onPhoneNumberChange,
 }: CountryPhoneRowProps) {
+  const phoneInputRef = useRef<HTMLInputElement>(null);
+
   // Internal handler that syncs country name and dial code
   const handleCountryChange = (country: Country) => {
     onCountryNameChange(country.name);
@@ -59,12 +62,21 @@ export function CountryPhoneRow({
   const {
     mounted,
     countries,
-    handleCountrySelect,
+    handleCountrySelect: baseHandleCountrySelect,
     handleDialCodeSelect,
     handlePhoneNumberChange,
     getCountryDisplayValue,
     getDialCodeDisplayValue,
   } = useCountryPhone(options);
+
+  // Wrap country select to focus phone input after selection
+  const handleCountrySelect = (value: string) => {
+    baseHandleCountrySelect(value);
+    // Focus phone input after a brief delay to allow combobox to close
+    setTimeout(() => {
+      phoneInputRef.current?.focus();
+    }, 50);
+  };
 
   return (
     <div className="grid grid-cols-10 gap-x-4 gap-y-2 items-start">
@@ -143,6 +155,7 @@ export function CountryPhoneRow({
           )}
 
           <PhoneInput
+            ref={phoneInputRef}
             value={phoneNumber}
             onChange={handlePhoneNumberChange}
             hasError={!!phoneError || phoneNumber.length > MAX_PHONE_LENGTH}
@@ -187,27 +200,30 @@ interface PhoneInputProps {
   hasError: boolean;
 }
 
-function PhoneInput({ value, onChange, hasError }: PhoneInputProps) {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Only allow digits
-    const digitsOnly = e.target.value.replace(/\D/g, '');
-    onChange(digitsOnly);
-  };
+const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
+  function PhoneInput({ value, onChange, hasError }, ref) {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      // Only allow digits
+      const digitsOnly = e.target.value.replace(/\D/g, '');
+      onChange(digitsOnly);
+    };
 
-  const exceedsMaxLength = value.length > MAX_PHONE_LENGTH;
-  const showError = hasError || exceedsMaxLength;
+    const exceedsMaxLength = value.length > MAX_PHONE_LENGTH;
+    const showError = hasError || exceedsMaxLength;
 
-  return (
-    <input
-      type="tel"
-      value={value}
-      onChange={handleChange}
-      placeholder="XXX-XXX-XXXX"
-      className={`w-full max-w-[10rem] border-0 border-b bg-transparent px-2 py-2 text-foreground placeholder:text-muted-foreground/50 focus:outline-none transition-colors ${
-        showError
-          ? 'border-red-500 focus:border-red-500'
-          : 'border-muted-foreground/30 focus:border-foreground'
-      }`}
-    />
-  );
-}
+    return (
+      <input
+        ref={ref}
+        type="tel"
+        value={value}
+        onChange={handleChange}
+        placeholder="XXX-XXX-XXXX"
+        className={`w-full max-w-[10rem] border-0 border-b bg-transparent px-2 py-2 text-foreground placeholder:text-muted-foreground/50 focus:outline-none transition-colors ${
+          showError
+            ? 'border-red-500 focus:border-red-500'
+            : 'border-muted-foreground/30 focus:border-foreground'
+        }`}
+      />
+    );
+  }
+);

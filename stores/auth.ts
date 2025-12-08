@@ -15,6 +15,10 @@ import {
 import type { MockUser } from '@/mocks/users';
 import { create } from 'zustand';
 
+export type ProfileUpdateData = Partial<
+  Pick<MockUser, 'companyName' | 'city' | 'address' | 'phoneNumber'>
+>;
+
 export interface AuthState {
   // State
   user: Omit<MockUser, 'password'> | null;
@@ -26,6 +30,7 @@ export interface AuthState {
   loginWithGoogle: () => Promise<LoginResponse>;
   signup: (data: SignupFormData) => Promise<SignupResponse>;
   signupWithGoogle: () => Promise<SignupResponse>;
+  updateProfile: (data: ProfileUpdateData) => void;
   logout: () => void;
   clearError: () => void;
 }
@@ -99,6 +104,12 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
 
     return result;
+  },
+
+  updateProfile: (data) => {
+    set((state) => ({
+      user: state.user ? { ...state.user, ...data } : null,
+    }));
   },
 
   logout: () => {

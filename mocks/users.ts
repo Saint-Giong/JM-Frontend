@@ -11,7 +11,7 @@ export interface MockUser {
   createdAt: string;
 }
 
-export const mockUsers: MockUser[] = [
+const defaultUsers: MockUser[] = [
   {
     id: '1',
     email: 'admin@example.com',
@@ -71,11 +71,50 @@ export const mockUsers: MockUser[] = [
   },
 ];
 
+const STORAGE_KEY = 'mock_users';
+
+// Get users from localStorage, falling back to defaults
+function getStoredUsers(): MockUser[] {
+  if (typeof window === 'undefined') {
+    return defaultUsers;
+  }
+
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored) as MockUser[];
+      // Merge with default users (in case new defaults are added)
+      const storedEmails = new Set(parsed.map((u) => u.email.toLowerCase()));
+      const missingDefaults = defaultUsers.filter(
+        (u) => !storedEmails.has(u.email.toLowerCase())
+      );
+      return [...parsed, ...missingDefaults];
+    }
+  } catch {
+    // If parsing fails, return defaults
+  }
+
+  return defaultUsers;
+}
+
+// Save users to localStorage
+function saveUsers(users: MockUser[]): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
+  } catch {
+    // Ignore storage errors
+  }
+}
+
+// Export for backward compatibility
+export const mockUsers: MockUser[] = getStoredUsers();
+
 // utils
 export function findUserByEmail(email: string): MockUser | undefined {
-  return mockUsers.find(
-    (user) => user.email.toLowerCase() === email.toLowerCase()
-  );
+  const users = getStoredUsers();
+  return users.find((user) => user.email.toLowerCase() === email.toLowerCase());
 }
 
 export function validateCredentials(
@@ -90,20 +129,21 @@ export function validateCredentials(
 }
 
 export function isEmailTaken(email: string): boolean {
-  return mockUsers.some(
-    (user) => user.email.toLowerCase() === email.toLowerCase()
-  );
+  const users = getStoredUsers();
+  return users.some((user) => user.email.toLowerCase() === email.toLowerCase());
 }
 
 export function createMockUser(
   data: Omit<MockUser, 'id' | 'createdAt'>
 ): MockUser {
+  const users = getStoredUsers();
   const newUser: MockUser = {
     ...data,
-    id: String(mockUsers.length + 1),
+    id: String(users.length + 1),
     createdAt: new Date().toISOString(),
   };
-  mockUsers.push(newUser);
+  users.push(newUser);
+  saveUsers(users);
   return newUser;
 }
 

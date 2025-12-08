@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
-import { type ReactNode } from 'react';
-import { Button } from '@/components/headless/button';
 import GoogleIcon from '@/assets/google.svg';
+import { Button } from '@/components/headless/button';
+import Image from 'next/image';
+import type { ReactNode } from 'react';
 
 interface SSOButtonProps {
   icon: ReactNode;
@@ -18,7 +18,7 @@ export function SSOButton({ icon, children, onAuth }: SSOButtonProps) {
     <Button
       type="button"
       variant="outline"
-      className="border-foreground text-foreground hover:bg-muted rounded-sm"
+      className="w-full rounded-sm border-foreground text-foreground hover:bg-muted"
       style={buttonStyle}
       onClick={onAuth}
     >
