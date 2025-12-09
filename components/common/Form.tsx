@@ -34,26 +34,22 @@ export function FormInput({
 }: FormInputProps) {
   const isPassword = type === 'password';
 
+  // Map of field names to autoComplete values
+  const autoCompleteMap: Record<string, string> = {
+    email: 'email',
+    password: 'current-password',
+    newPassword: 'new-password',
+    confirmPassword: 'new-password',
+    companyName: 'organization',
+    phoneNumber: 'tel',
+    city: 'address-level2',
+    address: 'street-address',
+    country: 'country-name',
+  };
+
   // Derive autoComplete from name if not provided
   const autoComplete =
-    props.autoComplete ??
-    (name === 'email'
-      ? 'email'
-      : name === 'password'
-        ? 'current-password'
-        : name === 'newPassword' || name === 'confirmPassword'
-          ? 'new-password'
-          : name === 'companyName'
-            ? 'organization'
-            : name === 'phoneNumber'
-              ? 'tel'
-              : name === 'city'
-                ? 'address-level2'
-                : name === 'address'
-                  ? 'street-address'
-                  : name === 'country'
-                    ? 'country-name'
-                    : undefined);
+    props.autoComplete ?? (name ? autoCompleteMap[name] : undefined);
 
   if (isPassword) {
     return (
