@@ -1,7 +1,15 @@
 'use client';
 
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@saint-giong/bamboo-ui';
+import {
+  Button,
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from '@saint-giong/bamboo-ui';
 import { Check, Mail } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+
+const RESEND_COOLDOWN = 60;
 
 interface VerifyStepProps {
   otp: string;
@@ -16,6 +24,45 @@ export function VerifyStep({
   isSubmitting,
   onOtpChange,
 }: VerifyStepProps) {
+  const [countdown, setCountdown] = useState(0);
+  const [isResending, setIsResending] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
+
+  const canResend = countdown === 0 && !isResending;
+
+  // Countdown timer
+  useEffect(() => {
+    if (countdown <= 0) return;
+
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [countdown]);
+
+  // Clear success message after a delay
+  useEffect(() => {
+    if (!resendSuccess) return;
+
+    const timer = setTimeout(() => {
+      setResendSuccess(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [resendSuccess]);
+
+  const handleResend = useCallback(async () => {
+    if (!canResend) return;
+
+    setIsResending(true);
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    setIsResending(false);
+    setResendSuccess(true);
+    setCountdown(RESEND_COOLDOWN);
+  }, [canResend]);
+
   if (isVerified) {
     return (
       <div className="flex flex-col items-center gap-6">
@@ -58,14 +105,26 @@ export function VerifyStep({
           <InputOTPSlot index={5} />
         </InputOTPGroup>
       </InputOTP>
+      {resendSuccess && (
+        <p className="text-center text-green-600 text-xs">
+          Code sent successfully!
+        </p>
+      )}
       <p className="text-center text-muted-foreground text-xs">
         Didn&apos;t receive the code?{' '}
-        <button
-          type="button"
-          className="text-primary underline-offset-4 hover:underline"
-        >
-          Resend
-        </button>
+        {canResend ? (
+          <Button
+            variant="link"
+            size="sm"
+            className="h-auto p-0 text-xs"
+            onClick={handleResend}
+            disabled={isResending}
+          >
+            {isResending ? 'Sending...' : 'Resend'}
+          </Button>
+        ) : (
+          <span className="text-muted-foreground">Resend in {countdown}s</span>
+        )}
       </p>
     </div>
   );
