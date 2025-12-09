@@ -1,8 +1,7 @@
 'use client';
 
+import { type SearchProfile, mockSearchProfiles } from '@/mocks/subscription';
 import { useCallback, useState } from 'react';
-import { mockSearchProfiles } from './constants';
-import type { SearchProfile } from './types';
 
 export interface SearchProfileFormData {
   name: string;

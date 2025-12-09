@@ -52,16 +52,26 @@ export function useSignupForm() {
 
   const totalSteps = SIGNUP_STEPS.length;
 
+  // Compute password requirements with met status
+  const computedPasswordRequirements = useMemo(
+    () =>
+      passwordRequirements.map((req) => ({
+        ...req,
+        met: req.regex.test(form.values.password),
+      })),
+    [form.values.password]
+  );
+
+  const allPasswordRequirementsMet = computedPasswordRequirements.every(
+    (req) => req.met
+  );
+
   // Check if current step is valid for enabling next button
   const isCurrentStepValid = useMemo((): boolean => {
     if (currentStep === 1) {
       const hasEmail = !!form.values.email && !form.errors.email;
       const hasPassword = !!form.values.password && !form.errors.password;
-      // Check all password requirements are met
-      const passwordReqs = passwordRequirements.every((req) =>
-        req.regex.test(form.values.password)
-      );
-      return hasEmail && hasPassword && passwordReqs;
+      return hasEmail && hasPassword && allPasswordRequirementsMet;
     }
     if (currentStep === 2) {
       const hasCompanyName =
@@ -82,7 +92,7 @@ export function useSignupForm() {
       return otp.length === 6;
     }
     return true;
-  }, [form.values, form.errors, currentStep, otp]);
+  }, [form.values, form.errors, currentStep, otp, allPasswordRequirementsMet]);
 
   const goToNextStep = () => {
     if (currentStep < totalSteps && isCurrentStepValid) {
@@ -157,15 +167,6 @@ export function useSignupForm() {
     }
   };
 
-  // Check password requirements
-  const getPasswordRequirements = () => {
-    const password = form.values.password;
-    return passwordRequirements.map((req) => ({
-      ...req,
-      met: req.regex.test(password),
-    }));
-  };
-
   return {
     form,
     handleSubmit,
@@ -173,7 +174,7 @@ export function useSignupForm() {
     signupError: error,
     clearError,
     handleGoogleSignup,
-    passwordRequirements: getPasswordRequirements(),
+    passwordRequirements: computedPasswordRequirements,
     // Multi-step
     currentStep,
     totalSteps,

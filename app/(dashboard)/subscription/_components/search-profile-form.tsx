@@ -1,7 +1,12 @@
 'use client';
 
+import { SkillTagList } from '@/components/ui/skill-tag';
 import {
-  Badge,
+  availableSkills,
+  educationLevels,
+  employmentTypes,
+} from '@/mocks/subscription';
+import {
   Button,
   Card,
   CardContent,
@@ -12,7 +17,6 @@ import {
   Label,
   Separator,
 } from '@saint-giong/bamboo-ui';
-import { cn } from '@saint-giong/bamboo-ui/utils';
 import {
   Filter,
   Globe,
@@ -22,7 +26,6 @@ import {
   Tag,
   Wallet,
 } from 'lucide-react';
-import { availableSkills, educationLevels, employmentTypes } from './constants';
 import type { SearchProfileFormData } from './use-subscription';
 
 interface SearchProfileFormProps {
@@ -80,25 +83,11 @@ export function SearchProfileForm({
               <Tag className="h-4 w-4 text-muted-foreground" />
               Technical Skills
             </Label>
-            <div className="flex flex-wrap gap-1.5">
-              {availableSkills.map((skill) => (
-                <Badge
-                  key={skill}
-                  variant={
-                    formData.skills.includes(skill) ? 'default' : 'outline'
-                  }
-                  className={cn(
-                    'cursor-pointer transition-all',
-                    formData.skills.includes(skill)
-                      ? 'bg-primary hover:bg-primary/90'
-                      : 'bg-background hover:bg-accent'
-                  )}
-                  onClick={() => onToggleSkill(skill)}
-                >
-                  {skill}
-                </Badge>
-              ))}
-            </div>
+            <SkillTagList
+              skills={availableSkills}
+              selectedSkills={formData.skills}
+              onToggle={onToggleSkill}
+            />
           </div>
 
           {/* Employment Status */}
@@ -107,27 +96,11 @@ export function SearchProfileForm({
               <Filter className="h-4 w-4 text-muted-foreground" />
               Employment Status
             </Label>
-            <div className="flex flex-wrap gap-1.5">
-              {employmentTypes.map((type) => (
-                <Badge
-                  key={type}
-                  variant={
-                    formData.employmentTypes.includes(type)
-                      ? 'default'
-                      : 'outline'
-                  }
-                  className={cn(
-                    'cursor-pointer transition-all',
-                    formData.employmentTypes.includes(type)
-                      ? 'bg-primary hover:bg-primary/90'
-                      : 'bg-background hover:bg-accent'
-                  )}
-                  onClick={() => onToggleEmployment(type)}
-                >
-                  {type}
-                </Badge>
-              ))}
-            </div>
+            <SkillTagList
+              skills={employmentTypes}
+              selectedSkills={formData.employmentTypes}
+              onToggle={onToggleEmployment}
+            />
           </div>
         </div>
 
@@ -178,25 +151,11 @@ export function SearchProfileForm({
               <GraduationCap className="h-4 w-4 text-muted-foreground" />
               Education
             </Label>
-            <div className="flex flex-wrap gap-1.5">
-              {educationLevels.map((level) => (
-                <Badge
-                  key={level}
-                  variant={
-                    formData.education.includes(level) ? 'default' : 'outline'
-                  }
-                  className={cn(
-                    'cursor-pointer transition-all',
-                    formData.education.includes(level)
-                      ? 'bg-primary hover:bg-primary/90'
-                      : 'bg-background hover:bg-accent'
-                  )}
-                  onClick={() => onToggleEducation(level)}
-                >
-                  {level}
-                </Badge>
-              ))}
-            </div>
+            <SkillTagList
+              skills={educationLevels}
+              selectedSkills={formData.education}
+              onToggle={onToggleEducation}
+            />
           </div>
         </div>
 

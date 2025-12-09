@@ -10,3 +10,4 @@ export {
   createFetcher,
 } from './fetcher';
 export { COMMON_SKILLS, DEGREE_LABELS, EDUCATION_OPTIONS } from './constants';
+export { formatDate, getDateFromNow, getGreeting } from './utils';

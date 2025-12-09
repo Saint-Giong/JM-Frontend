@@ -20,8 +20,8 @@ import {
   Trash2,
   Wallet,
 } from 'lucide-react';
+import type { SearchProfile } from '@/mocks/subscription';
 import Link from 'next/link';
-import type { SearchProfile } from './types';
 
 interface SearchProfileCardProps {
   profile: SearchProfile;

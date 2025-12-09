@@ -1,6 +1,30 @@
 import { Bell, Search, Users, Zap } from 'lucide-react';
-import type { PlanFeature, PremiumFeature, SearchProfile } from './types';
 
+// Types
+export interface SearchProfile {
+  id: string;
+  name: string;
+  skills: string[];
+  employmentStatus: string[];
+  country: string;
+  salaryRange: { min: number; max: number | null };
+  education: string[];
+  isActive: boolean;
+  matchCount: number;
+}
+
+export interface PlanFeature {
+  name: string;
+  included: boolean;
+}
+
+export interface PremiumFeature {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+}
+
+// Mock search profiles
 export const mockSearchProfiles: SearchProfile[] = [
   {
     id: '1',
@@ -26,6 +50,7 @@ export const mockSearchProfiles: SearchProfile[] = [
   },
 ];
 
+// Available skills for search profiles
 export const availableSkills = [
   'React',
   'Spring Boot',
@@ -41,6 +66,7 @@ export const availableSkills = [
   'Kubernetes',
 ];
 
+// Employment types
 export const employmentTypes = [
   'Full-time',
   'Part-time',
@@ -49,8 +75,10 @@ export const employmentTypes = [
   'Contract',
 ];
 
+// Education levels
 export const educationLevels = ['Bachelor', 'Master', 'Doctorate'];
 
+// Premium features displayed on subscription page
 export const premiumFeatures: PremiumFeature[] = [
   {
     icon: Bell,
@@ -74,6 +102,7 @@ export const premiumFeatures: PremiumFeature[] = [
   },
 ];
 
+// Free plan features
 export const freeFeatures: PlanFeature[] = [
   { name: 'Up to 5 job postings', included: true },
   { name: 'Basic applicant tracking', included: true },
@@ -83,6 +112,7 @@ export const freeFeatures: PlanFeature[] = [
   { name: 'Advanced analytics', included: false },
 ];
 
+// Premium plan features
 export const premiumFeaturesList: PlanFeature[] = [
   { name: 'Unlimited job postings', included: true },
   { name: 'Advanced applicant tracking', included: true },
