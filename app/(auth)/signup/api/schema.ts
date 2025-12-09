@@ -4,7 +4,7 @@ import { countries } from '@/mocks/countries';
 const validDialCodes = countries.map((c) => c.dialCode);
 
 export const signupSchema = z.object({
-  companyName: z.string().optional(),
+  companyName: z.string().min(1, 'Company name is required'),
   email: z.email('Invalid email address'),
   password: z
     .string()
@@ -28,8 +28,8 @@ export const signupSchema = z.object({
       'Phone number must contain only digits'
     )
     .refine(
-      (val) => !val || val.length <= 13,
-      'Phone number must not exceed 13 digits'
+      (val) => !val || val.length < 13,
+      'Phone number must be less than 13 digits'
     ),
   city: z.string().optional(),
   address: z.string().optional(),

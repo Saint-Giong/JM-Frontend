@@ -18,7 +18,7 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { forwardRef, useRef } from 'react';
 
-const MAX_PHONE_LENGTH = 9;
+const MAX_PHONE_LENGTH = 12;
 
 // Types
 interface CountryPhoneRowProps {

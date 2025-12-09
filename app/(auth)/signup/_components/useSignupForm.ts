@@ -1,10 +1,12 @@
 'use client';
 
-import { useFormValidation } from '@/components/headless/form';
-import { useAuthStore } from '@/stores';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import { useFormValidation } from '@/components/headless/form';
+import type { MockUser } from '@/mocks/users';
+import { useAuthStore } from '@/stores';
 import { passwordRequirements, signupSchema } from '../api/schema';
+import { signup } from '../api/signup';
 
 export const SIGNUP_STEPS = [
   { id: 1, title: 'Account', fields: ['email', 'password'] },
@@ -14,6 +16,7 @@ export const SIGNUP_STEPS = [
     fields: ['companyName', 'country', 'dialCode', 'phoneNumber'],
   },
   { id: 3, title: 'Location', fields: ['city', 'address'] },
+  { id: 4, title: 'Verify', fields: [] },
 ] as const;
 
 const initialValues = {
@@ -32,10 +35,20 @@ const initialValues = {
  */
 export function useSignupForm() {
   const router = useRouter();
-  const { signup, signupWithGoogle, isLoading, error, clearError } =
-    useAuthStore();
+  const { signupWithGoogle, setUser } = useAuthStore();
   const form = useFormValidation(signupSchema, initialValues);
   const [currentStep, setCurrentStep] = useState(1);
+  const [otp, setOtp] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isVerified, setIsVerified] = useState(false);
+  // Store pending user until OTP verification is complete
+  const [pendingUser, setPendingUser] = useState<Omit<
+    MockUser,
+    'password'
+  > | null>(null);
+
+  const clearError = () => setError(null);
 
   const totalSteps = SIGNUP_STEPS.length;
 
@@ -51,11 +64,25 @@ export function useSignupForm() {
       return hasEmail && hasPassword && passwordReqs;
     }
     if (currentStep === 2) {
-      return !!form.values.country;
+      const hasCompanyName =
+        !!form.values.companyName && !form.errors.companyName;
+      const hasCountry = !!form.values.country;
+      // Phone number validation: if provided, must be digits only and less than 13 digits
+      const phoneNumber = form.values.phoneNumber ?? '';
+      const isPhoneValid =
+        !phoneNumber || (/^\d+$/.test(phoneNumber) && phoneNumber.length < 13);
+      return hasCompanyName && hasCountry && isPhoneValid;
     }
-    // Step 3 has no required fields
+    if (currentStep === 3) {
+      // Step 3 has no required fields
+      return true;
+    }
+    if (currentStep === 4) {
+      // OTP must be 6 digits
+      return otp.length === 6;
+    }
     return true;
-  }, [form.values, form.errors, currentStep]);
+  }, [form.values, form.errors, currentStep, otp]);
 
   const goToNextStep = () => {
     if (currentStep < totalSteps && isCurrentStepValid) {
@@ -78,19 +105,48 @@ export function useSignupForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // If not on final step, go to next
-    if (currentStep < totalSteps) {
-      goToNextStep();
+    // Step 3 -> Step 4: Create account and show verification
+    if (currentStep === 3) {
+      const data = form.validate();
+      if (data) {
+        setIsLoading(true);
+        setError(null);
+        const result = await signup(data);
+        setIsLoading(false);
+        if (result.success && result.user) {
+          // Store user temporarily, don't set in auth store yet
+          setPendingUser(result.user);
+          // Account created, proceed to verification step
+          goToNextStep();
+        } else if (result.error) {
+          setError(result.error);
+        }
+      }
       return;
     }
 
-    // Final step - submit form
-    const data = form.validate();
-    if (data) {
-      const result = await signup(data);
-      if (result.success) {
-        router.push('/');
+    // Step 4: Verify OTP (any code works for now)
+    if (currentStep === 4) {
+      if (otp.length === 6 && pendingUser) {
+        // Mock verification - any 6-digit code is accepted
+        setIsLoading(true);
+        // Simulate verification delay
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        setIsLoading(false);
+        setIsVerified(true);
+        // Show success state briefly before redirecting
+        setTimeout(() => {
+          setUser(pendingUser);
+          router.push('/');
+        }, 1500);
       }
+      return;
+    }
+
+    // Other steps - go to next
+    if (currentStep < totalSteps) {
+      goToNextStep();
+      return;
     }
   };
 
@@ -128,5 +184,9 @@ export function useSignupForm() {
     isCurrentStepValid,
     isFirstStep: currentStep === 1,
     isLastStep: currentStep === totalSteps,
+    // OTP verification
+    otp,
+    setOtp,
+    isVerified,
   };
 }

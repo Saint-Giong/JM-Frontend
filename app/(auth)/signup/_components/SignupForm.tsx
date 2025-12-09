@@ -1,5 +1,12 @@
 'use client';
 
+import {
+  Button,
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from '@saint-giong/bamboo-ui';
+import { ArrowLeft, Check, Mail, X } from 'lucide-react';
 import { GoogleSSOButton } from '@/app/(auth)/_components/SSOButton';
 import { CountryPhoneRow } from '@/components/common/CountryPhoneRow';
 import {
@@ -9,8 +16,6 @@ import {
   FormInput,
   FormSubmitButton,
 } from '@/components/common/Form';
-import { Button } from '@saint-giong/bamboo-ui';
-import { ArrowLeft, Check, X } from 'lucide-react';
 import { useSignupForm } from './useSignupForm';
 
 function StepIndicator({
@@ -50,11 +55,18 @@ function StepIndicator({
   );
 }
 
-function StepTitle({ step }: { step: { title: string } }) {
+function StepTitle({
+  step,
+  email,
+}: {
+  step: { title: string };
+  email?: string;
+}) {
   const subtitles: Record<string, string> = {
     Account: 'Set up your login credentials.',
     Company: 'Tell us about your company.',
     Location: 'Where is your company located?',
+    Verify: `We've sent a verification code to ${email || 'your email'}.`,
   };
 
   return <FormHeader title={step.title} subtitle={subtitles[step.title]} />;
@@ -74,7 +86,9 @@ export default function SignupForm() {
     goToPreviousStep,
     isCurrentStepValid,
     isFirstStep,
-    isLastStep,
+    otp,
+    setOtp,
+    isVerified,
   } = useSignupForm();
 
   const currentStepConfig = steps.find((s) => s.id === currentStep);
@@ -87,7 +101,9 @@ export default function SignupForm() {
         steps={steps}
       />
 
-      {currentStepConfig && <StepTitle step={currentStepConfig} />}
+      {currentStepConfig && (
+        <StepTitle step={currentStepConfig} email={form.values.email} />
+      )}
 
       {signupError && (
         <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-600 text-sm">
@@ -155,12 +171,20 @@ export default function SignupForm() {
         {currentStep === 2 && (
           <>
             {/* Company Name */}
-            <FormInput
-              label="Company Name"
-              type="text"
-              placeholder="Your company name"
-              {...form.getFieldProps('companyName')}
-            />
+            <div>
+              <FormInput
+                label="Company Name"
+                type="text"
+                placeholder="Your company name"
+                required
+                {...form.getFieldProps('companyName')}
+              />
+              {form.errors.companyName && (
+                <p className="mt-1 text-red-500 text-sm">
+                  {form.errors.companyName}
+                </p>
+              )}
+            </div>
 
             {/* Country and Phone */}
             <CountryPhoneRow
@@ -192,36 +216,98 @@ export default function SignupForm() {
             />
           </>
         )}
+
+        {/* Step 4: Email Verification */}
+        {currentStep === 4 && (
+          <div className="flex flex-col items-center gap-6">
+            {isVerified ? (
+              <>
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
+                  <Check className="h-8 w-8 text-green-500" />
+                </div>
+                <div className="text-center">
+                  <p className="font-medium text-foreground">
+                    Email verified successfully!
+                  </p>
+                  <p className="mt-1 text-muted-foreground text-sm">
+                    Redirecting to dashboard...
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                  <Mail className="h-8 w-8 text-primary" />
+                </div>
+                <p className="text-center text-muted-foreground text-sm">
+                  Enter the 6-digit code we sent to your email address to verify
+                  your account.
+                </p>
+                <InputOTP
+                  maxLength={6}
+                  value={otp}
+                  onChange={(value) => setOtp(value)}
+                  disabled={isSubmitting}
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+                <p className="text-center text-muted-foreground text-xs">
+                  Didn&apos;t receive the code?{' '}
+                  <button
+                    type="button"
+                    className="text-primary underline-offset-4 hover:underline"
+                  >
+                    Resend
+                  </button>
+                </p>
+              </>
+            )}
+          </div>
+        )}
       </div>
 
-      <FormActions>
-        <div className="flex w-full items-center justify-center gap-4">
-          {!isFirstStep ? (
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={goToPreviousStep}
-              className="gap-2"
+      {!isVerified && (
+        <FormActions>
+          <div className="flex w-full items-center justify-center gap-4">
+            {!isFirstStep ? (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={goToPreviousStep}
+                className="gap-2"
+                disabled={isSubmitting}
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back
+              </Button>
+            ) : null}
+
+            <FormSubmitButton
+              isSubmitting={isSubmitting}
+              disabled={!isCurrentStepValid}
             >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </Button>
-          ) : null}
+              {currentStep === 4
+                ? 'Verify Email'
+                : currentStep === 3
+                  ? 'Create account'
+                  : 'Continue'}
+            </FormSubmitButton>
+          </div>
 
-          <FormSubmitButton
-            isSubmitting={isSubmitting}
-            disabled={!isCurrentStepValid}
-          >
-            {isLastStep ? 'Create account' : 'Continue'}
-          </FormSubmitButton>
-        </div>
-
-        {isFirstStep && (
-          <GoogleSSOButton onAuth={handleGoogleSignup}>
-            Sign up with Google
-          </GoogleSSOButton>
-        )}
-      </FormActions>
+          {isFirstStep && (
+            <GoogleSSOButton onAuth={handleGoogleSignup}>
+              Sign up with Google
+            </GoogleSSOButton>
+          )}
+        </FormActions>
+      )}
     </Form>
   );
 }
