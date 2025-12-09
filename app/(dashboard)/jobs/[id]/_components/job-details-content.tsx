@@ -22,8 +22,8 @@ function MetaItem({ icon, label, value }: MetaItemProps) {
         {icon}
       </div>
       <div>
-        <p className="text-sm font-medium">{label}</p>
-        <p className="text-sm text-muted-foreground">{value}</p>
+        <p className="font-medium text-sm">{label}</p>
+        <p className="text-muted-foreground text-sm">{value}</p>
       </div>
     </div>
   );
@@ -36,8 +36,8 @@ export function JobDetailsContent({ job }: JobDetailsContentProps) {
       <div className="flex-1 space-y-6">
         {/* Title and Posted Date */}
         <div>
-          <h1 className="text-3xl font-bold">{job.title}</h1>
-          <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+          <h1 className="font-bold text-3xl">{job.title}</h1>
+          <p className="mt-2 flex items-center gap-2 text-muted-foreground text-sm">
             <Clock className="h-4 w-4" />
             {job.postedAt}
           </p>
@@ -52,7 +52,7 @@ export function JobDetailsContent({ job }: JobDetailsContentProps) {
                 .split('\n- ')
                 .map((item, i) => <li key={i}>{item.replace(/^- /, '')}</li>);
               return (
-                <ul key={index} className="list-disc pl-5 space-y-1">
+                <ul key={index} className="list-disc space-y-1 pl-5">
                   {items}
                 </ul>
               );

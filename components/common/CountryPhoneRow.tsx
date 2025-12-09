@@ -79,12 +79,12 @@ export function CountryPhoneRow({
   };
 
   return (
-    <div className="grid grid-cols-10 gap-x-4 gap-y-2 items-start">
+    <div className="grid grid-cols-10 items-start gap-x-4 gap-y-2">
       {/* Labels */}
-      <Label className="col-span-4 text-sm font-medium text-foreground">
+      <Label className="col-span-4 font-medium text-foreground text-sm">
         Country<span className="text-foreground"> *</span>
       </Label>
-      <Label className="col-span-6 text-sm font-medium text-foreground">
+      <Label className="col-span-6 font-medium text-foreground text-sm">
         Phone number
       </Label>
 
@@ -95,7 +95,7 @@ export function CountryPhoneRow({
             <ComboboxTrigger
               placeholder="Choose country"
               displayValue={getCountryDisplayValue}
-              className="w-full border border-muted-foreground/30 rounded-md bg-transparent px-3 py-2 text-foreground hover:border-foreground focus:border-foreground"
+              className="w-full rounded-md border border-muted-foreground/30 bg-transparent px-3 py-2 text-foreground hover:border-foreground focus:border-foreground"
             />
             <ComboboxContent>
               <ComboboxInput placeholder="Search countries..." />
@@ -104,7 +104,7 @@ export function CountryPhoneRow({
                 <ComboboxGroup>
                   {countries.map((country) => (
                     <ComboboxItem key={country.name} value={country.name}>
-                      <span className="flex items-center gap-2 w-full">
+                      <span className="flex w-full items-center gap-2">
                         <span>{country.name}</span>
                         <span className="ml-auto text-muted-foreground text-xs">
                           {country.dialCode}
@@ -129,7 +129,7 @@ export function CountryPhoneRow({
               <ComboboxTrigger
                 placeholder="+00"
                 displayValue={getDialCodeDisplayValue}
-                className="w-[5.5rem] border border-muted-foreground/30 rounded-md bg-transparent px-3 py-2 text-foreground hover:border-foreground focus:border-foreground"
+                className="w-[5.5rem] rounded-md border border-muted-foreground/30 bg-transparent px-3 py-2 text-foreground hover:border-foreground focus:border-foreground"
               />
               <ComboboxContent>
                 <ComboboxInput placeholder="Search..." />
@@ -138,7 +138,7 @@ export function CountryPhoneRow({
                   <ComboboxGroup>
                     {countries.map((country) => (
                       <ComboboxItem key={country.name} value={country.dialCode}>
-                        <span className="flex items-center gap-2 w-full">
+                        <span className="flex w-full items-center gap-2">
                           <span>{country.dialCode}</span>
                           <span className="ml-auto text-muted-foreground text-xs">
                             {country.name}
@@ -164,7 +164,7 @@ export function CountryPhoneRow({
 
         {/* Error Message */}
         {(phoneError || phoneNumber.length > MAX_PHONE_LENGTH) && (
-          <p className="text-sm text-red-500 mt-1">
+          <p className="mt-1 text-red-500 text-sm">
             {phoneError ||
               `Phone number must not exceed ${MAX_PHONE_LENGTH} digits`}
           </p>
@@ -180,7 +180,7 @@ export function CountryPhoneRow({
 
 function CountryPlaceholder() {
   return (
-    <div className="w-full border border-muted-foreground/30 rounded-md bg-transparent px-3 py-2 text-muted-foreground/50">
+    <div className="w-full rounded-md border border-muted-foreground/30 bg-transparent px-3 py-2 text-muted-foreground/50">
       Choose country
     </div>
   );
@@ -188,7 +188,7 @@ function CountryPlaceholder() {
 
 function DialCodePlaceholder() {
   return (
-    <div className="w-[5.5rem] border border-muted-foreground/30 rounded-md bg-transparent px-3 py-2 text-muted-foreground/50">
+    <div className="w-[5.5rem] rounded-md border border-muted-foreground/30 bg-transparent px-3 py-2 text-muted-foreground/50">
       +00
     </div>
   );
@@ -218,7 +218,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         value={value}
         onChange={handleChange}
         placeholder="XXX-XXX-XXXX"
-        className={`w-full max-w-[10rem] border-0 border-b bg-transparent px-2 py-2 text-foreground placeholder:text-muted-foreground/50 focus:outline-none transition-colors ${
+        className={`w-full max-w-[10rem] border-0 border-b bg-transparent px-2 py-2 text-foreground transition-colors placeholder:text-muted-foreground/50 focus:outline-none ${
           showError
             ? 'border-red-500 focus:border-red-500'
             : 'border-muted-foreground/30 focus:border-foreground'

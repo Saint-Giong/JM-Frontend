@@ -49,8 +49,8 @@ export default function CreateJobPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-semibold">Create Job Post</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="font-semibold text-2xl">Create Job Post</h1>
+          <p className="text-muted-foreground text-sm">
             Fill in the details to create a new job posting
           </p>
         </div>

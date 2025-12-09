@@ -69,8 +69,8 @@ export default function SettingsPage() {
       <header className="flex items-center gap-4 border-b px-6 py-4">
         <Settings className="h-6 w-6" />
         <div>
-          <h1 className="text-2xl font-semibold">Settings</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="font-semibold text-2xl">Settings</h1>
+          <p className="text-muted-foreground text-sm">
             Manage your account settings and preferences
           </p>
         </div>
@@ -115,7 +115,7 @@ export default function SettingsPage() {
                         disabled
                         className="bg-muted"
                       />
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-muted-foreground text-xs">
                         Contact support to change your email address
                       </p>
                     </div>
@@ -165,7 +165,7 @@ export default function SettingsPage() {
 
                     <div className="flex items-center justify-end gap-3">
                       {saveSuccess && (
-                        <span className="flex items-center gap-1 text-sm text-green-600">
+                        <span className="flex items-center gap-1 text-green-600 text-sm">
                           <Check className="h-4 w-4" />
                           Saved
                         </span>
@@ -235,7 +235,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium">Delete Account</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-muted-foreground text-sm">
                           Permanently delete your account and all associated
                           data
                         </p>
@@ -260,7 +260,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>Email Notifications</Label>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-muted-foreground text-sm">
                         Receive notifications via email
                       </p>
                     </div>
@@ -275,7 +275,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>Application Alerts</Label>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-muted-foreground text-sm">
                         Get notified when someone applies to your job posts
                       </p>
                     </div>
@@ -290,7 +290,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label>Weekly Digest</Label>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-muted-foreground text-sm">
                         Receive a weekly summary of your recruitment activity
                       </p>
                     </div>

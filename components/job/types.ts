@@ -140,7 +140,7 @@ export function formatJobSalary(salary: JobSalary): string {
   switch (salary.type) {
     case 'range':
       return `${formatter.format(salary.min)} - ${formatter.format(salary.max)} ${salary.currency}`;
-    case 'estimation':
+    case 'estimation': {
       const prefix =
         salary.estimationType === 'about'
           ? 'About'
@@ -148,6 +148,7 @@ export function formatJobSalary(salary: JobSalary): string {
             ? 'Up to'
             : 'From';
       return `${prefix} ${formatter.format(salary.amount)} ${salary.currency}`;
+    }
     case 'negotiable':
       return 'Negotiable';
   }
@@ -166,6 +167,8 @@ export function formatEmploymentTypes(types: EmploymentType[]): string {
           return 'Internship';
         case 'contract':
           return 'Contract';
+        default:
+          return t;
       }
     })
     .join(', ');
