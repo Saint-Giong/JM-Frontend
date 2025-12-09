@@ -14,15 +14,17 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
 
   useEffect(() => {
-    if (!user) {
+    // Only redirect after hydration is complete
+    if (hasHydrated && !user) {
       router.replace('/login');
     }
-  }, [user, router]);
+  }, [user, hasHydrated, router]);
 
-  // Don't render dashboard until we confirm user is logged in
-  if (!user) {
+  // Don't render dashboard until hydration is complete and user is confirmed
+  if (!hasHydrated || !user) {
     return null;
   }
 

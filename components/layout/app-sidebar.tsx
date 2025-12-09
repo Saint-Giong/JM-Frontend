@@ -35,7 +35,6 @@ import {
   PanelLeftClose,
   Search,
   Settings,
-  Sparkles,
   Sun,
   User,
 } from 'lucide-react';
@@ -60,25 +59,24 @@ function getDisplayName(user: { email: string; companyName?: string }): string {
 }
 
 const mainNavItems = [
-  { title: 'Dashboard', icon: Home, href: '/dashboard', disabled: true },
+  { title: 'Dashboard', icon: Home, href: '/dashboard', disabled: false },
   // { title: 'Inbox', icon: Send, href: '/inbox' },
   {
     title: 'Notifications',
     icon: Bell,
     href: '/notifications',
     badge: 2,
-    disabled: true,
+    disabled: false,
   },
 ];
 
 const recruitmentItems = [
-  { title: 'Jobs', icon: Briefcase, href: '/jobs' },
-  { title: 'Applicant Search', icon: Search, href: '/applicant-search' },
+  { title: 'Jobs', icon: Briefcase, href: '/jobs', disabled: false },
   {
-    title: 'Premium feature',
-    icon: Sparkles,
-    href: '/premium',
-    disabled: true,
+    title: 'Applicant Search',
+    icon: Search,
+    href: '/applicant-search',
+    disabled: false,
   },
 ];
 
@@ -87,9 +85,9 @@ const systemItems = [
     title: 'Subscription',
     icon: CreditCard,
     href: '/subscription',
-    disabled: true,
+    disabled: false,
   },
-  { title: 'Settings', icon: Settings, href: '/settings' },
+  { title: 'Settings', icon: Settings, href: '/settings', disabled: false },
 ];
 
 export function AppSidebar() {
@@ -335,7 +333,7 @@ export function AppSidebar() {
                   align="start"
                   sideOffset={4}
                 >
-                  <DropdownMenuItem onClick={() => router.push('/settings')}>
+                  <DropdownMenuItem onClick={() => router.push('/profile')}>
                     <User className="mr-2 h-4 w-4" />
                     Profile
                   </DropdownMenuItem>
