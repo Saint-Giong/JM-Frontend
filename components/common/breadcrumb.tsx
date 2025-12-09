@@ -32,9 +32,7 @@ function BreadcrumbLink({
 function BreadcrumbPage({ className, ...props }: ComponentProps<'span'>) {
   return (
     <span
-      role="link"
       aria-current="page"
-      aria-disabled="true"
       className={cn('font-medium', className)}
       {...props}
     />

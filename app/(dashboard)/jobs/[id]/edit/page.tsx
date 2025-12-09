@@ -61,7 +61,7 @@ export default function EditJobPage() {
   if (!jobPost) {
     return (
       <div className="flex h-screen flex-col items-center justify-center gap-4">
-        <h1 className="text-2xl font-semibold">Job not found</h1>
+        <h1 className="font-semibold text-2xl">Job not found</h1>
         <p className="text-muted-foreground">
           The job post you&apos;re looking for doesn&apos;t exist.
         </p>
@@ -82,8 +82,8 @@ export default function EditJobPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-semibold">Edit Job Post</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="font-semibold text-2xl">Edit Job Post</h1>
+          <p className="text-muted-foreground text-sm">
             Update the details of your job posting
           </p>
         </div>

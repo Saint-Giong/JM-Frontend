@@ -36,7 +36,7 @@ interface ApplicantSearchFiltersProps {
   onReset: () => void;
 }
 
-export function ApplicantSearchFilters({
+export function ApplicantSearchFiltersPanel({
   filters,
   onLocationChange,
   onEducationChange,
@@ -69,9 +69,9 @@ export function ApplicantSearchFilters({
     <div className="space-y-6">
       {/* Full-text Search */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Full-text Search</Label>
+        <Label className="font-medium text-sm">Full-text Search</Label>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search skills, experience, summary..."
             className="pl-10"
@@ -83,7 +83,7 @@ export function ApplicantSearchFilters({
 
       {/* Location */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Location</Label>
+        <Label className="font-medium text-sm">Location</Label>
         <RadioGroup
           value={filters.location?.type || 'country'}
           onValueChange={(value) =>
@@ -133,7 +133,7 @@ export function ApplicantSearchFilters({
 
       {/* Education */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Education</Label>
+        <Label className="font-medium text-sm">Education</Label>
         <div className="space-y-2">
           {EDUCATION_OPTIONS.map((option) => (
             <div key={option.value} className="flex items-center space-x-2">
@@ -152,7 +152,7 @@ export function ApplicantSearchFilters({
 
       {/* Work Experience */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Work Experience</Label>
+        <Label className="font-medium text-sm">Work Experience</Label>
         <RadioGroup
           value={filters.workExperience.type}
           onValueChange={(value) =>
@@ -199,7 +199,7 @@ export function ApplicantSearchFilters({
 
       {/* Employment Types */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Employment Types</Label>
+        <Label className="font-medium text-sm">Employment Types</Label>
         <div className="space-y-2">
           {EMPLOYMENT_TYPE_OPTIONS.map((option) => (
             <div key={option.value} className="flex items-center space-x-2">
@@ -218,7 +218,7 @@ export function ApplicantSearchFilters({
 
       {/* Skills */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">
+        <Label className="font-medium text-sm">
           Technical Skills (OR logic)
         </Label>
         <SkillCombobox value={filters.skills} onValueChange={onSkillsChange} />
@@ -243,7 +243,7 @@ export function ApplicantSearchFilters({
 
         {/* Common Skills */}
         <div className="space-y-2">
-          <span className="text-xs text-muted-foreground">Popular skills:</span>
+          <span className="text-muted-foreground text-xs">Popular skills:</span>
           <div className="flex flex-wrap gap-1.5">
             {COMMON_SKILLS.slice(0, 12).map((skill) => (
               <Badge
@@ -266,7 +266,7 @@ export function ApplicantSearchFilters({
       {/* Salary Range */}
       {onSalaryRangeChange && (
         <div className="space-y-3">
-          <Label className="text-sm font-medium">Salary Range (USD)</Label>
+          <Label className="font-medium text-sm">Salary Range (USD)</Label>
           <div className="flex items-center gap-2">
             <Input
               type="number"
@@ -301,7 +301,7 @@ export function ApplicantSearchFilters({
 
       {/* Reset */}
       <Button variant="outline" className="w-full" onClick={onReset}>
-        <RotateCcw className="h-4 w-4 mr-2" />
+        <RotateCcw className="mr-2 h-4 w-4" />
         Reset Filters
       </Button>
     </div>

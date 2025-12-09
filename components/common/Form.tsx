@@ -12,22 +12,46 @@ import type {
   ReactNode,
 } from 'react';
 
+// Input styling constants
+const inputBaseStyles =
+  'w-full border-0 border-b-2 border-muted-foreground/30 bg-transparent py-2 text-foreground transition-all placeholder:text-muted-foreground/50 focus:border-primary focus:outline-none focus:ring-0';
+
 // Styled Form Input
 interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   required?: boolean;
   rightElement?: ReactNode;
+  error?: string;
 }
 
 export function FormInput({
   label,
   required,
   rightElement,
+  error,
   type = 'text',
+  name,
   className = '',
   ...props
 }: FormInputProps) {
   const isPassword = type === 'password';
+
+  // Map of field names to autoComplete values
+  const autoCompleteMap: Record<string, string> = {
+    email: 'email',
+    password: 'current-password',
+    newPassword: 'new-password',
+    confirmPassword: 'new-password',
+    companyName: 'organization',
+    phoneNumber: 'tel',
+    city: 'address-level2',
+    address: 'street-address',
+    country: 'country-name',
+  };
+
+  // Derive autoComplete from name if not provided
+  const autoComplete =
+    props.autoComplete ?? (name ? autoCompleteMap[name] : undefined);
 
   if (isPassword) {
     return (
@@ -37,9 +61,16 @@ export function FormInput({
           {required && <span className="text-foreground"> *</span>}
         </Label>
         <div className="relative">
-          <PasswordInput className={className} required={required} {...props} />
+          <PasswordInput
+            name={name}
+            autoComplete={autoComplete}
+            className={className}
+            required={required}
+            {...props}
+          />
           <PasswordToggleButton />
         </div>
+        {error && <p className="mt-1 text-red-500 text-sm">{error}</p>}
       </PasswordField>
     );
   }
@@ -53,8 +84,10 @@ export function FormInput({
       <div className="relative">
         <input
           type={type}
+          name={name}
+          autoComplete={autoComplete}
           required={required}
-          className={`w-full border-0 border-muted-foreground/30 border-b bg-transparent py-2 text-foreground transition-colors placeholder:text-muted-foreground/50 focus:border-foreground focus:outline-none ${className}`}
+          className={cn(inputBaseStyles, className)}
           {...props}
         />
         {rightElement && (
@@ -63,6 +96,7 @@ export function FormInput({
           </div>
         )}
       </div>
+      {error && <p className="mt-1 text-red-500 text-sm">{error}</p>}
     </div>
   );
 }
@@ -77,7 +111,11 @@ function PasswordInput({
   return (
     <input
       type={inputType}
-      className={`w-full border-0 border-muted-foreground/30 border-b bg-transparent py-2 pr-10 text-foreground transition-colors placeholder:text-muted-foreground/50 focus:border-foreground focus:outline-none [&::-ms-clear]:hidden [&::-ms-reveal]:hidden [&::-webkit-credentials-auto-fill-button]:hidden ${className}`}
+      className={cn(
+        inputBaseStyles,
+        'pr-10 [&::-ms-clear]:hidden [&::-ms-reveal]:hidden',
+        className
+      )}
       {...props}
     />
   );

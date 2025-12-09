@@ -91,7 +91,7 @@ export function SalaryFormatSelector({
 
   return (
     <div className="space-y-4">
-      <Label className="text-sm font-medium">Salary</Label>
+      <Label className="font-medium text-sm">Salary</Label>
 
       <RadioGroup
         value={value.type}
@@ -106,7 +106,7 @@ export function SalaryFormatSelector({
             <RadioGroupItem value="range" id="salary-range" />
             <Label
               htmlFor="salary-range"
-              className="font-normal cursor-pointer"
+              className="cursor-pointer font-normal"
             >
               Range
             </Label>
@@ -153,7 +153,7 @@ export function SalaryFormatSelector({
             <RadioGroupItem value="estimation" id="salary-estimation" />
             <Label
               htmlFor="salary-estimation"
-              className="font-normal cursor-pointer"
+              className="cursor-pointer font-normal"
             >
               Estimation
             </Label>
@@ -210,14 +210,14 @@ export function SalaryFormatSelector({
           <RadioGroupItem value="negotiable" id="salary-negotiable" />
           <Label
             htmlFor="salary-negotiable"
-            className="font-normal cursor-pointer"
+            className="cursor-pointer font-normal"
           >
             Negotiable
           </Label>
         </div>
       </RadioGroup>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p className="text-destructive text-sm">{error}</p>}
     </div>
   );
 }

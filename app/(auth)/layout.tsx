@@ -1,8 +1,10 @@
 'use client';
 
+import { useAuthStore } from '@/stores';
 import { Button } from '@saint-giong/bamboo-ui';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { TermsPrivacy } from './_components/TermsPrivacy';
 
 export default function AuthLayout({
@@ -11,8 +13,23 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const user = useAuthStore((state) => state.user);
+  const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const isLogin = pathname === '/login';
   const isSignup = pathname === '/signup';
+
+  useEffect(() => {
+    // Redirect logged-in users to dashboard after hydration
+    if (hasHydrated && user) {
+      router.replace('/dashboard');
+    }
+  }, [user, hasHydrated, router]);
+
+  // Show nothing while checking auth or if user is logged in
+  if (!hasHydrated || user) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden p-5">

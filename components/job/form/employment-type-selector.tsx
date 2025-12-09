@@ -46,7 +46,7 @@ export function EmploymentTypeSelector({
     <div className="space-y-4">
       {/* Working Hours - Mutually Exclusive */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Working Hours</Label>
+        <Label className="font-medium text-sm">Working Hours</Label>
         <RadioGroup
           value={workingHours || ''}
           onValueChange={(v) =>
@@ -56,13 +56,13 @@ export function EmploymentTypeSelector({
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="full-time" id="full-time" />
-            <Label htmlFor="full-time" className="font-normal cursor-pointer">
+            <Label htmlFor="full-time" className="cursor-pointer font-normal">
               Full-time
             </Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="part-time" id="part-time" />
-            <Label htmlFor="part-time" className="font-normal cursor-pointer">
+            <Label htmlFor="part-time" className="cursor-pointer font-normal">
               Part-time
             </Label>
           </div>
@@ -71,7 +71,7 @@ export function EmploymentTypeSelector({
 
       {/* Position Type - Can Coexist */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Position Type (Optional)</Label>
+        <Label className="font-medium text-sm">Position Type (Optional)</Label>
         <div className="flex gap-6">
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -79,7 +79,7 @@ export function EmploymentTypeSelector({
               checked={value.includes('internship')}
               onCheckedChange={() => handlePositionTypeToggle('internship')}
             />
-            <Label htmlFor="internship" className="font-normal cursor-pointer">
+            <Label htmlFor="internship" className="cursor-pointer font-normal">
               Internship
             </Label>
           </div>
@@ -89,14 +89,14 @@ export function EmploymentTypeSelector({
               checked={value.includes('contract')}
               onCheckedChange={() => handlePositionTypeToggle('contract')}
             />
-            <Label htmlFor="contract" className="font-normal cursor-pointer">
+            <Label htmlFor="contract" className="cursor-pointer font-normal">
               Contract
             </Label>
           </div>
         </div>
       </div>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p className="text-destructive text-sm">{error}</p>}
     </div>
   );
 }

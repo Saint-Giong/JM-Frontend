@@ -7,8 +7,8 @@ export const metadata: Metadata = {
 
 export default function TermsOfServicePage() {
   return (
-    <article className="prose prose-neutral dark:prose-invert max-w-none prose-headings:scroll-mt-20 prose-h2:mt-10 prose-h2:border-b prose-h2:pb-3 prose-h2:border-border/40">
-      <header className="not-prose mb-10 border-b border-border/40 pb-8">
+    <article className="prose prose-neutral dark:prose-invert prose-h2:mt-10 max-w-none prose-headings:scroll-mt-20 prose-h2:border-border/40 prose-h2:border-b prose-h2:pb-3">
+      <header className="not-prose mb-10 border-border/40 border-b pb-8">
         <h1 className="mb-3 font-bold text-4xl tracking-tight">
           Terms of Service
         </h1>

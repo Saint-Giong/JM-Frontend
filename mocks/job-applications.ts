@@ -183,7 +183,8 @@ function generateApplications(): JobApplication[] {
     const numApplications = Math.min(job.applicantCount, 15); // Max 15 applications per job for mock
 
     for (let i = 0; i < numApplications; i++) {
-      const applicantIndex = (parseInt(job.id) * 7 + i) % mockApplicants.length;
+      const applicantIndex =
+        (parseInt(job.id, 10) * 7 + i) % mockApplicants.length;
       const applicant = mockApplicants[applicantIndex];
       const status =
         applicationStatuses[(applicationId + i) % applicationStatuses.length];
