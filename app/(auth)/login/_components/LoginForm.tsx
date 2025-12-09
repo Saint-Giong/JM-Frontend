@@ -22,15 +22,13 @@ export default function LoginForm() {
       {loginError && <p className="text-red-500 text-sm">{loginError}</p>}
 
       <div className="space-y-6 pt-4">
-        <div>
-          <FormInput
-            label="Email"
-            type="email"
-            placeholder="example@email.com"
-            required
-            {...form.getFieldProps('email')}
-          />
-        </div>
+        <FormInput
+          label="Email"
+          type="email"
+          placeholder="example@email.com"
+          required
+          {...form.getFieldProps('email')}
+        />
 
         <div className="space-y-1">
           <FormInput

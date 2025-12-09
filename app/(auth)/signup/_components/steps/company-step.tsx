@@ -33,21 +33,17 @@ export function CompanyStep({
   return (
     <>
       {/* Company Name */}
-      <div>
-        <FormInput
-          label="Company Name"
-          name="companyName"
-          type="text"
-          placeholder="Your company name"
-          required
-          value={companyName}
-          onChange={onCompanyNameChange}
-          onBlur={onCompanyNameBlur}
-        />
-        {companyNameError && (
-          <p className="mt-1 text-red-500 text-sm">{companyNameError}</p>
-        )}
-      </div>
+      <FormInput
+        label="Company Name"
+        name="companyName"
+        type="text"
+        placeholder="Your company name"
+        required
+        value={companyName}
+        onChange={onCompanyNameChange}
+        onBlur={onCompanyNameBlur}
+        error={companyNameError}
+      />
 
       {/* Country and Phone */}
       <CountryPhoneRow

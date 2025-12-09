@@ -187,8 +187,9 @@ export function useFormValidation<T extends z.ZodObject<z.ZodRawShape>>(
       onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
         setValue(field, e.target.value as FormData[K]),
       onBlur: () => setFieldTouched(field),
+      error: errors[field],
     }),
-    [values, setValue, setFieldTouched]
+    [values, errors, setValue, setFieldTouched]
   );
 
   const reset = useCallback(() => {

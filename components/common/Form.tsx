@@ -21,12 +21,14 @@ interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   required?: boolean;
   rightElement?: ReactNode;
+  error?: string;
 }
 
 export function FormInput({
   label,
   required,
   rightElement,
+  error,
   type = 'text',
   name,
   className = '',
@@ -68,6 +70,7 @@ export function FormInput({
           />
           <PasswordToggleButton />
         </div>
+        {error && <p className="mt-1 text-red-500 text-sm">{error}</p>}
       </PasswordField>
     );
   }
@@ -93,6 +96,7 @@ export function FormInput({
           </div>
         )}
       </div>
+      {error && <p className="mt-1 text-red-500 text-sm">{error}</p>}
     </div>
   );
 }

@@ -32,21 +32,17 @@ export function AccountStep({
   return (
     <>
       {/* Email */}
-      <div>
-        <FormInput
-          label="Email"
-          name="email"
-          type="email"
-          placeholder="example@email.com"
-          required
-          value={email}
-          onChange={onEmailChange}
-          onBlur={onEmailBlur}
-        />
-        {emailError && (
-          <p className="mt-1 text-red-500 text-sm">{emailError}</p>
-        )}
-      </div>
+      <FormInput
+        label="Email"
+        name="email"
+        type="email"
+        placeholder="example@email.com"
+        required
+        value={email}
+        onChange={onEmailChange}
+        onBlur={onEmailBlur}
+        error={emailError}
+      />
 
       {/* Password with requirements */}
       <div className="flex gap-6">
