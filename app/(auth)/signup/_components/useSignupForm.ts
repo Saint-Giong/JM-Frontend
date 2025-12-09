@@ -53,10 +53,10 @@ export function useSignupForm() {
   const totalSteps = SIGNUP_STEPS.length;
 
   // Check if current step is valid for enabling next button
-  const isCurrentStepValid = useMemo(() => {
+  const isCurrentStepValid = useMemo((): boolean => {
     if (currentStep === 1) {
-      const hasEmail = form.values.email && !form.errors.email;
-      const hasPassword = form.values.password && !form.errors.password;
+      const hasEmail = !!form.values.email && !form.errors.email;
+      const hasPassword = !!form.values.password && !form.errors.password;
       // Check all password requirements are met
       const passwordReqs = passwordRequirements.every((req) =>
         req.regex.test(form.values.password)
