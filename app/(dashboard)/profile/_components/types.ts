@@ -1,4 +1,4 @@
-export type { JobPost } from '@/mocks/profile';
+export type { Job } from '@/components/job';
 
 export interface ProfileFormData {
   companyName: string;

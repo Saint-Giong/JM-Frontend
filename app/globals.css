@@ -17,3 +17,20 @@
     transform: translateX(4px);
   }
 }
+
+.section-heading {
+  font-family: Cambria;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

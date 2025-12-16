@@ -1,6 +1,5 @@
 'use client';
 
-import { Card, CardContent } from '@saint-giong/bamboo-ui';
 import {
   ProfileEditForm,
   ProfileHeader,
@@ -28,35 +27,30 @@ export default function ProfilePage() {
   return (
     <div className="flex h-screen flex-col overflow-hidden">
       <ProfileHeader isEditMode={isEditMode} onToggleEdit={toggleEditMode} />
-
-      <main className="flex-1 overflow-y-auto p-6">
-        <div className="mx-auto max-w-6xl">
-          <Card>
-            <CardContent className="p-6 md:p-8">
-              {isEditMode ? (
-                <ProfileEditForm
-                  formData={formData}
-                  city={city}
-                  country={country}
-                  initials={initials}
-                  isSaving={isSaving}
-                  saveSuccess={saveSuccess}
-                  onFieldChange={updateFormField}
-                  onSubmit={handleSaveProfile}
-                  onCancel={cancelEdit}
-                />
-              ) : (
-                <ProfileView
-                  formData={formData}
-                  city={city}
-                  country={country}
-                  displayName={displayName}
-                  initials={initials}
-                  jobPosts={jobPosts}
-                />
-              )}
-            </CardContent>
-          </Card>
+      <main className="flex-1 overflow-y-auto px-9 py-6">
+        <div className="mx-auto max-w-8xl">
+          {isEditMode ? (
+            <ProfileEditForm
+              formData={formData}
+              city={city}
+              country={country}
+              initials={initials}
+              isSaving={isSaving}
+              saveSuccess={saveSuccess}
+              onFieldChange={updateFormField}
+              onSubmit={handleSaveProfile}
+              onCancel={cancelEdit}
+            />
+          ) : (
+            <ProfileView
+              formData={formData}
+              city={city}
+              country={country}
+              displayName={displayName}
+              initials={initials}
+              jobPosts={jobPosts}
+            />
+          )}
         </div>
       </main>
     </div>

@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, Separator } from '@saint-giong/bamboo-ui';
 import { ExternalLink } from 'lucide-react';
 import { JobPostsSection } from './job-posts-section';
 import { ProfileSidebar } from './profile-sidebar';
-import type { JobPost, ProfileFormData } from './types';
+import type { Job, ProfileFormData } from './types';
 
 interface ProfileViewProps {
   formData: ProfileFormData;
@@ -12,7 +12,7 @@ interface ProfileViewProps {
   country: string;
   displayName: string;
   initials: string;
-  jobPosts: JobPost[];
+  jobPosts: Job[];
 }
 
 export function ProfileView({
@@ -26,7 +26,7 @@ export function ProfileView({
   return (
     <div className="flex flex-col gap-8 lg:flex-row">
       {/* Main Content */}
-      <div className="flex-1 space-y-8">
+      <div className="min-w-0 flex-1 space-y-8">
         {/* Company Header */}
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
           <Avatar className="h-24 w-24 md:h-32 md:w-32">
@@ -55,7 +55,7 @@ export function ProfileView({
 
         {/* Who We Are Looking For */}
         <div className="space-y-3">
-          <h3 className="font-semibold text-xl">Who we are looking for</h3>
+          <h3 className="section-heading">Who we are looking for</h3>
           <p className="text-muted-foreground leading-relaxed">
             {formData.whoWeAreLookingFor}
           </p>

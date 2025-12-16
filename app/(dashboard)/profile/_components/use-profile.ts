@@ -1,6 +1,7 @@
 'use client';
 
-import { defaultProfileContent, mockJobPosts } from '@/mocks/profile';
+import { mockJobs } from '@/mocks/jobs';
+import { defaultProfileContent } from '@/mocks/profile';
 import { useAuthStore } from '@/stores';
 import { useCallback, useState } from 'react';
 import type { ProfileFormData } from './types';
@@ -82,7 +83,7 @@ export function useProfile() {
     country,
     displayName,
     initials,
-    jobPosts: mockJobPosts,
+    jobPosts: mockJobs.filter((job) => job.status === 'published'),
     updateFormField,
     handleSaveProfile,
     toggleEditMode,
