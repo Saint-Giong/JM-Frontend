@@ -1,10 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import {
   createContext,
-  useContext,
   type ElementType,
   type ReactNode,
+  useContext,
 } from 'react';
 import { useActivityForm, useActivityList, useActivityPost } from './hooks';
 import type { Activity, ActivityFormData } from './stores';
@@ -113,14 +114,16 @@ function Image({ children, fallback, className }: ImageProps) {
   const { activity, hasImage } = useActivityPostContext();
 
   if (!hasImage) {
-    return fallback ? <>{fallback}</> : null;
+    return fallback ?? null;
   }
 
   if (children) {
-    return <>{children(activity.imageUrl!)}</>;
+    return children(activity.imageUrl!);
   }
 
+  // Note: Using img for flexibility with external URLs
   return (
+    // biome-ignore lint/performance/noImgElement: Preview images from blob URLs
     <img src={activity.imageUrl} alt="Activity media" className={className} />
   );
 }
@@ -249,7 +252,7 @@ function ListCount({ children }: ListCountProps) {
   return <>{children(count)}</>;
 }
 
-interface ActivityFormContextValue extends ReturnType<typeof useActivityForm> {}
+type ActivityFormContextValue = ReturnType<typeof useActivityForm>;
 
 const ActivityFormContext = createContext<ActivityFormContextValue | null>(
   null
@@ -350,11 +353,12 @@ function FormImagePreview({ className, fallback }: FormImagePreviewProps) {
   const imageUrl = imagePreview || formData.imageUrl;
 
   if (!imageUrl) {
-    return fallback ? <>{fallback}</> : null;
+    return fallback ?? null;
   }
 
   return (
     <div className={className}>
+      {/** biome-ignore lint/performance/noImgElement: Preview images from blob URLs */}
       <img
         src={imageUrl}
         alt="Preview"

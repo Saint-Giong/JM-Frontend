@@ -5,7 +5,7 @@ import {
   useActivityPost,
 } from '@/components/headless/activity-post';
 import { Card } from '@saint-giong/bamboo-ui';
-import { Clock, ImageIcon } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import Image from 'next/image';
 
 interface ActivityCardProps {
@@ -27,7 +27,7 @@ export function ActivityCard({
 
   return (
     <Card className="overflow-hidden" {...cardProps}>
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-stretch px-5">
+      <div className="flex flex-col gap-6 px-5 sm:flex-row sm:items-stretch">
         <div className="flex-[2] space-y-4 sm:pr-8">
           <time
             className="flex items-center gap-2 text-muted-foreground text-sm"
@@ -48,7 +48,7 @@ export function ActivityCard({
                 src={activity.imageUrl!}
                 alt="Activity media"
                 fill
-                className="object-cover rounded-md"
+                className="rounded-md object-cover"
               />
             </div>
           </div>

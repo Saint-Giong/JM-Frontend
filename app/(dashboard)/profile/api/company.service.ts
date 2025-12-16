@@ -1,12 +1,12 @@
+import { buildEndpoint } from '@/lib/api';
 import { HttpError } from '@/lib/http';
-import { buildEndpoint } from '../config';
 import type {
   Company,
   CompanyData,
   CompanyDeleteResponse,
   CompanyResponse,
   CompanyUpdate,
-} from '../types';
+} from './company.types';
 
 /**
  * Company API Service

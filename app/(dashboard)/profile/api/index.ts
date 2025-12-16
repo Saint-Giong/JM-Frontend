@@ -1,3 +1,13 @@
+// Company API Service
+export {
+  companyApi,
+  createCompany,
+  deleteCompany,
+  getCompany,
+  updateCompany,
+} from './company.service';
+
+// Company Types
 export {
   companyDataSchema,
   companySchema,
@@ -8,4 +18,4 @@ export {
   type CompanyListResponse,
   type CompanyResponse,
   type CompanyUpdate,
-} from './company';
+} from './company.types';
