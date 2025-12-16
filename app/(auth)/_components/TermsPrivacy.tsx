@@ -14,7 +14,7 @@ export function TermsPrivacy() {
       </a>{' '}
       and{' '}
       <a
-        href="/https://docs.jm.saintgiong.ttr.gg/legal/privacy-policy"
+        href="https://docs.jm.saintgiong.ttr.gg/legal/privacy-policy"
         target="_blank"
         className="underline hover:text-foreground"
         rel="noopener"

@@ -1,7 +1,14 @@
 'use client';
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/common/breadcrumb';
 import { Button } from '@saint-giong/bamboo-ui';
-import { Edit, Eye, Share2, User } from 'lucide-react';
+import { Edit, Eye, Share2 } from 'lucide-react';
 
 interface ProfileHeaderProps {
   isEditMode: boolean;
@@ -13,11 +20,32 @@ export function ProfileHeader({
   onToggleEdit,
 }: ProfileHeaderProps) {
   return (
-    <header className="flex items-center justify-between gap-4 border-b px-6 py-4">
-      <div className="flex items-center gap-4">
-        <User className="h-6 w-6" />
-        <h1 className="font-semibold text-2xl">Profile</h1>
-      </div>
+    <header className="flex items-center justify-between gap-4 border-b px-9 py-4">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            {isEditMode ? (
+              <button
+                type="button"
+                onClick={onToggleEdit}
+                className="text-muted-foreground hover:underline"
+              >
+                Profile
+              </button>
+            ) : (
+              <BreadcrumbPage>Profile</BreadcrumbPage>
+            )}
+          </BreadcrumbItem>
+          {isEditMode && (
+            <>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Edit</BreadcrumbPage>
+              </BreadcrumbItem>
+            </>
+          )}
+        </BreadcrumbList>
+      </Breadcrumb>
       <div className="flex items-center gap-2">
         <Button variant="outline" className="gap-2">
           <Eye className="h-4 w-4" />

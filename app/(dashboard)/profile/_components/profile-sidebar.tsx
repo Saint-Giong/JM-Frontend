@@ -10,10 +10,10 @@ interface ProfileSidebarProps {
 
 export function ProfileSidebar({ formData }: ProfileSidebarProps) {
   return (
-    <div className="w-full space-y-6 lg:w-80">
+    <div className="w-full space-y-6 lg:w-80 lg:flex-shrink-0">
       {/* About Us */}
       <div className="space-y-3">
-        <h3 className="font-semibold text-xl">About us</h3>
+        <h3 className="section-heading">About us</h3>
         <p className="text-muted-foreground text-sm leading-relaxed">
           {formData.aboutUs}
         </p>
@@ -30,7 +30,7 @@ export function ProfileSidebar({ formData }: ProfileSidebarProps) {
 
       {/* Contact */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-xl">Contact</h3>
+        <h3 className="section-heading">Contact</h3>
         <div className="space-y-3 text-sm">
           <div>
             <p className="font-medium">Address</p>
