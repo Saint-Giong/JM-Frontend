@@ -1,5 +1,6 @@
 'use client';
 
+import { mockActivities } from '@/mocks/activities';
 import { mockJobs } from '@/mocks/jobs';
 import { defaultProfileContent } from '@/mocks/profile';
 import { useAuthStore } from '@/stores';
@@ -74,6 +75,10 @@ export function useProfile() {
     setIsEditMode(false);
   }, []);
 
+  const sortedActivities = [...mockActivities].sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
   return {
     isEditMode,
     isSaving,
@@ -84,6 +89,7 @@ export function useProfile() {
     displayName,
     initials,
     jobPosts: mockJobs.filter((job) => job.status === 'published'),
+    activities: sortedActivities,
     updateFormField,
     handleSaveProfile,
     toggleEditMode,

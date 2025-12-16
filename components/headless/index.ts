@@ -1,3 +1,4 @@
+export * from './activity-post';
 export * from './form';
 export * from './button';
 export * from './combobox';

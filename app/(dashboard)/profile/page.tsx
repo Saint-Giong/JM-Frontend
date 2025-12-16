@@ -18,6 +18,7 @@ export default function ProfilePage() {
     displayName,
     initials,
     jobPosts,
+    activities,
     updateFormField,
     handleSaveProfile,
     toggleEditMode,
@@ -49,6 +50,7 @@ export default function ProfilePage() {
               displayName={displayName}
               initials={initials}
               jobPosts={jobPosts}
+              activities={activities}
             />
           )}
         </div>

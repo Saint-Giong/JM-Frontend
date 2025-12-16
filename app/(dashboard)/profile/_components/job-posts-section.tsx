@@ -18,7 +18,10 @@ export function JobPostsSection({ jobPosts }: JobPostsSectionProps) {
           className="flex items-center gap-2 hover:opacity-70"
         >
           <h3 className="section-heading">
-            Job Posts <span className="text-base font-normal text-muted-foreground">({jobPosts.length})</span>
+            Job Posts{' '}
+            <span className="text-base font-normal text-muted-foreground">
+              ({jobPosts.length})
+            </span>
           </h3>
           <ChevronRight className="h-5 w-5" />
         </button>
