@@ -17,7 +17,10 @@ export function useLoginForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const result = await login(form.values);
+    const validData = form.validate();
+    if (!validData) return;
+
+    const result = await login(validData);
     if (result.success) {
       router.push('/');
     }

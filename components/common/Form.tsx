@@ -226,7 +226,7 @@ interface FormProps {
 
 export function Form({ children, onSubmit, className = '' }: FormProps) {
   return (
-    <form onSubmit={onSubmit} className={`space-y-6 ${className}`}>
+    <form onSubmit={onSubmit} noValidate className={`space-y-6 ${className}`}>
       {children}
     </form>
   );
