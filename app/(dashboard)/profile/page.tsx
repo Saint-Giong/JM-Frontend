@@ -20,6 +20,7 @@ export default function ProfilePage() {
     displayName,
     initials,
     jobPosts,
+    activities,
     companyId,
     updateFormField,
     handleSaveProfile,
@@ -55,6 +56,7 @@ export default function ProfilePage() {
               initials={initials}
               jobPosts={jobPosts}
               companyId={companyId}
+              activities={activities}
             />
           )}
         </div>

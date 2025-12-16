@@ -1,6 +1,7 @@
 'use client';
 
 import { useCompany } from '@/hooks';
+import { mockActivities } from '@/mocks/activities';
 import { mockJobs } from '@/mocks/jobs';
 import { useAuthStore } from '@/stores';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -188,6 +189,10 @@ export function useProfile() {
     }
   }, [company?.id, user?.companyId, fetchCompany]);
 
+  const sortedActivities = [...mockActivities].sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
   return {
     // View state
     isEditMode,
@@ -206,6 +211,7 @@ export function useProfile() {
     displayName,
     initials,
     jobPosts: mockJobs.filter((job) => job.status === 'published'),
+    activities: sortedActivities,
 
     // Actions
     updateFormField,

@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, Separator } from '@saint-giong/bamboo-ui';
 import { ExternalLink } from 'lucide-react';
+import { ActivitiesSection, type Activity } from './activities-section';
 import { JobPostsSection } from './job-posts-section';
 import { ProfileSidebar } from './profile-sidebar';
 import type { Job, ProfileFormData } from './types';
@@ -13,6 +14,7 @@ interface ProfileViewProps {
   displayName: string;
   initials: string;
   jobPosts: Job[];
+  activities: Activity[];
   companyId?: string;
 }
 
@@ -23,6 +25,7 @@ export function ProfileView({
   displayName,
   initials,
   jobPosts,
+  activities,
   companyId,
 }: ProfileViewProps) {
   return (
@@ -73,6 +76,10 @@ export function ProfileView({
         <Separator />
 
         <JobPostsSection jobPosts={jobPosts} />
+
+        <Separator />
+
+        <ActivitiesSection activities={activities} />
       </div>
 
       <ProfileSidebar formData={formData} />

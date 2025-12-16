@@ -19,7 +19,7 @@ export function JobPostsSection({ jobPosts }: JobPostsSectionProps) {
         >
           <h3 className="section-heading">
             Job Posts{' '}
-            <span className="font-normal text-base text-muted-foreground">
+            <span className="text-base font-normal text-muted-foreground">
               ({jobPosts.length})
             </span>
           </h3>

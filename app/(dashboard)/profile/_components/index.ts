@@ -1,7 +1,8 @@
-export * from './job-posts-section';
-export * from './profile-edit-form';
-export * from './profile-header';
-export * from './profile-sidebar';
-export * from './profile-view';
-export * from './types';
-export * from './use-profile';
+export { ActivitiesSection, type Activity } from './activities-section';
+export { JobPostsSection } from './job-posts-section';
+export { ProfileEditForm } from './profile-edit-form';
+export { ProfileHeader } from './profile-header';
+export { ProfileSidebar } from './profile-sidebar';
+export { ProfileView } from './profile-view';
+export type { Job, ProfileFormData } from './types';
+export { useProfile } from './use-profile';
