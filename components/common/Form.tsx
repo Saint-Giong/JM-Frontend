@@ -58,7 +58,7 @@ export function FormInput({
       <PasswordField className="space-y-2">
         <Label className="block font-medium text-foreground text-sm">
           {label}
-          {required && <span className="text-foreground"> *</span>}
+          {required && <span className="text-red-500"> *</span>}
         </Label>
         <div className="relative">
           <PasswordInput
@@ -79,7 +79,7 @@ export function FormInput({
     <div className="space-y-2">
       <Label className="block font-medium text-foreground text-sm">
         {label}
-        {required && <span className="text-foreground"> *</span>}
+        {required && <span className="text-red-500"> *</span>}
       </Label>
       <div className="relative">
         <input
@@ -226,7 +226,7 @@ interface FormProps {
 
 export function Form({ children, onSubmit, className = '' }: FormProps) {
   return (
-    <form onSubmit={onSubmit} className={`space-y-6 ${className}`}>
+    <form onSubmit={onSubmit} noValidate className={`space-y-6 ${className}`}>
       {children}
     </form>
   );

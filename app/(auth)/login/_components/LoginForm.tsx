@@ -26,7 +26,6 @@ export default function LoginForm() {
           label="Email"
           type="email"
           placeholder="example@email.com"
-          required
           {...form.getFieldProps('email')}
         />
 
@@ -35,8 +34,6 @@ export default function LoginForm() {
             label="Password"
             type="password"
             placeholder="••••••••"
-            required
-            minLength={8}
             {...form.getFieldProps('password')}
           />
           <div className="flex justify-end">
