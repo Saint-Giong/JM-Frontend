@@ -12,12 +12,15 @@ export default function ProfilePage() {
     isEditMode,
     isSaving,
     saveSuccess,
+    error,
+    fieldErrors,
     formData,
     city,
     country,
     displayName,
     initials,
     jobPosts,
+    companyId,
     updateFormField,
     handleSaveProfile,
     toggleEditMode,
@@ -37,6 +40,8 @@ export default function ProfilePage() {
               initials={initials}
               isSaving={isSaving}
               saveSuccess={saveSuccess}
+              error={error}
+              fieldErrors={fieldErrors}
               onFieldChange={updateFormField}
               onSubmit={handleSaveProfile}
               onCancel={cancelEdit}
@@ -49,6 +54,7 @@ export default function ProfilePage() {
               displayName={displayName}
               initials={initials}
               jobPosts={jobPosts}
+              companyId={companyId}
             />
           )}
         </div>

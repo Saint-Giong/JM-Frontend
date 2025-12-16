@@ -1,13 +1,40 @@
-export { HttpClient, HttpError, http, createHttpClient } from './http';
+// API exports
 export {
-  createQueryFn,
+  API_VERSION,
+  apiConfig,
+  buildEndpoint,
+  // Services
+  companyApi,
+  companyDataSchema,
+  // Types
+  companySchema,
+  companyUpdateSchema,
+  createCompany,
+  DEFAULT_API_BASE_URL,
+  deleteCompany,
+  // Config
+  getApiBaseUrl,
+  getApiUrl,
+  getCompany,
+  SGJM_PREFIX,
+  updateCompany,
+  type Company,
+  type CompanyData,
+  type CompanyDeleteResponse,
+  type CompanyListResponse,
+  type CompanyResponse,
+  type CompanyUpdate,
+} from './api';
+export { COMMON_SKILLS, DEGREE_LABELS, EDUCATION_OPTIONS } from './constants';
+export {
+  createApiClient,
+  createDeleteFn,
+  createFetcher,
   createMutationFn,
+  createPatchFn,
   createPostFn,
   createPutFn,
-  createPatchFn,
-  createDeleteFn,
-  createApiClient,
-  createFetcher,
+  createQueryFn,
 } from './fetcher';
-export { COMMON_SKILLS, DEGREE_LABELS, EDUCATION_OPTIONS } from './constants';
+export { createHttpClient, http, HttpClient, HttpError } from './http';
 export { formatDate, getDateFromNow, getGreeting } from './utils';

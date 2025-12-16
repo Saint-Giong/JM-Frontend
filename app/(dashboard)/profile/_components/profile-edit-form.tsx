@@ -1,5 +1,6 @@
 'use client';
 
+import type { FieldErrors } from '@/hooks';
 import {
   Avatar,
   AvatarFallback,
@@ -19,12 +20,19 @@ interface ProfileEditFormProps {
   initials: string;
   isSaving: boolean;
   saveSuccess: boolean;
+  error?: string | null;
+  fieldErrors?: FieldErrors;
   onFieldChange: <K extends keyof ProfileFormData>(
     field: K,
     value: ProfileFormData[K]
   ) => void;
   onSubmit: (e: React.FormEvent) => void;
   onCancel: () => void;
+}
+
+function FieldError({ error }: { error?: string }) {
+  if (!error) return null;
+  return <p className="text-destructive text-sm">{error}</p>;
 }
 
 export function ProfileEditForm({
@@ -34,6 +42,8 @@ export function ProfileEditForm({
   initials,
   isSaving,
   saveSuccess,
+  error,
+  fieldErrors = {},
   onFieldChange,
   onSubmit,
   onCancel,
@@ -63,7 +73,9 @@ export function ProfileEditForm({
               value={formData.companyName}
               onChange={(e) => onFieldChange('companyName', e.target.value)}
               placeholder="Your company name"
+              className={fieldErrors.name ? 'border-destructive' : ''}
             />
+            <FieldError error={fieldErrors.name} />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -133,7 +145,9 @@ export function ProfileEditForm({
               value={formData.address}
               onChange={(e) => onFieldChange('address', e.target.value)}
               placeholder="Street address"
+              className={fieldErrors.address ? 'border-destructive' : ''}
             />
+            <FieldError error={fieldErrors.address} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">Phone</Label>
@@ -141,8 +155,16 @@ export function ProfileEditForm({
               id="phone"
               value={formData.phone}
               onChange={(e) => onFieldChange('phone', e.target.value)}
-              placeholder="+84 111 222 3333"
+              placeholder="+1234567890"
+              className={fieldErrors.phone ? 'border-destructive' : ''}
             />
+            {fieldErrors.phone ? (
+              <FieldError error={fieldErrors.phone} />
+            ) : (
+              <p className="text-muted-foreground text-xs">
+                Format: +[country code][number] (e.g., +1234567890)
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
@@ -156,6 +178,17 @@ export function ProfileEditForm({
           </div>
         </div>
       </div>
+
+      {error && Object.keys(fieldErrors).length === 0 && (
+        <div className="rounded-md border border-destructive/50 bg-destructive/10 p-4">
+          <p className="font-medium text-destructive text-sm">
+            Error saving profile:
+          </p>
+          <p className="mt-1 whitespace-pre-line text-destructive text-sm">
+            {error}
+          </p>
+        </div>
+      )}
 
       <div className="flex items-center justify-end gap-3 pt-4">
         {saveSuccess && (

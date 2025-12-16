@@ -13,6 +13,7 @@ interface ProfileViewProps {
   displayName: string;
   initials: string;
   jobPosts: Job[];
+  companyId?: string;
 }
 
 export function ProfileView({
@@ -22,6 +23,7 @@ export function ProfileView({
   displayName,
   initials,
   jobPosts,
+  companyId,
 }: ProfileViewProps) {
   return (
     <div className="flex flex-col gap-8 lg:flex-row">
@@ -39,15 +41,22 @@ export function ProfileView({
             <p className="text-muted-foreground">
               {city}, {country}
             </p>
-            <a
-              href={`https://${formData.website}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-primary text-sm hover:underline"
-            >
-              {formData.website}
-              <ExternalLink className="h-3 w-3" />
-            </a>
+            {companyId && (
+              <p className="font-mono text-muted-foreground text-xs">
+                ID: {companyId}
+              </p>
+            )}
+            {formData.website && (
+              <a
+                href={`https://${formData.website}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-primary text-sm hover:underline"
+              >
+                {formData.website}
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            )}
           </div>
         </div>
 
