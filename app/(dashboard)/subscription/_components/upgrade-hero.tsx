@@ -13,8 +13,8 @@ export function UpgradeHero({ isProcessing, onUpgrade }: UpgradeHeroProps) {
     <div className="relative overflow-hidden border-b bg-gradient-to-b from-amber-50/80 via-orange-50/50 to-background px-6 py-16 dark:from-amber-950/20 dark:via-orange-950/10 dark:to-background">
       {/* Decorative elements */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="-top-24 absolute right-0 h-96 w-96 rounded-full bg-gradient-to-br from-amber-200/30 to-orange-300/20 blur-3xl dark:from-amber-500/10 dark:to-orange-500/5" />
-        <div className="-bottom-12 absolute left-0 h-64 w-64 rounded-full bg-gradient-to-tr from-orange-200/30 to-amber-300/20 blur-3xl dark:from-orange-500/10 dark:to-amber-500/5" />
+        <div className="absolute -top-24 right-0 h-96 w-96 rounded-full bg-gradient-to-br from-amber-200/30 to-orange-300/20 blur-3xl dark:from-amber-500/10 dark:to-orange-500/5" />
+        <div className="absolute -bottom-12 left-0 h-64 w-64 rounded-full bg-gradient-to-tr from-orange-200/30 to-amber-300/20 blur-3xl dark:from-orange-500/10 dark:to-amber-500/5" />
       </div>
 
       <div className="relative mx-auto max-w-4xl text-center">

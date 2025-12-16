@@ -91,7 +91,7 @@ export function FormInput({
           {...props}
         />
         {rightElement && (
-          <div className="-translate-y-1/2 absolute top-1/2 right-0">
+          <div className="absolute top-1/2 right-0 -translate-y-1/2">
             {rightElement}
           </div>
         )}
@@ -129,7 +129,7 @@ function PasswordToggleButton() {
     <button
       type="button"
       onClick={toggle}
-      className="-translate-y-1/2 absolute top-1/2 right-0 text-muted-foreground transition-colors hover:text-foreground"
+      className="absolute top-1/2 right-0 -translate-y-1/2 text-muted-foreground transition-colors hover:text-foreground"
       tabIndex={-1}
     >
       {isVisible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}

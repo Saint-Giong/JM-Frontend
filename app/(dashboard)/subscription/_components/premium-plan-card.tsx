@@ -26,7 +26,7 @@ export function PremiumPlanCard({
   return (
     <Card className="relative border-2 border-amber-500/50 bg-gradient-to-b from-amber-50/50 to-background shadow-xl dark:from-amber-950/20">
       {/* Recommended Badge */}
-      <div className="-translate-x-1/2 -translate-y-1/2 absolute top-0 left-1/2">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
         <Badge className="border-0 bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-1 text-white shadow-lg">
           <Sparkles className="mr-1.5 h-3.5 w-3.5" />
           Recommended

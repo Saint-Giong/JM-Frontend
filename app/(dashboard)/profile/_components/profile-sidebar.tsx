@@ -17,13 +17,6 @@ export function ProfileSidebar({ formData }: ProfileSidebarProps) {
         <p className="text-muted-foreground text-sm leading-relaxed">
           {formData.aboutUs}
         </p>
-        <p className="text-muted-foreground text-sm leading-relaxed">
-          Quisque ac enim diam nunc et morbi enim vitae eu. Ultrices odio nullam
-          egestas aliquam id quis consectetur porttitor. Amet erat in sapien
-          lorem elementum tortor interdum augue. Eleifend turpis quis metus id
-          aliquet et sit suscipit luctus. Erat dolor aenean condimentum sagittis
-          est ac id. Luctus dolor ut sem pellentesque.
-        </p>
       </div>
 
       <Separator />
@@ -38,7 +31,7 @@ export function ProfileSidebar({ formData }: ProfileSidebarProps) {
           </div>
           <div>
             <p className="font-medium">Phone</p>
-            <p className="text-muted-foreground">(+84) {formData.phone}</p>
+            <p className="text-muted-foreground">{formData.phone}</p>
           </div>
           <div>
             <p className="font-medium">Email</p>
