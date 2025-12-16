@@ -10,7 +10,8 @@
     "ff": "biome format --write",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "backend:profile": "cd ../JM-CompanyProfileService/src/main/docker && docker compose up -d && cd ../../.. && chmod +x ./mvnw && ./mvnw install && ./mvnw spring-boot:run"
   },
   "dependencies": {
     "@saint-giong/bamboo-ui": "^0.5.1",
