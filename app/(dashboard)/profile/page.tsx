@@ -1,6 +1,8 @@
 'use client';
 
+import { Loader2 } from 'lucide-react';
 import {
+  CreateProfilePrompt,
   ProfileEditForm,
   ProfileHeader,
   ProfileView,
@@ -10,6 +12,7 @@ import {
 export default function ProfilePage() {
   const {
     isEditMode,
+    isLoading,
     isSaving,
     saveSuccess,
     error,
@@ -22,11 +25,46 @@ export default function ProfilePage() {
     jobPosts,
     activities,
     companyId,
+    resourceNotFound,
     updateFormField,
     handleSaveProfile,
     toggleEditMode,
     cancelEdit,
   } = useProfile();
+
+  // Show loading state while fetching company data
+  if (isLoading) {
+    return (
+      <div className="flex h-screen flex-col overflow-hidden">
+        <ProfileHeader isEditMode={false} onToggleEdit={toggleEditMode} />
+        <main className="flex flex-1 items-center justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-muted-foreground text-sm">Loading profile...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Show create profile prompt when resource is not found
+  if (resourceNotFound && !isEditMode) {
+    return (
+      <div className="flex h-screen flex-col overflow-hidden">
+        <ProfileHeader isEditMode={false} onToggleEdit={toggleEditMode} />
+        <main className="flex-1 overflow-y-auto px-9 py-6">
+          <CreateProfilePrompt
+            formData={formData}
+            isSaving={isSaving}
+            error={error}
+            fieldErrors={fieldErrors}
+            onFieldChange={updateFormField}
+            onSubmit={handleSaveProfile}
+          />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">

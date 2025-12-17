@@ -158,6 +158,7 @@ export function useCompany(initialCompany?: Company | null): UseCompanyReturn {
         const { message, fieldErrors } = handleError(err);
         setState((prev) => ({
           ...prev,
+          company: null, // Clear cached company on error (e.g., 404 after deletion)
           error: message,
           fieldErrors,
           isLoading: false,

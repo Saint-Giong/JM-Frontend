@@ -23,11 +23,11 @@ const COMPANY_ENDPOINT = 'company';
 export async function createCompany(data: CompanyData): Promise<Company> {
   const url = buildEndpoint(COMPANY_ENDPOINT);
 
-  // Clean the data - remove undefined/null values
+  // Clean the data - remove undefined/null values, convert empty strings to null
   const cleanedData = Object.fromEntries(
-    Object.entries(data).filter(
-      ([, value]) => value !== undefined && value !== null && value !== ''
-    )
+    Object.entries(data)
+      .filter(([, value]) => value !== undefined)
+      .map(([key, value]) => [key, value === '' ? null : value])
   );
 
   console.log('[Company API] Creating company:', { url, data: cleanedData });
@@ -86,11 +86,11 @@ export async function updateCompany(
 ): Promise<Company> {
   const url = buildEndpoint(`${COMPANY_ENDPOINT}/${id}`);
 
-  // Clean the data - remove undefined/null values (but keep empty strings for clearing fields)
+  // Clean the data - remove undefined values, convert empty strings to null
   const cleanedData = Object.fromEntries(
-    Object.entries(data).filter(
-      ([, value]) => value !== undefined && value !== null
-    )
+    Object.entries(data)
+      .filter(([, value]) => value !== undefined)
+      .map(([key, value]) => [key, value === '' ? null : value])
   );
 
   console.log('[Company API] Updating company:', {

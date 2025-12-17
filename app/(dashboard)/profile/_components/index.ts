@@ -1,4 +1,5 @@
 export { ActivitiesSection, type Activity } from './activities-section';
+export { CreateProfilePrompt } from './create-profile-prompt';
 export { JobPostsSection } from './job-posts-section';
 export { ProfileEditForm } from './profile-edit-form';
 export { ProfileHeader } from './profile-header';

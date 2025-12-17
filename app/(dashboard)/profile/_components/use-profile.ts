@@ -99,7 +99,41 @@ export function useProfile() {
 
   // Loading state combines all API states
   const isSaving = isCreating || isUpdating;
-  const isLoading = isLoadingCompany;
+
+  // Track initialization state to prevent flash of stale content
+  // - If user has no companyId, we're immediately initialized (no fetch needed)
+  // - If user has companyId, we need to wait for fetch to complete
+  const [isInitialized, setIsInitialized] = useState(!user?.companyId);
+
+  // Handle fetch completion
+  useEffect(() => {
+    // If no companyId, we're already initialized
+    if (!user?.companyId) {
+      setIsInitialized(true);
+      return;
+    }
+
+    // Wait for loading to complete
+    if (isLoadingCompany) {
+      return;
+    }
+
+    // Loading is complete - determine result
+    if (company) {
+      // Successfully loaded company
+      setIsInitialized(true);
+    } else if (apiError) {
+      // Fetch failed (404 or other error)
+      setIsInitialized(true);
+      clearError(); // Clear the 404 error - it's expected
+    }
+  }, [user?.companyId, isLoadingCompany, company, apiError, clearError]);
+
+  // isLoading: true while we're still determining what to show
+  const isLoading = !isInitialized || isLoadingCompany;
+
+  // Resource not found: user has no company to display
+  const resourceNotFound = isInitialized && !company;
 
   const updateFormField = useCallback(
     <K extends keyof ProfileFormData>(field: K, value: ProfileFormData[K]) => {
@@ -119,15 +153,12 @@ export function useProfile() {
       let newCompanyId: string | undefined;
 
       if (company?.id) {
-        // Update existing company
+        // Update existing company (company was successfully fetched)
         const updated = await updateCompany(company.id, companyData);
         success = !!updated;
-      } else if (user?.companyId) {
-        // Update by user's company ID
-        const updated = await updateCompany(user.companyId, companyData);
-        success = !!updated;
       } else {
-        // Create new company (user didn't have one from registration)
+        // Create new company - either user never had one, or the referenced company doesn't exist
+        // This handles the case where user.companyId points to a non-existent company (404)
         const created = await createCompany({
           name: formData.companyName,
           phone: formData.phone || undefined,
@@ -201,6 +232,7 @@ export function useProfile() {
     saveSuccess,
     error: apiError,
     fieldErrors,
+    resourceNotFound,
 
     // Data
     formData,
