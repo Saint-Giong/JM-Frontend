@@ -24,5 +24,4 @@ export {
   DEFAULT_API_BASE_URL,
   getApiBaseUrl,
   getApiUrl,
-  SGJM_PREFIX,
 } from './config';

@@ -14,9 +14,6 @@ const DEFAULT_API_BASE_URL = 'http://localhost:8080';
 // API version prefix
 const API_VERSION = 'v1';
 
-// Service prefix for SGJM endpoints
-const SGJM_PREFIX = 'sgjm';
-
 /**
  * Check if we should use the proxy (client-side in development)
  */
@@ -53,7 +50,7 @@ export function getApiBaseUrl(): string {
  * Get the full API URL with version prefix
  */
 export function getApiUrl(): string {
-  return `${getApiBaseUrl()}/${API_VERSION}/${SGJM_PREFIX}`;
+  return `${getApiBaseUrl()}/${API_VERSION}`;
 }
 
 /**
@@ -85,4 +82,4 @@ declare global {
   }
 }
 
-export { API_VERSION, DEFAULT_API_BASE_URL, SGJM_PREFIX };
+export { API_VERSION, DEFAULT_API_BASE_URL };

@@ -16,7 +16,6 @@ export {
   getApiBaseUrl,
   getApiUrl,
   getCompany,
-  SGJM_PREFIX,
   updateCompany,
   type Company,
   type CompanyData,
