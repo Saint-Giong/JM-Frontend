@@ -18,7 +18,10 @@ export function JobPostsSection({ jobPosts }: JobPostsSectionProps) {
           className="flex items-center gap-2 hover:opacity-70"
         >
           <h3 className="section-heading">
-            Job Posts <span className="text-base font-normal text-muted-foreground">({jobPosts.length})</span>
+            Job Posts{' '}
+            <span className="font-normal text-base text-muted-foreground">
+              ({jobPosts.length})
+            </span>
           </h3>
           <ChevronRight className="h-5 w-5" />
         </button>
@@ -28,7 +31,7 @@ export function JobPostsSection({ jobPosts }: JobPostsSectionProps) {
         </Button>
       </div>
       <div className="relative">
-        <div className="overflow-x-auto grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 scrollbar-hide">
+        <div className="scrollbar-hide grid grid-cols-1 gap-4 overflow-x-auto sm:grid-cols-2 lg:grid-cols-3">
           <div className="flex gap-4 pb-4">
             {jobPosts.slice(0, 8).map((job) => (
               <JobCard key={job.id} job={job} className="w-80 flex-shrink-0" />

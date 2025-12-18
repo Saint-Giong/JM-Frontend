@@ -2,6 +2,7 @@ export interface MockUser {
   id: string;
   email: string;
   password: string;
+  companyId?: string;
   companyName?: string;
   country: string;
   dialCode?: string;

@@ -1,7 +1,5 @@
 'use client';
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 import {
   type LoginResponse,
   login,
@@ -15,9 +13,14 @@ import {
   signupWithGoogle,
 } from '@/app/(auth)/signup/api/signup';
 import type { MockUser } from '@/mocks/users';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export type ProfileUpdateData = Partial<
-  Pick<MockUser, 'companyName' | 'city' | 'address' | 'phoneNumber'>
+  Pick<
+    MockUser,
+    'companyId' | 'companyName' | 'city' | 'country' | 'address' | 'phoneNumber'
+  >
 >;
 
 export interface AuthState {

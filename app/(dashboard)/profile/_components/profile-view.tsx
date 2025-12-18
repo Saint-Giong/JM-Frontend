@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, Separator } from '@saint-giong/bamboo-ui';
 import { ExternalLink } from 'lucide-react';
+import { ActivitiesSection, type Activity } from './activities-section';
 import { JobPostsSection } from './job-posts-section';
 import { ProfileSidebar } from './profile-sidebar';
 import type { Job, ProfileFormData } from './types';
@@ -13,6 +14,8 @@ interface ProfileViewProps {
   displayName: string;
   initials: string;
   jobPosts: Job[];
+  activities: Activity[];
+  companyId?: string;
 }
 
 export function ProfileView({
@@ -22,6 +25,8 @@ export function ProfileView({
   displayName,
   initials,
   jobPosts,
+  activities,
+  companyId,
 }: ProfileViewProps) {
   return (
     <div className="flex flex-col gap-8 lg:flex-row">
@@ -39,15 +44,22 @@ export function ProfileView({
             <p className="text-muted-foreground">
               {city}, {country}
             </p>
-            <a
-              href={`https://${formData.website}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-primary text-sm hover:underline"
-            >
-              {formData.website}
-              <ExternalLink className="h-3 w-3" />
-            </a>
+            {companyId && (
+              <p className="font-mono text-muted-foreground text-xs">
+                ID: {companyId}
+              </p>
+            )}
+            {formData.website && (
+              <a
+                href={`https://${formData.website}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-primary text-sm hover:underline"
+              >
+                {formData.website}
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            )}
           </div>
         </div>
 
@@ -64,6 +76,10 @@ export function ProfileView({
         <Separator />
 
         <JobPostsSection jobPosts={jobPosts} />
+
+        <Separator />
+
+        <ActivitiesSection activities={activities} />
       </div>
 
       <ProfileSidebar formData={formData} />

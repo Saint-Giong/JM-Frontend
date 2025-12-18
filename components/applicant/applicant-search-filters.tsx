@@ -3,17 +3,6 @@
 import { CountryCombobox } from '@/components/ui/country-combobox';
 import { SkillCombobox } from '@/components/ui/skill-combobox';
 import {
-  type ApplicantSearchFilters,
-  COMMON_SKILLS,
-  EDUCATION_OPTIONS,
-  EMPLOYMENT_TYPE_OPTIONS,
-  type EducationDegree,
-  type EmploymentType,
-  type LocationFilter,
-  type SalaryRange,
-  type WorkExperienceFilter,
-} from './types';
-import {
   Badge,
   Button,
   Checkbox,
@@ -23,6 +12,17 @@ import {
   RadioGroupItem,
 } from '@saint-giong/bamboo-ui';
 import { RotateCcw, Search, X } from 'lucide-react';
+import {
+  type ApplicantSearchFilters,
+  COMMON_SKILLS,
+  EDUCATION_OPTIONS,
+  type EducationDegree,
+  EMPLOYMENT_TYPE_OPTIONS,
+  type EmploymentType,
+  type LocationFilter,
+  type SalaryRange,
+  type WorkExperienceFilter,
+} from './types';
 
 interface ApplicantSearchFiltersProps {
   filters: ApplicantSearchFilters;
@@ -71,7 +71,7 @@ export function ApplicantSearchFiltersPanel({
       <div className="space-y-2">
         <Label className="font-medium text-sm">Full-text Search</Label>
         <div className="relative">
-          <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search skills, experience, summary..."
             className="pl-10"

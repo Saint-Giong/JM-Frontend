@@ -5,12 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "buildx": "bun ff && bun lint && bun run build",
     "start": "next start",
     "lint": "biome lint",
     "ff": "biome format --write",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "backend:profile": "cd ../JM-CompanyProfileService/src/main/docker && docker compose up -d && cd ../../.. && chmod +x ./mvnw && ./mvnw install && ./mvnw spring-boot:run"
   },
   "dependencies": {
     "@saint-giong/bamboo-ui": "^0.5.1",
@@ -27,7 +29,7 @@
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/eslint-plugin-query": "^5.91.2",
-    "@types/node": "^25.0.2",
+    "@types/node": "^25.0.3",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.39.2",

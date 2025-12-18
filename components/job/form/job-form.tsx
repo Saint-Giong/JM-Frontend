@@ -171,7 +171,7 @@ export function JobForm({
             onChange={(e) => setExpiryDate(e.target.value || undefined)}
             className="pr-10"
           />
-          <CalendarIcon className="-translate-y-1/2 pointer-events-none absolute top-1/2 right-3 h-4 w-4 text-muted-foreground" />
+          <CalendarIcon className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         </div>
         <p className="text-muted-foreground text-xs">
           Leave empty for no expiry date
