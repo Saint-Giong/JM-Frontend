@@ -15,34 +15,25 @@ const DEFAULT_API_BASE_URL = 'https://localhost:8072';
 const API_VERSION = 'v1';
 
 /**
- * Check if we should use the proxy (client-side in development)
+ * Check if we should use the proxy (client-side always uses proxy to avoid CORS)
  */
 function shouldUseProxy(): boolean {
-  if (typeof window === 'undefined') return false;
-  // Use proxy in development to avoid CORS
-  return process.env.NODE_ENV === 'development';
+  // Always use proxy on client-side to avoid CORS issues
+  return typeof window !== 'undefined';
 }
 
 /**
  * Get the configured API base URL.
- * In development on client-side, uses the proxy to avoid CORS.
- * Priority: Proxy (dev client) > Environment variable > Default value
+ * On client-side, always uses the proxy to avoid CORS.
+ * Priority: Proxy (client) > Environment variable > Default value
  */
 export function getApiBaseUrl(): string {
   if (shouldUseProxy()) {
-    // Use Next.js proxy in development
+    // Use Next.js proxy on client-side to avoid CORS
     return '/api/proxy';
   }
 
-  if (typeof window !== 'undefined') {
-    // Client-side (production)
-    return (
-      process.env.NEXT_PUBLIC_API_BASE_URL ??
-      window.__API_BASE_URL__ ??
-      DEFAULT_API_BASE_URL
-    );
-  }
-  // Server-side
+  // Server-side - direct connection to backend
   return process.env.NEXT_PUBLIC_API_BASE_URL ?? DEFAULT_API_BASE_URL;
 }
 
