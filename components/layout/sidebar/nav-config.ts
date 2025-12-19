@@ -1,6 +1,7 @@
 import {
   Bell,
   Briefcase,
+  Building2,
   CreditCard,
   Home,
   Search,
@@ -22,6 +23,12 @@ export const mainNavItems: NavItem[] = [
     icon: Bell,
     href: '/notifications',
     badge: 2,
+    disabled: false,
+  },
+  {
+    title: 'Companies',
+    icon: Building2,
+    href: '/companies',
     disabled: false,
   },
 ];
