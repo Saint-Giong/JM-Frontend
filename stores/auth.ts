@@ -17,6 +17,7 @@ export interface AuthState {
   // State
   isAuthenticated: boolean;
   isActivated: boolean;
+  companyId: string | null;
   isLoading: boolean;
   error: string | null;
   fieldErrors: Record<string, string> | null;
@@ -41,6 +42,7 @@ export const useAuthStore = create<AuthState>()(
       // Initial state
       isAuthenticated: false,
       isActivated: false,
+      companyId: null,
       isLoading: false,
       error: null,
       fieldErrors: null,
@@ -56,6 +58,7 @@ export const useAuthStore = create<AuthState>()(
           set({
             isAuthenticated: result.success,
             isActivated: result.activated,
+            companyId: result.companyId || null,
             isLoading: false,
           });
 
@@ -153,6 +156,7 @@ export const useAuthStore = create<AuthState>()(
         set({
           isAuthenticated: false,
           isActivated: false,
+          companyId: null,
           error: null,
           fieldErrors: null,
         });
@@ -168,10 +172,11 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      // Only persist auth status flags, not loading/error state
+      // Only persist auth status flags and companyId, not loading/error state
       partialize: (state) => ({
         isAuthenticated: state.isAuthenticated,
         isActivated: state.isActivated,
+        companyId: state.companyId,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
