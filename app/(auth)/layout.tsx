@@ -14,20 +14,21 @@ export default function AuthLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isActivated = useAuthStore((state) => state.isActivated);
   const hasHydrated = useAuthStore((state) => state.hasHydrated);
   const isLogin = pathname === '/login';
   const isSignup = pathname === '/signup';
 
   useEffect(() => {
-    // Redirect logged-in users to dashboard after hydration
-    if (hasHydrated && user) {
+    // Redirect authenticated and activated users to dashboard
+    if (hasHydrated && isAuthenticated && isActivated) {
       router.replace('/dashboard');
     }
-  }, [user, hasHydrated, router]);
+  }, [isAuthenticated, isActivated, hasHydrated, router]);
 
-  // Show nothing while checking auth or if user is logged in
-  if (!hasHydrated || user) {
+  // Show nothing while hydrating or if user is already authenticated and activated
+  if (!hasHydrated || (isAuthenticated && isActivated)) {
     return null;
   }
 

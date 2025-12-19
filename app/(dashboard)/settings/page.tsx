@@ -1,6 +1,5 @@
 'use client';
 
-import { useAuthStore } from '@/stores';
 import {
   Button,
   Card,
@@ -21,14 +20,15 @@ import { Bell, Check, Lock, Settings, User } from 'lucide-react';
 import { useState } from 'react';
 
 export default function SettingsPage() {
-  const { user, updateProfile } = useAuthStore();
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Profile form state
-  const [companyName, setCompanyName] = useState(user?.companyName ?? '');
-  const [city, setCity] = useState(user?.city ?? '');
-  const [address, setAddress] = useState(user?.address ?? '');
+  // Profile form state - with cookie-based auth, these would come from a profile API
+  const [companyName, setCompanyName] = useState('');
+  const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
+  const [email] = useState('');
+  const [country] = useState('');
 
   // Notification preferences
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -40,20 +40,12 @@ export default function SettingsPage() {
     setIsSaving(true);
     setSaveSuccess(false);
 
-    // Simulate API call
+    // TODO: Call profile API to update
     await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Update the store
-    updateProfile({
-      companyName: companyName || undefined,
-      city: city || undefined,
-      address: address || undefined,
-    });
 
     setIsSaving(false);
     setSaveSuccess(true);
 
-    // Hide success indicator after 2 seconds
     setTimeout(() => setSaveSuccess(false), 2000);
   };
 
@@ -111,7 +103,7 @@ export default function SettingsPage() {
                       <Input
                         id="email"
                         type="email"
-                        value={user?.email ?? ''}
+                        value={email}
                         disabled
                         className="bg-muted"
                       />
@@ -136,7 +128,7 @@ export default function SettingsPage() {
                       <Label htmlFor="country">Country</Label>
                       <Input
                         id="country"
-                        value={user?.country ?? ''}
+                        value={country}
                         disabled
                         className="bg-muted"
                       />

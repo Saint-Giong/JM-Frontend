@@ -15,7 +15,7 @@ import type {
  * All endpoints are automatically prefixed with the configured base URL.
  */
 
-const COMPANY_ENDPOINT = 'company';
+const COMPANY_ENDPOINT = 'profile';
 
 /**
  * Create a new company

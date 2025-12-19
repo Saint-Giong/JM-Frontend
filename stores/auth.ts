@@ -1,42 +1,35 @@
 'use client';
 
-import {
-  type LoginResponse,
-  login,
-  loginWithGoogle,
-} from '@/app/(auth)/login/api/login';
-import type { LoginFormData } from '@/app/(auth)/login/api/schema';
 import type { SignupFormData } from '@/app/(auth)/signup/api/schema';
-import {
-  type SignupResponse,
-  signup,
-  signupWithGoogle,
-} from '@/app/(auth)/signup/api/signup';
-import type { MockUser } from '@/mocks/users';
+import { authApi } from '@/lib/api';
+import type { LoginRequest } from '@/lib/api/auth';
+import { HttpError } from '@/lib/http';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type ProfileUpdateData = Partial<
-  Pick<
-    MockUser,
-    'companyId' | 'companyName' | 'city' | 'country' | 'address' | 'phoneNumber'
-  >
->;
+// Backend error response structure
+interface BackendErrorData {
+  message?: string;
+  errorFields?: Record<string, string>;
+}
 
 export interface AuthState {
   // State
-  user: Omit<MockUser, 'password'> | null;
+  isAuthenticated: boolean;
+  isActivated: boolean;
   isLoading: boolean;
   error: string | null;
+  fieldErrors: Record<string, string> | null;
   hasHydrated: boolean;
 
   // Actions
-  login: (data: LoginFormData) => Promise<LoginResponse>;
-  loginWithGoogle: () => Promise<LoginResponse>;
-  signup: (data: SignupFormData) => Promise<SignupResponse>;
-  signupWithGoogle: () => Promise<SignupResponse>;
-  setUser: (user: Omit<MockUser, 'password'>) => void;
-  updateProfile: (data: ProfileUpdateData) => void;
+  login: (
+    data: LoginRequest
+  ) => Promise<{ success: boolean; activated?: boolean }>;
+  loginWithGoogle: () => Promise<void>;
+  signup: (data: SignupFormData) => Promise<{ success: boolean }>;
+  verifyAccount: (otp: string) => Promise<{ success: boolean }>;
+  resendOtp: () => Promise<{ success: boolean }>;
   logout: () => void;
   clearError: () => void;
   setHasHydrated: (hasHydrated: boolean) => void;
@@ -46,92 +39,127 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       // Initial state
-      user: null,
+      isAuthenticated: false,
+      isActivated: false,
       isLoading: false,
       error: null,
+      fieldErrors: null,
       hasHydrated: false,
 
       // Actions
       login: async (data) => {
-        set({ error: null, isLoading: true });
+        set({ error: null, fieldErrors: null, isLoading: true });
 
-        const result = await login(data);
+        try {
+          const result = await authApi.login(data);
 
-        if (result.success && result.user) {
-          set({ user: result.user, isLoading: false });
-        } else if (result.error) {
-          set({ error: result.error, isLoading: false });
-        } else {
-          set({ isLoading: false });
+          set({
+            isAuthenticated: result.success,
+            isActivated: result.activated,
+            isLoading: false,
+          });
+
+          return { success: result.success, activated: result.activated };
+        } catch (err) {
+          const errorData =
+            err instanceof HttpError ? (err.data as BackendErrorData) : null;
+          const message =
+            errorData?.message ||
+            (err instanceof Error ? err.message : 'Login failed');
+          const fieldErrors = errorData?.errorFields || null;
+          set({ error: message, fieldErrors, isLoading: false });
+          return { success: false };
         }
-
-        return result;
       },
 
       loginWithGoogle: async () => {
-        set({ error: null, isLoading: true });
+        set({ error: null, fieldErrors: null, isLoading: true });
 
-        const result = await loginWithGoogle();
-
-        if (result.success && result.user) {
-          set({ user: result.user, isLoading: false });
-        } else if (result.error) {
-          set({ error: result.error, isLoading: false });
-        } else {
-          set({ isLoading: false });
+        try {
+          const redirectUrl = await authApi.getGoogleRedirectUrl();
+          window.location.href = redirectUrl;
+        } catch (err) {
+          const errorData =
+            err instanceof HttpError ? (err.data as BackendErrorData) : null;
+          const message =
+            errorData?.message || 'Failed to get Google redirect URL';
+          set({ error: message, isLoading: false });
         }
-
-        return result;
       },
 
       signup: async (data) => {
-        set({ error: null, isLoading: true });
+        set({ error: null, fieldErrors: null, isLoading: true });
 
-        const result = await signup(data);
+        try {
+          const result = await authApi.register({
+            companyName: data.companyName,
+            email: data.email,
+            password: data.password,
+            country: data.country,
+            phoneNumber:
+              data.dialCode && data.phoneNumber
+                ? `${data.dialCode}${data.phoneNumber}`
+                : data.phoneNumber || 'N/A',
+            city: data.city || '',
+            address: data.address || 'N/A',
+          });
 
-        if (result.success && result.user) {
-          set({ user: result.user, isLoading: false });
-        } else if (result.error) {
-          set({ error: result.error, isLoading: false });
-        } else {
           set({ isLoading: false });
+          return { success: result.success };
+        } catch (err) {
+          const errorData =
+            err instanceof HttpError ? (err.data as BackendErrorData) : null;
+          const message = errorData?.message || 'Signup failed';
+          const fieldErrors = errorData?.errorFields || null;
+          set({ error: message, fieldErrors, isLoading: false });
+          return { success: false };
         }
-
-        return result;
       },
 
-      signupWithGoogle: async () => {
-        set({ error: null, isLoading: true });
+      verifyAccount: async (otp) => {
+        set({ error: null, fieldErrors: null, isLoading: true });
 
-        const result = await signupWithGoogle();
+        try {
+          const result = await authApi.verifyAccount({ otp });
+          set({ isActivated: result.success, isLoading: false });
+          return { success: result.success };
+        } catch (err) {
+          const errorData =
+            err instanceof HttpError ? (err.data as BackendErrorData) : null;
+          const message = errorData?.message || 'Verification failed';
+          const fieldErrors = errorData?.errorFields || null;
+          set({ error: message, fieldErrors, isLoading: false });
+          return { success: false };
+        }
+      },
 
-        if (result.success && result.user) {
-          set({ user: result.user, isLoading: false });
-        } else if (result.error) {
-          set({ error: result.error, isLoading: false });
-        } else {
+      resendOtp: async () => {
+        set({ error: null, fieldErrors: null, isLoading: true });
+
+        try {
+          const result = await authApi.resendOtp();
           set({ isLoading: false });
+          return { success: result.success };
+        } catch (err) {
+          const errorData =
+            err instanceof HttpError ? (err.data as BackendErrorData) : null;
+          const message = errorData?.message || 'Failed to resend OTP';
+          set({ error: message, isLoading: false });
+          return { success: false };
         }
-
-        return result;
-      },
-
-      setUser: (user) => {
-        set({ user });
-      },
-
-      updateProfile: (data) => {
-        set((state) => ({
-          user: state.user ? { ...state.user, ...data } : null,
-        }));
       },
 
       logout: () => {
-        set({ user: null, isLoading: false, error: null });
+        set({
+          isAuthenticated: false,
+          isActivated: false,
+          error: null,
+          fieldErrors: null,
+        });
       },
 
       clearError: () => {
-        set({ error: null });
+        set({ error: null, fieldErrors: null });
       },
 
       setHasHydrated: (hasHydrated) => {
@@ -140,7 +168,11 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({ user: state.user }),
+      // Only persist auth status flags, not loading/error state
+      partialize: (state) => ({
+        isAuthenticated: state.isAuthenticated,
+        isActivated: state.isActivated,
+      }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

@@ -6,13 +6,10 @@ import {
   dashboardStats,
   recentApplications,
 } from '@/mocks/dashboard';
-import { useAuthStore } from '@/stores';
 
 export function useDashboard() {
-  const { user } = useAuthStore();
-
-  const displayName =
-    user?.companyName || user?.email?.split('@')[0] || 'there';
+  // With cookie-based auth, company name would come from a profile API
+  const displayName = 'there';
   const greeting = getGreeting();
 
   return {

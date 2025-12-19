@@ -15,6 +15,7 @@ export default function SignupForm() {
     handleGoogleSignup,
     passwordRequirements,
     signupError,
+    fieldErrors,
     currentStep,
     totalSteps,
     steps,
@@ -40,9 +41,15 @@ export default function SignupForm() {
         <StepTitle title={currentStepConfig.title} email={form.values.email} />
       )}
 
-      {signupError && (
-        <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-600 text-sm">
-          {signupError}
+      {(signupError || fieldErrors) && (
+        <div className="space-y-1 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-600 text-sm">
+          {signupError && <div>{signupError}</div>}
+          {fieldErrors &&
+            Object.entries(fieldErrors).map(([field, message]) => (
+              <div key={field}>
+                <strong className="capitalize">{field}:</strong> {message}
+              </div>
+            ))}
         </div>
       )}
 

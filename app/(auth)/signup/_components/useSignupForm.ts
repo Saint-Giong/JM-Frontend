@@ -1,12 +1,10 @@
 'use client';
 
+import { useFormValidation } from '@/components/headless/form';
+import { useAuthStore } from '@/stores';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { useFormValidation } from '@/components/headless/form';
-import type { MockUser } from '@/mocks/users';
-import { useAuthStore } from '@/stores';
 import { passwordRequirements, signupSchema } from '../api/schema';
-import { signup } from '../api/signup';
 
 export const SIGNUP_STEPS = [
   { id: 1, title: 'Account', fields: ['email', 'password'] },
@@ -35,20 +33,24 @@ const initialValues = {
  */
 export function useSignupForm() {
   const router = useRouter();
-  const { signupWithGoogle, setUser } = useAuthStore();
+  const {
+    signup,
+    loginWithGoogle,
+    verifyAccount,
+    resendOtp,
+    isLoading: authLoading,
+    error: authError,
+    fieldErrors: authFieldErrors,
+    clearError,
+  } = useAuthStore();
   const form = useFormValidation(signupSchema, initialValues);
   const [currentStep, setCurrentStep] = useState(1);
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
-  // Store pending user until OTP verification is complete
-  const [pendingUser, setPendingUser] = useState<Omit<
-    MockUser,
-    'password'
-  > | null>(null);
 
-  const clearError = () => setError(null);
+  const clearLocalError = () => setError(null);
 
   const totalSteps = SIGNUP_STEPS.length;
 
@@ -123,32 +125,32 @@ export function useSignupForm() {
         setError(null);
         const result = await signup(data);
         setIsLoading(false);
-        if (result.success && result.user) {
-          // Store user temporarily, don't set in auth store yet
-          setPendingUser(result.user);
+        if (result.success) {
           // Account created, proceed to verification step
           goToNextStep();
-        } else if (result.error) {
-          setError(result.error);
+        } else if (authError) {
+          setError(authError);
         }
       }
       return;
     }
 
-    // Step 4: Verify OTP (any code works for now)
+    // Step 4: Verify OTP
     if (currentStep === 4) {
-      if (otp.length === 6 && pendingUser) {
-        // Mock verification - any 6-digit code is accepted
+      if (otp.length === 6) {
         setIsLoading(true);
-        // Simulate verification delay
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        setError(null);
+        const result = await verifyAccount(otp);
         setIsLoading(false);
-        setIsVerified(true);
-        // Show success state briefly before redirecting
-        setTimeout(() => {
-          setUser(pendingUser);
-          router.push('/');
-        }, 1500);
+        if (result.success) {
+          setIsVerified(true);
+          // Show success state briefly before redirecting
+          setTimeout(() => {
+            router.push('/');
+          }, 1500);
+        } else if (authError) {
+          setError(authError);
+        }
       }
       return;
     }
@@ -161,20 +163,31 @@ export function useSignupForm() {
   };
 
   const handleGoogleSignup = async () => {
-    const result = await signupWithGoogle();
-    if (result.success) {
-      router.push('/');
+    // This will redirect to Google OAuth
+    await loginWithGoogle();
+  };
+
+  const handleResendOtp = async () => {
+    setError(null);
+    const result = await resendOtp();
+    if (!result.success && authError) {
+      setError(authError);
     }
   };
 
   return {
     form,
     handleSubmit,
-    isSubmitting: isLoading,
-    signupError: error,
-    clearError,
+    isSubmitting: isLoading || authLoading,
+    signupError: error || authError,
+    clearError: () => {
+      clearLocalError();
+      clearError();
+    },
     handleGoogleSignup,
     passwordRequirements: computedPasswordRequirements,
+    // Errors
+    fieldErrors: authFieldErrors,
     // Multi-step
     currentStep,
     totalSteps,
@@ -189,5 +202,6 @@ export function useSignupForm() {
     otp,
     setOtp,
     isVerified,
+    handleResendOtp,
   };
 }

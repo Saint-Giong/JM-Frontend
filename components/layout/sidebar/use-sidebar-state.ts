@@ -14,16 +14,11 @@ function getInitials(name: string): string {
     .slice(0, 2);
 }
 
-function getDisplayName(user: { email: string; companyName?: string }): string {
-  if (user.companyName) return user.companyName;
-  return user.email.split('@')[0];
-}
-
 export function useSidebarState() {
   const router = useRouter();
   const { open, toggleSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
-  const { user, logout } = useAuthStore();
+  const { isAuthenticated, logout } = useAuthStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -31,9 +26,11 @@ export function useSidebarState() {
     setMounted(true);
   }, []);
 
-  const displayName = user ? getDisplayName(user) : 'Guest';
-  const userEmail = user?.email ?? 'Not signed in';
-  const initials = user ? getInitials(displayName) : 'G';
+  // With cookie-based auth, we don't have user details on the client
+  // These would need to come from a separate profile API call
+  const displayName = 'Company';
+  const userEmail = isAuthenticated ? 'Authenticated' : 'Not signed in';
+  const initials = getInitials(displayName);
 
   const handleLogout = () => {
     logout();

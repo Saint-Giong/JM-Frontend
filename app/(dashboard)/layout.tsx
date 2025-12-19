@@ -13,18 +13,25 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isActivated = useAuthStore((state) => state.isActivated);
   const hasHydrated = useAuthStore((state) => state.hasHydrated);
 
   useEffect(() => {
     // Only redirect after hydration is complete
-    if (hasHydrated && !user) {
-      router.replace('/login');
-    }
-  }, [user, hasHydrated, router]);
+    if (!hasHydrated) return;
 
-  // Don't render dashboard until hydration is complete and user is confirmed
-  if (!hasHydrated || !user) {
+    // Redirect unauthenticated users to login
+    if (!isAuthenticated) {
+      router.replace('/login');
+    } else if (!isActivated) {
+      // User is logged in but not activated - redirect to verify
+      router.replace('/verify');
+    }
+  }, [isAuthenticated, isActivated, hasHydrated, router]);
+
+  // Don't render dashboard until hydration is complete and user is authenticated and activated
+  if (!hasHydrated || !isAuthenticated || !isActivated) {
     return null;
   }
 

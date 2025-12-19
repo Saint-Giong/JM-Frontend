@@ -3,7 +3,7 @@
 import { useCompany } from '@/hooks';
 import { mockActivities } from '@/mocks/activities';
 import { mockJobs } from '@/mocks/jobs';
-import { useAuthStore, useProfileStore } from '@/stores';
+import { useProfileStore } from '@/stores';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fromCompany, type ProfileFormData, toCompanyUpdate } from './types';
 
@@ -28,7 +28,6 @@ function getInitials(name: string): string {
  * - Loading and error states
  */
 export function useProfile() {
-  const { user, updateProfile } = useAuthStore();
   const {
     company,
     isLoading: isLoadingCompany,
@@ -50,34 +49,29 @@ export function useProfile() {
   // Track user edits separately from company data
   const [userEdits, setUserEdits] = useState<Partial<ProfileFormData>>({});
 
+  // Store companyId from query param or company response
+  const [companyId, setCompanyId] = useState<string | undefined>(undefined);
+
   // Compute form data: company data as base, with user edits overlaid
   const baseFormData = useMemo<ProfileFormData>(() => {
     if (company) {
       return fromCompany(company, {
         website: '',
-        email: user?.email ?? '',
+        email: '',
       });
     }
     return {
-      companyName: user?.companyName ?? '',
+      companyName: '',
       website: '',
       aboutUs: '',
       whoWeAreLookingFor: '',
-      address: user?.address ?? '',
-      city: user?.city ?? '',
-      country: user?.country ?? '',
-      phone: user?.phoneNumber ?? '',
-      email: user?.email ?? '',
+      address: '',
+      city: '',
+      country: '',
+      phone: '',
+      email: '',
     };
-  }, [
-    company,
-    user?.companyName,
-    user?.address,
-    user?.city,
-    user?.country,
-    user?.phoneNumber,
-    user?.email,
-  ]);
+  }, [company]);
 
   // Merge base data with user edits
   const formData = useMemo<ProfileFormData>(
@@ -85,56 +79,44 @@ export function useProfile() {
     [baseFormData, userEdits]
   );
 
-  // Load company data on mount if user has companyId
+  // Load company data on mount if companyId is set
   useEffect(() => {
-    const companyId = user?.companyId;
     if (companyId) {
       fetchCompany(companyId);
     }
-  }, [user?.companyId, fetchCompany]);
+  }, [companyId, fetchCompany]);
 
-  const city = formData.city || user?.city || '';
-  const country = formData.country || user?.country || '';
+  const city = formData.city || '';
+  const country = formData.country || '';
   const displayName = formData.companyName || 'Company Name';
   const initials = getInitials(displayName);
-  const companyId = company?.id ?? user?.companyId;
 
   // Loading state combines all API states
   const isSaving = isCreating || isUpdating;
 
-  // Track initialization state to prevent flash of stale content
-  // - If user has no companyId, we're immediately initialized (no fetch needed)
-  // - If user has companyId, we need to wait for fetch to complete
-  const [isInitialized, setIsInitialized] = useState(!user?.companyId);
+  // Track initialization state
+  const [isInitialized, setIsInitialized] = useState(!companyId);
 
   // Handle fetch completion
   useEffect(() => {
-    // If no companyId, we're already initialized
-    if (!user?.companyId) {
+    if (!companyId) {
       setIsInitialized(true);
       return;
     }
 
-    // Wait for loading to complete
     if (isLoadingCompany) {
       return;
     }
 
-    // Loading is complete - determine result
     if (company) {
-      // Successfully loaded company
       setIsInitialized(true);
     } else if (apiError) {
-      // Fetch failed (404 or other error)
       setIsInitialized(true);
-      clearError(); // Clear the 404 error - it's expected
+      clearError();
     }
-  }, [user?.companyId, isLoadingCompany, company, apiError, clearError]);
+  }, [companyId, isLoadingCompany, company, apiError, clearError]);
 
-  // isLoading: true while we're still determining what to show
   const isLoading = !isInitialized || isLoadingCompany;
-
-  // Resource not found: user has no company to display
   const resourceNotFound = isInitialized && !company;
 
   const updateFormField = useCallback(
@@ -155,12 +137,9 @@ export function useProfile() {
       let newCompanyId: string | undefined;
 
       if (company?.id) {
-        // Update existing company (company was successfully fetched)
         const updated = await updateCompany(company.id, companyData);
         success = !!updated;
       } else {
-        // Create new company - either user never had one, or the referenced company doesn't exist
-        // This handles the case where user.companyId points to a non-existent company (404)
         const created = await createCompany({
           name: formData.companyName,
           phone: formData.phone || undefined,
@@ -175,33 +154,16 @@ export function useProfile() {
       }
 
       if (success) {
-        // Update local auth store with company ID and profile data
-        updateProfile({
-          companyId: newCompanyId || user?.companyId,
-          companyName: formData.companyName || undefined,
-          address: formData.address || undefined,
-          city: formData.city || undefined,
-          country: formData.country || undefined,
-          phoneNumber: formData.phone || undefined,
-        });
-
-        // Clear user edits after successful save
+        if (newCompanyId) {
+          setCompanyId(newCompanyId);
+        }
         setUserEdits({});
         setSaveSuccess(true);
         setEditMode(false);
         setTimeout(() => setSaveSuccess(false), 2000);
       }
     },
-    [
-      formData,
-      company,
-      user,
-      updateCompany,
-      createCompany,
-      updateProfile,
-      clearError,
-      setEditMode,
-    ]
+    [formData, company, updateCompany, createCompany, clearError, setEditMode]
   );
 
   const toggleEditMode = useCallback(() => {
@@ -212,16 +174,15 @@ export function useProfile() {
   const cancelEdit = useCallback(() => {
     setEditMode(false);
     clearError();
-    // Reset user edits to revert to base company data
     setUserEdits({});
   }, [clearError, setEditMode]);
 
   const refreshCompany = useCallback(async () => {
-    const id = company?.id ?? user?.companyId;
+    const id = company?.id ?? companyId;
     if (id) {
       await fetchCompany(id);
     }
-  }, [company?.id, user?.companyId, fetchCompany]);
+  }, [company?.id, companyId, fetchCompany]);
 
   const sortedActivities = [...mockActivities].sort((a, b) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
@@ -240,7 +201,7 @@ export function useProfile() {
     // Data
     formData,
     company,
-    companyId,
+    companyId: company?.id ?? companyId,
     city,
     country,
     displayName,
@@ -255,5 +216,6 @@ export function useProfile() {
     cancelEdit,
     refreshCompany,
     clearError,
+    setCompanyId,
   };
 }

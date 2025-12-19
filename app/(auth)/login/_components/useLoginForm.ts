@@ -1,8 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useFormValidation } from '@/components/headless/form';
 import { useAuthStore } from '@/stores';
+import { useRouter } from 'next/navigation';
 import { loginSchema } from '../api/schema';
 
 /**
@@ -22,15 +22,18 @@ export function useLoginForm() {
 
     const result = await login(validData);
     if (result.success) {
-      router.push('/');
+      if (result.activated) {
+        router.push('/');
+      } else {
+        // Account needs activation - redirect to OTP verification
+        router.push('/verify');
+      }
     }
   };
 
   const handleGoogleLogin = async () => {
-    const result = await loginWithGoogle();
-    if (result.success) {
-      router.push('/');
-    }
+    // This will redirect to Google OAuth
+    await loginWithGoogle();
   };
 
   return {

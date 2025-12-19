@@ -9,7 +9,7 @@
  */
 
 // Default API base URL - can be overridden via environment variable
-const DEFAULT_API_BASE_URL = 'http://localhost:8080';
+const DEFAULT_API_BASE_URL = 'https://localhost:8072';
 
 // API version prefix
 const API_VERSION = 'v1';
