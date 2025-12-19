@@ -1,8 +1,9 @@
 'use client';
 
 import type { SignupFormData } from '@/app/(auth)/signup/api/schema';
-import { authApi } from '@/lib/api';
+import { authApi, profileApi } from '@/lib/api';
 import type { LoginRequest } from '@/lib/api/auth';
+import type { CompanyProfile } from '@/lib/api/profile';
 import { HttpError } from '@/lib/http';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -18,6 +19,8 @@ export interface AuthState {
   isAuthenticated: boolean;
   isActivated: boolean;
   companyId: string | null;
+  userEmail: string | null;
+  companyProfile: CompanyProfile | null;
   isLoading: boolean;
   error: string | null;
   fieldErrors: Record<string, string> | null;
@@ -31,6 +34,7 @@ export interface AuthState {
   signup: (data: SignupFormData) => Promise<{ success: boolean }>;
   verifyAccount: (otp: string) => Promise<{ success: boolean }>;
   resendOtp: () => Promise<{ success: boolean }>;
+  fetchCompanyProfile: () => Promise<CompanyProfile | null>;
   logout: () => void;
   clearError: () => void;
   setHasHydrated: (hasHydrated: boolean) => void;
@@ -38,11 +42,13 @@ export interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       // Initial state
       isAuthenticated: false,
       isActivated: false,
       companyId: null,
+      userEmail: null,
+      companyProfile: null,
       isLoading: false,
       error: null,
       fieldErrors: null,
@@ -59,8 +65,15 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: result.success,
             isActivated: result.activated,
             companyId: result.companyId || null,
+            userEmail: data.email,
             isLoading: false,
           });
+
+          // Fetch company profile if login successful and we have companyId
+          if (result.success && result.companyId) {
+            // Don't await - let it load in background
+            get().fetchCompanyProfile();
+          }
 
           return { success: result.success, activated: result.activated };
         } catch (err) {
@@ -152,11 +165,29 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
+      fetchCompanyProfile: async () => {
+        const { companyId } = get();
+        if (!companyId) {
+          return null;
+        }
+
+        try {
+          const profile = await profileApi.get(companyId);
+          set({ companyProfile: profile });
+          return profile;
+        } catch (err) {
+          console.error('Failed to fetch company profile:', err);
+          return null;
+        }
+      },
+
       logout: () => {
         set({
           isAuthenticated: false,
           isActivated: false,
           companyId: null,
+          userEmail: null,
+          companyProfile: null,
           error: null,
           fieldErrors: null,
         });
@@ -172,11 +203,13 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      // Only persist auth status flags and companyId, not loading/error state
+      // Only persist auth status flags, companyId, email and profile, not loading/error state
       partialize: (state) => ({
         isAuthenticated: state.isAuthenticated,
         isActivated: state.isActivated,
         companyId: state.companyId,
+        userEmail: state.userEmail,
+        companyProfile: state.companyProfile,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);

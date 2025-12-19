@@ -27,3 +27,5 @@ export {
   getApiBaseUrl,
   getApiUrl,
 } from './config';
+// Re-export profile API
+export * from './profile';

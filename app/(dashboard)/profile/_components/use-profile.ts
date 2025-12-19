@@ -3,7 +3,7 @@
 import { useCompany } from '@/hooks';
 import { mockActivities } from '@/mocks/activities';
 import { mockJobs } from '@/mocks/jobs';
-import { useProfileStore } from '@/stores';
+import { useAuthStore, useProfileStore } from '@/stores';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fromCompany, type ProfileFormData, toCompanyUpdate } from './types';
 
@@ -28,6 +28,9 @@ function getInitials(name: string): string {
  * - Loading and error states
  */
 export function useProfile() {
+  // Get companyId from auth store
+  const authCompanyId = useAuthStore((state) => state.companyId);
+
   const {
     company,
     isLoading: isLoadingCompany,
@@ -49,8 +52,11 @@ export function useProfile() {
   // Track user edits separately from company data
   const [userEdits, setUserEdits] = useState<Partial<ProfileFormData>>({});
 
-  // Store companyId from query param or company response
-  const [companyId, setCompanyId] = useState<string | undefined>(undefined);
+  // Use companyId from auth store, or allow override
+  const [overrideCompanyId, setOverrideCompanyId] = useState<
+    string | undefined
+  >(undefined);
+  const companyId = overrideCompanyId || authCompanyId || undefined;
 
   // Compute form data: company data as base, with user edits overlaid
   const baseFormData = useMemo<ProfileFormData>(() => {
@@ -155,7 +161,7 @@ export function useProfile() {
 
       if (success) {
         if (newCompanyId) {
-          setCompanyId(newCompanyId);
+          setOverrideCompanyId(newCompanyId);
         }
         setUserEdits({});
         setSaveSuccess(true);
@@ -216,6 +222,6 @@ export function useProfile() {
     cancelEdit,
     refreshCompany,
     clearError,
-    setCompanyId,
+    setCompanyId: setOverrideCompanyId,
   };
 }

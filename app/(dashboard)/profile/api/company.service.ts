@@ -37,6 +37,7 @@ export async function createCompany(data: CompanyData): Promise<Company> {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
     body: JSON.stringify(cleanedData),
   });
 
@@ -66,6 +67,7 @@ export async function getCompany(id: string): Promise<Company> {
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -75,6 +77,30 @@ export async function getCompany(id: string): Promise<Company> {
 
   const result: CompanyResponse = await response.json();
   return result.data ?? result;
+}
+
+/**
+ * Get all companies
+ */
+export async function getAllCompanies(): Promise<Company[]> {
+  const url = buildEndpoint(`${COMPANY_ENDPOINT}/profiles`);
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new HttpError(response.status, response.statusText, errorData);
+  }
+
+  const result = await response.json();
+  // Handle both array and wrapped response formats
+  return Array.isArray(result) ? result : (result.data ?? []);
 }
 
 /**
@@ -104,6 +130,7 @@ export async function updateCompany(
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
     body: JSON.stringify(cleanedData),
   });
 
@@ -139,6 +166,7 @@ export async function deleteCompany(
     headers: {
       'Content-Type': 'application/json',
     },
+    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -161,6 +189,7 @@ export async function deleteCompany(
 export const companyApi = {
   create: createCompany,
   get: getCompany,
+  getAll: getAllCompanies,
   update: updateCompany,
   delete: deleteCompany,
 } as const;

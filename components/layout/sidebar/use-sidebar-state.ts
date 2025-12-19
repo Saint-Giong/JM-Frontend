@@ -18,7 +18,7 @@ export function useSidebarState() {
   const router = useRouter();
   const { open, toggleSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
-  const { isAuthenticated, logout } = useAuthStore();
+  const { isAuthenticated, companyProfile, userEmail, logout } = useAuthStore();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -26,10 +26,11 @@ export function useSidebarState() {
     setMounted(true);
   }, []);
 
-  // With cookie-based auth, we don't have user details on the client
-  // These would need to come from a separate profile API call
-  const displayName = 'Company';
-  const userEmail = isAuthenticated ? 'Authenticated' : 'Not signed in';
+  // Get display name from company profile, fallback to "Company"
+  const displayName = companyProfile?.name || 'Company';
+  // Get email from auth state
+  const displayEmail =
+    userEmail || (isAuthenticated ? 'Authenticated' : 'Not signed in');
   const initials = getInitials(displayName);
 
   const handleLogout = () => {
@@ -50,7 +51,7 @@ export function useSidebarState() {
     cycleTheme,
     mounted,
     displayName,
-    userEmail,
+    userEmail: displayEmail,
     initials,
     handleLogout,
     router,
