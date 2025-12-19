@@ -29,7 +29,7 @@ export interface LoginRequest {
 export interface LoginResponse {
   success: boolean;
   message: string;
-  activated: boolean;
+  isActivated: boolean;
   companyId?: string;
   accessToken?: string;
   refreshToken?: string;
