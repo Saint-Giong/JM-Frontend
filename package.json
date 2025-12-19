@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently -n frontend,backend -c blue,green \"bun run dev:frontend\" \"bun run dev:backend\"",
+    "dev:frontend": "next dev",
+    "dev:backend": "cd ../JM-Backend && docker compose up -d --build --force-recreate",
+    "shutdown": "docker compose down",
     "build": "next build",
     "buildx": "bun ff && bun lint && bun run build",
     "start": "next start",
@@ -11,8 +14,7 @@
     "ff": "biome format --write",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "backend:profile": "cd ../JM-CompanyProfileService/src/main/docker && docker compose up -d && cd ../../.. && chmod +x ./mvnw && ./mvnw install && ./mvnw spring-boot:run"
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@saint-giong/bamboo-ui": "^0.5.1",
@@ -32,6 +34,7 @@
     "@types/node": "^25.0.3",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "concurrently": "^9.2.1",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.0",
     "tailwindcss": "^4.1.18",
