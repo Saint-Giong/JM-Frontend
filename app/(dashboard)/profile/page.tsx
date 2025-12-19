@@ -4,7 +4,6 @@ import { Loader2 } from 'lucide-react';
 import {
   CreateProfilePrompt,
   ProfileEditForm,
-  ProfileHeader,
   ProfileView,
   useProfile,
 } from './_components';
@@ -28,21 +27,17 @@ export default function ProfilePage() {
     resourceNotFound,
     updateFormField,
     handleSaveProfile,
-    toggleEditMode,
     cancelEdit,
   } = useProfile();
 
   // Show loading state while fetching company data
   if (isLoading) {
     return (
-      <div className="flex h-screen flex-col overflow-hidden">
-        <ProfileHeader isEditMode={false} onToggleEdit={toggleEditMode} />
-        <main className="flex flex-1 items-center justify-center">
-          <div className="flex flex-col items-center gap-3">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-muted-foreground text-sm">Loading profile...</p>
-          </div>
-        </main>
+      <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground text-sm">Loading profile...</p>
+        </div>
       </div>
     );
   }
@@ -50,55 +45,45 @@ export default function ProfilePage() {
   // Show create profile prompt when resource is not found
   if (resourceNotFound && !isEditMode) {
     return (
-      <div className="flex h-screen flex-col overflow-hidden">
-        <ProfileHeader isEditMode={false} onToggleEdit={toggleEditMode} />
-        <main className="flex-1 overflow-y-auto px-9 py-6">
-          <CreateProfilePrompt
-            formData={formData}
-            isSaving={isSaving}
-            error={error}
-            fieldErrors={fieldErrors}
-            onFieldChange={updateFormField}
-            onSubmit={handleSaveProfile}
-          />
-        </main>
-      </div>
+      <CreateProfilePrompt
+        formData={formData}
+        isSaving={isSaving}
+        error={error}
+        fieldErrors={fieldErrors}
+        onFieldChange={updateFormField}
+        onSubmit={handleSaveProfile}
+      />
     );
   }
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden">
-      <ProfileHeader isEditMode={isEditMode} onToggleEdit={toggleEditMode} />
-      <main className="flex-1 overflow-y-auto px-9 py-6">
-        <div className="mx-auto max-w-8xl">
-          {isEditMode ? (
-            <ProfileEditForm
-              formData={formData}
-              city={city}
-              country={country}
-              initials={initials}
-              isSaving={isSaving}
-              saveSuccess={saveSuccess}
-              error={error}
-              fieldErrors={fieldErrors}
-              onFieldChange={updateFormField}
-              onSubmit={handleSaveProfile}
-              onCancel={cancelEdit}
-            />
-          ) : (
-            <ProfileView
-              formData={formData}
-              city={city}
-              country={country}
-              displayName={displayName}
-              initials={initials}
-              jobPosts={jobPosts}
-              companyId={companyId}
-              activities={activities}
-            />
-          )}
-        </div>
-      </main>
+    <div className="mx-auto max-w-8xl">
+      {isEditMode ? (
+        <ProfileEditForm
+          formData={formData}
+          city={city}
+          country={country}
+          initials={initials}
+          isSaving={isSaving}
+          saveSuccess={saveSuccess}
+          error={error}
+          fieldErrors={fieldErrors}
+          onFieldChange={updateFormField}
+          onSubmit={handleSaveProfile}
+          onCancel={cancelEdit}
+        />
+      ) : (
+        <ProfileView
+          formData={formData}
+          city={city}
+          country={country}
+          displayName={displayName}
+          initials={initials}
+          jobPosts={jobPosts}
+          companyId={companyId}
+          activities={activities}
+        />
+      )}
     </div>
   );
 }

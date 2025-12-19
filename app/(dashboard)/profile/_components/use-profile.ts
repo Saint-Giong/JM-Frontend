@@ -3,7 +3,7 @@
 import { useCompany } from '@/hooks';
 import { mockActivities } from '@/mocks/activities';
 import { mockJobs } from '@/mocks/jobs';
-import { useAuthStore } from '@/stores';
+import { useAuthStore, useProfileStore } from '@/stores';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fromCompany, type ProfileFormData, toCompanyUpdate } from './types';
 
@@ -42,7 +42,9 @@ export function useProfile() {
     clearError,
   } = useCompany();
 
-  const [isEditMode, setIsEditMode] = useState(false);
+  // Use Zustand store for shared edit mode state
+  const isEditMode = useProfileStore((state) => state.isEditMode);
+  const setEditMode = useProfileStore((state) => state.setEditMode);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Track user edits separately from company data
@@ -186,7 +188,7 @@ export function useProfile() {
         // Clear user edits after successful save
         setUserEdits({});
         setSaveSuccess(true);
-        setIsEditMode(false);
+        setEditMode(false);
         setTimeout(() => setSaveSuccess(false), 2000);
       }
     },
@@ -198,20 +200,21 @@ export function useProfile() {
       createCompany,
       updateProfile,
       clearError,
+      setEditMode,
     ]
   );
 
   const toggleEditMode = useCallback(() => {
-    setIsEditMode((prev) => !prev);
+    setEditMode(!isEditMode);
     clearError();
-  }, [clearError]);
+  }, [clearError, isEditMode, setEditMode]);
 
   const cancelEdit = useCallback(() => {
-    setIsEditMode(false);
+    setEditMode(false);
     clearError();
     // Reset user edits to revert to base company data
     setUserEdits({});
-  }, [clearError]);
+  }, [clearError, setEditMode]);
 
   const refreshCompany = useCallback(async () => {
     const id = company?.id ?? user?.companyId;
