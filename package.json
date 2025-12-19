@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "concurrently -n frontend,backend -c blue,green \"bun run dev:frontend\" \"bun run dev:backend\"",
     "dev:frontend": "next dev",
-    "dev:backend": "cd ../JM-Backend && docker compose up -d --build --force-recreate",
+    "dev:backend": "cd ../JM-Backend && git pull && docker compose up -d --build --force-recreate",
     "shutdown": "docker compose down",
     "build": "next build",
     "buildx": "bun ff && bun lint && bun run build",
