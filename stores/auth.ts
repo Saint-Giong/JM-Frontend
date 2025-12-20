@@ -35,7 +35,7 @@ export interface AuthState {
   verifyAccount: (otp: string) => Promise<{ success: boolean }>;
   resendOtp: () => Promise<{ success: boolean }>;
   fetchCompanyProfile: () => Promise<CompanyProfile | null>;
-  logout: () => void;
+  logout: () => Promise<void>;
   clearError: () => void;
   setHasHydrated: (hasHydrated: boolean) => void;
 }
@@ -183,16 +183,28 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      logout: () => {
-        set({
-          isAuthenticated: false,
-          isActivated: false,
-          companyId: null,
-          userEmail: null,
-          companyProfile: null,
-          error: null,
-          fieldErrors: null,
-        });
+      logout: async () => {
+        try {
+          await authApi.logout();
+        } catch (err) {
+          console.error('Failed to logout from server:', err);
+        } finally {
+          // Clear Zustand state
+          set({
+            isAuthenticated: false,
+            isActivated: false,
+            companyId: null,
+            userEmail: null,
+            companyProfile: null,
+            error: null,
+            fieldErrors: null,
+          });
+
+          // Explicitly clear persistent storage for auth-storage
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('auth-storage');
+          }
+        }
       },
 
       clearError: () => {

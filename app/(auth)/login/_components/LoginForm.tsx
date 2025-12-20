@@ -23,18 +23,22 @@ export default function LoginForm() {
 
       <div className="space-y-6 pt-4">
         <FormInput
+          id="email"
           label="Email"
           type="email"
           placeholder="example@email.com"
           {...form.getFieldProps('email')}
+          autoComplete="email"
         />
 
         <div className="space-y-1">
           <FormInput
+            id="password"
             label="Password"
             type="password"
             placeholder="••••••••"
             {...form.getFieldProps('password')}
+            autoComplete="current-password"
           />
           <div className="flex justify-end">
             <FormLink href="/forgot-password">Forgot password?</FormLink>

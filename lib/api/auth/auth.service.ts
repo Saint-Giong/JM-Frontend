@@ -155,6 +155,24 @@ export async function googleRegister(
 }
 
 /**
+ * Logout the currently authenticated company
+ * Clears authentication cookies via Next.js API route
+ */
+export async function logout(): Promise<OtpResponse> {
+  const response = await fetch('/api/auth/logout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new HttpError(response.status, response.statusText, errorData);
+  }
+
+  return response.json();
+}
+
+/**
  * Auth API object with all methods
  */
 export const authApi = {
@@ -164,4 +182,5 @@ export const authApi = {
   resendOtp,
   getGoogleRedirectUrl,
   googleRegister,
+  logout,
 } as const;
