@@ -23,7 +23,7 @@ export function useLoginForm() {
     const result = await login(validData);
     if (result.success) {
       if (result.activated) {
-        router.push('/');
+        router.push('/dashboard');
       } else {
         // Account needs activation - redirect to OTP verification
         router.push('/verify');

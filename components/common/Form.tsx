@@ -31,10 +31,12 @@ export function FormInput({
   error,
   type = 'text',
   name,
+  id,
   className = '',
   ...props
 }: FormInputProps) {
   const isPassword = type === 'password';
+  const inputId = id || name;
 
   // Map of field names to autoComplete values
   const autoCompleteMap: Record<string, string> = {
@@ -56,12 +58,16 @@ export function FormInput({
   if (isPassword) {
     return (
       <PasswordField className="space-y-2">
-        <Label className="block font-medium text-foreground text-sm">
+        <Label
+          htmlFor={inputId}
+          className="block font-medium text-foreground text-sm"
+        >
           {label}
           {required && <span className="text-red-500"> *</span>}
         </Label>
         <div className="relative">
           <PasswordInput
+            id={inputId}
             name={name}
             autoComplete={autoComplete}
             className={className}
@@ -77,12 +83,16 @@ export function FormInput({
 
   return (
     <div className="space-y-2">
-      <Label className="block font-medium text-foreground text-sm">
+      <Label
+        htmlFor={inputId}
+        className="block font-medium text-foreground text-sm"
+      >
         {label}
         {required && <span className="text-red-500"> *</span>}
       </Label>
       <div className="relative">
         <input
+          id={inputId}
           type={type}
           name={name}
           autoComplete={autoComplete}

@@ -61,9 +61,11 @@ export const useAuthStore = create<AuthState>()(
         try {
           const result = await authApi.login(data);
 
+          const isActivated = result.activated ?? result.isActivated;
+
           set({
             isAuthenticated: result.success,
-            isActivated: result.isActivated,
+            isActivated: isActivated,
             companyId: result.companyId || null,
             userEmail: data.email,
             isLoading: false,
@@ -75,7 +77,7 @@ export const useAuthStore = create<AuthState>()(
             get().fetchCompanyProfile();
           }
 
-          return { success: result.success, activated: result.isActivated };
+          return { success: result.success, activated: isActivated };
         } catch (err) {
           const errorData =
             err instanceof HttpError ? (err.data as BackendErrorData) : null;

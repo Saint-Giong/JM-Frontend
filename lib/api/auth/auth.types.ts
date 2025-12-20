@@ -30,6 +30,7 @@ export interface LoginResponse {
   success: boolean;
   message: string;
   isActivated: boolean;
+  activated?: boolean;
   companyId?: string;
   accessToken?: string;
   refreshToken?: string;
