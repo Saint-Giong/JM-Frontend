@@ -22,7 +22,7 @@ export function GoogleCallbackHandler({
 }: GoogleCallbackHandlerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { handleGoogleCallback, isLoading } = useAuthStore();
+  const { handleGoogleCallback } = useAuthStore();
   const processedRef = useRef(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -66,7 +66,7 @@ export function GoogleCallbackHandler({
   }, [searchParams, handleGoogleCallback, router, onLoading, onError]);
 
   // Show loading indicator while processing OAuth callback
-  if (isProcessing || isLoading) {
+  if (isProcessing) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
         <div className="flex flex-col items-center gap-4">
