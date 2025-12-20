@@ -1,6 +1,7 @@
 import { buildEndpoint } from '@/lib/api';
 import { HttpError } from '@/lib/http';
 import type {
+  GoogleCallbackResponse,
   GoogleRedirectResponse,
   GoogleRegisterRequest,
   GoogleRegisterResponse,
@@ -155,6 +156,31 @@ export async function googleRegister(
 }
 
 /**
+ * Handle Google OAuth callback
+ * Exchanges authorization code for authentication
+ * Returns prefill data for new users or null for existing users (who get logged in via cookies)
+ */
+export async function handleGoogleCallback(
+  code: string
+): Promise<GoogleCallbackResponse> {
+  const url = buildEndpoint(
+    `${AUTH_ENDPOINT}/google/auth?code=${encodeURIComponent(code)}`
+  );
+
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: 'include', // Receive auth/temp cookies from backend
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new HttpError(response.status, response.statusText, errorData);
+  }
+
+  return response.json();
+}
+
+/**
  * Logout the currently authenticated company
  * Clears authentication cookies via Next.js API route
  */
@@ -181,6 +207,7 @@ export const authApi = {
   verifyAccount,
   resendOtp,
   getGoogleRedirectUrl,
+  handleGoogleCallback,
   googleRegister,
   logout,
 } as const;

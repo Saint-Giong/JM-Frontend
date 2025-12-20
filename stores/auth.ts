@@ -2,7 +2,7 @@
 
 import type { SignupFormData } from '@/app/(auth)/signup/api/schema';
 import { authApi, profileApi } from '@/lib/api';
-import type { LoginRequest } from '@/lib/api/auth';
+import type { GoogleCallbackPrefillData, LoginRequest } from '@/lib/api/auth';
 import type { CompanyProfile } from '@/lib/api/profile';
 import { HttpError } from '@/lib/http';
 import { create } from 'zustand';
@@ -12,6 +12,14 @@ import { persist } from 'zustand/middleware';
 interface BackendErrorData {
   message?: string;
   errorFields?: Record<string, string>;
+}
+
+// Google callback result type
+interface GoogleCallbackResult {
+  success: boolean;
+  needsRegistration?: boolean;
+  prefill?: GoogleCallbackPrefillData;
+  error?: string;
 }
 
 export interface AuthState {
@@ -31,6 +39,7 @@ export interface AuthState {
     data: LoginRequest
   ) => Promise<{ success: boolean; activated?: boolean }>;
   loginWithGoogle: () => Promise<void>;
+  handleGoogleCallback: (code: string) => Promise<GoogleCallbackResult>;
   signup: (data: SignupFormData) => Promise<{ success: boolean }>;
   verifyAccount: (otp: string) => Promise<{ success: boolean }>;
   resendOtp: () => Promise<{ success: boolean }>;
@@ -102,6 +111,34 @@ export const useAuthStore = create<AuthState>()(
           const message =
             errorData?.message || 'Failed to get Google redirect URL';
           set({ error: message, isLoading: false });
+        }
+      },
+
+      handleGoogleCallback: async (code: string) => {
+        set({ error: null, fieldErrors: null, isLoading: true });
+
+        try {
+          const result = await authApi.handleGoogleCallback(code);
+
+          if (result.data) {
+            // New user - needs to complete registration
+            set({ isLoading: false });
+            return {
+              success: true,
+              needsRegistration: true,
+              prefill: result.data,
+            };
+          }
+
+          // Existing user - logged in via cookies
+          set({ isAuthenticated: true, isActivated: true, isLoading: false });
+          return { success: true, needsRegistration: false };
+        } catch (err) {
+          const errorData =
+            err instanceof HttpError ? (err.data as BackendErrorData) : null;
+          const message = errorData?.message || 'Google authentication failed';
+          set({ error: message, isLoading: false });
+          return { success: false, error: message };
         }
       },
 

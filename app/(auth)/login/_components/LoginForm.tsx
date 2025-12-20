@@ -9,17 +9,27 @@ import {
   FormLink,
   FormSubmitButton,
 } from '@/components/common/Form';
+import { Suspense, useState } from 'react';
+import { GoogleCallbackHandler } from './GoogleCallbackHandler';
 import { useLoginForm } from './useLoginForm';
 
 export default function LoginForm() {
   const { form, handleSubmit, isSubmitting, handleGoogleLogin, loginError } =
     useLoginForm();
+  const [googleError, setGoogleError] = useState<string | null>(null);
+
+  const displayError = googleError || loginError;
 
   return (
     <Form onSubmit={handleSubmit}>
+      {/* Handle Google OAuth callback if URL has code/state params */}
+      <Suspense fallback={null}>
+        <GoogleCallbackHandler onError={setGoogleError} />
+      </Suspense>
+
       <FormHeader title="Welcome!" subtitle="Please enter your details." />
 
-      {loginError && <p className="text-red-500 text-sm">{loginError}</p>}
+      {displayError && <p className="text-red-500 text-sm">{displayError}</p>}
 
       <div className="space-y-6 pt-4">
         <FormInput

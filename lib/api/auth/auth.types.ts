@@ -72,6 +72,18 @@ export interface GoogleRegisterResponse {
   };
 }
 
+// Google OAuth Callback Response (from /google/auth endpoint)
+export interface GoogleCallbackPrefillData {
+  email: string;
+  name: string;
+}
+
+export interface GoogleCallbackResponse {
+  success: boolean;
+  message: string;
+  data?: GoogleCallbackPrefillData | null; // null = existing user logged in
+}
+
 // Generic response wrapper
 export interface GenericResponse<T = unknown> {
   success: boolean;
