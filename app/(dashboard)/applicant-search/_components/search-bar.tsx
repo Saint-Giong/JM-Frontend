@@ -1,8 +1,8 @@
 'use client';
 
-import { SkillCombobox } from '@/components/ui/skill-combobox';
 import { Badge, Button, Input } from '@saint-giong/bamboo-ui';
 import { Search, X } from 'lucide-react';
+import { SkillCombobox } from '@/components/ui/skill-combobox';
 
 interface SearchBarProps {
   jobTitleSearch: string;
@@ -79,10 +79,22 @@ export function SearchBar({
       </div>
 
       {/* Search Button */}
-      <Button onClick={onSearch} className="w-full sm:w-auto">
-        <Search className="mr-2 h-4 w-4" />
-        Search
-      </Button>
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          onClick={() => {
+            const { wsClient } = require('@/lib/realtime/ws-client');
+            wsClient.getSocket()?.emit('test:notification');
+          }}
+          className="w-full sm:w-auto"
+        >
+          Test Noti
+        </Button>
+        <Button onClick={onSearch} className="w-full sm:w-auto">
+          <Search className="mr-2 h-4 w-4" />
+          Search
+        </Button>
+      </div>
     </div>
   );
 }

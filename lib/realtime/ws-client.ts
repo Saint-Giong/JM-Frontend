@@ -11,7 +11,11 @@ class WSClient {
 
   constructor() {
     // Use the same base URL as the API, but socket.io handles the protocol
-    this.baseUrl = process.env.NEXT_PUBLIC_WS_URL || DEFAULT_API_BASE_URL;
+    // Support local mock server for testing
+    const useMock = process.env.NEXT_PUBLIC_USE_MOCK_WS === 'true';
+    this.baseUrl = useMock
+      ? 'http://localhost:4000'
+      : process.env.NEXT_PUBLIC_WS_URL || DEFAULT_API_BASE_URL;
   }
 
   /**

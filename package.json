@@ -10,6 +10,7 @@
     "dev:jm:backend": "bun dev:backend",
     "dev:ja:frontend": "cd ../JA-Frontend && git pull && bun run dev",
     "dev:ja:backend": "cd ../JA-Backend && git pull && docker compose up -d --build --force-recreate",
+    "dev:mock-ws": "bun run scripts/mock-ws-server.ts",
     "shutdown": "cd ../JM-Backend && docker compose down",
     "stop": "cd ../JM-Backend && docker compose down",
     "build": "next build",
@@ -43,6 +44,7 @@
     "concurrently": "^9.2.1",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.0",
+    "socket.io": "^4.8.1",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vitest": "^4.0.16"
