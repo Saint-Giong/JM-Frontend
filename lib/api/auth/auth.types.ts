@@ -8,9 +8,9 @@ export interface RegisterRequest {
   email: string;
   password: string;
   country: string;
-  phoneNumber: string;
-  city: string;
-  address?: string;
+  phoneNumber: string | null;
+  city: string | null;
+  address?: string | null;
 }
 
 export interface RegisterResponse {
@@ -57,9 +57,9 @@ export interface GoogleRegisterRequest {
   companyName: string;
   email: string;
   country: string;
-  phoneNumber: string;
-  city: string;
-  address?: string;
+  phoneNumber: string | null;
+  city: string | null;
+  address?: string | null;
 }
 
 export interface GoogleRegisterResponse {

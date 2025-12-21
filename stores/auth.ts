@@ -154,9 +154,9 @@ export const useAuthStore = create<AuthState>()(
             phoneNumber:
               data.dialCode && data.phoneNumber
                 ? `${data.dialCode}${data.phoneNumber}`
-                : data.phoneNumber || 'N/A',
-            city: data.city || '',
-            address: data.address || 'N/A',
+                : data.phoneNumber || null,
+            city: data.city || null,
+            address: data.address || null,
           });
 
           set({ isLoading: false });
