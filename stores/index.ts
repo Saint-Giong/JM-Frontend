@@ -1,4 +1,6 @@
-export { useAuthStore } from './auth';
 export type { AuthState } from './auth';
-export { useProfileStore } from './profile';
+export { useAuthStore } from './auth';
+export type { Notification, NotificationState } from './notification-store';
+export { useNotificationStore } from './notification-store';
 export type { ProfileState } from './profile';
+export { useProfileStore } from './profile';
