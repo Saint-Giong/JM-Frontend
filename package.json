@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently -n frontend,backend -c blue,green \"bun run dev:frontend\" \"bun run dev:backend\"",
-    "dev:frontend": "next dev",
+    "dev:frontend": "next dev --experimental-https",
     "dev:backend": "cd ../JM-Backend && git pull && docker compose up -d --build --force-recreate",
     "dev:backend:clean": "cd ../JM-Backend && git pull && docker compose build --no-cache && docker compose up -d --force-recreate",
     "dev:backend:auth": "cd ../JM-Backend && docker compose build --no-cache auth-service && docker compose up -d --force-recreate auth-service",
