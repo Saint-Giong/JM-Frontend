@@ -3,9 +3,37 @@ import { type NextRequest, NextResponse } from 'next/server';
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'https://localhost:8072';
 
-// In development, allow self-signed certificates for the backend
+// Build allowed base URLs list
+const ALLOWED_BASE_URLS: string[] = [];
+
+// Always allow the configured API base URL
+if (process.env.NEXT_PUBLIC_API_BASE_URL) {
+  ALLOWED_BASE_URLS.push(process.env.NEXT_PUBLIC_API_BASE_URL);
+}
+
+// In development, also allow localhost:8072
 if (process.env.NODE_ENV === 'development') {
+  ALLOWED_BASE_URLS.push('https://localhost:8072');
+  // Allow self-signed certificates for the backend
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
+// Helper function to check if a target URL is allowed
+function isUrlAllowed(targetUrl: string): boolean {
+  try {
+    const parsedUrl = new URL(targetUrl);
+    const targetOrigin = parsedUrl.origin;
+    return ALLOWED_BASE_URLS.some((allowedUrl) => {
+      try {
+        const allowedOrigin = new URL(allowedUrl).origin;
+        return targetOrigin === allowedOrigin;
+      } catch {
+        return false;
+      }
+    });
+  } catch {
+    return false;
+  }
 }
 
 export async function proxy(request: NextRequest) {
@@ -16,6 +44,18 @@ export async function proxy(request: NextRequest) {
     // Remove the /api/proxy prefix to get the actual API path
     const apiPath = pathname.replace('/api/proxy', '');
     const targetUrl = `${API_BASE_URL}${apiPath}`;
+
+    // Validate that the target URL is allowed (prevent SSRF)
+    if (!isUrlAllowed(targetUrl)) {
+      console.error(
+        '[Proxy] Blocked request to unauthorized domain:',
+        targetUrl
+      );
+      return NextResponse.json(
+        { success: false, message: 'Forbidden: Target domain not allowed' },
+        { status: 403 }
+      );
+    }
 
     // Handle preflight requests
     if (request.method === 'OPTIONS') {
