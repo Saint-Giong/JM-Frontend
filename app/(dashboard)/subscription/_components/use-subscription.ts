@@ -1,6 +1,7 @@
 'use client';
 
 import { type SearchProfile, mockSearchProfiles } from '@/mocks/subscription';
+import { useSubscriptionStore } from '@/stores';
 import { useCallback, useState } from 'react';
 
 export interface SearchProfileFormData {
@@ -24,7 +25,7 @@ const initialFormData: SearchProfileFormData = {
 };
 
 export function useSubscription() {
-  const [isPremium, setIsPremium] = useState(false);
+  const { isPremium, setIsPremium } = useSubscriptionStore();
   const [isProcessing, setIsProcessing] = useState(false);
   const [searchProfiles, setSearchProfiles] =
     useState<SearchProfile[]>(mockSearchProfiles);
@@ -38,7 +39,7 @@ export function useSubscription() {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsPremium(true);
     setIsProcessing(false);
-  }, []);
+  }, [setIsPremium]);
 
   const toggleArrayItem = useCallback(
     <K extends keyof SearchProfileFormData>(field: K, item: string) => {
