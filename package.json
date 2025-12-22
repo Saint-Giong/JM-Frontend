@@ -11,6 +11,7 @@
     "dev:ja:frontend": "cd ../JA-Frontend && git pull && bun run dev",
     "dev:ja:backend": "cd ../JA-Backend && git pull && docker compose up -d --build --force-recreate",
     "dev:mock-ws": "bun run scripts/mock-ws-server.ts",
+    "sync": "cd ../JM-Backend && git pull && git submodule update --remote --recursive && echo \"Synced JM-Backend\"",
     "shutdown": "cd ../JM-Backend && docker compose down",
     "stop": "cd ../JM-Backend && docker compose down",
     "build": "next build",

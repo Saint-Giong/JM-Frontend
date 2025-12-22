@@ -159,6 +159,36 @@ export const useAuthStore = create<AuthState>()(
             address: data.address || null,
           });
 
+          if (result.success) {
+            // Automatically login after successful registration to get auth token
+            // This is required for OTP verification which needs the auth_token cookie
+            try {
+              const loginResult = await authApi.login({
+                email: data.email,
+                password: data.password,
+              });
+
+              const isActivated =
+                loginResult.activated ?? loginResult.isActivated;
+
+              set({
+                isAuthenticated: loginResult.success,
+                isActivated: isActivated,
+                companyId: loginResult.companyId || null,
+                userEmail: data.email,
+                isLoading: false,
+              });
+
+              return { success: result.success };
+            } catch (loginErr) {
+              // Login failed after registration, but registration was successful
+              // User can still proceed to OTP but may need to login manually
+              console.error('Auto-login after registration failed:', loginErr);
+              set({ isLoading: false, userEmail: data.email });
+              return { success: result.success };
+            }
+          }
+
           set({ isLoading: false });
           return { success: result.success };
         } catch (err) {

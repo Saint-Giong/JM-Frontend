@@ -3,6 +3,11 @@ import { type NextRequest, NextResponse } from 'next/server';
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'https://localhost:8072';
 
+// In development, allow self-signed certificates for the backend
+if (process.env.NODE_ENV === 'development') {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
