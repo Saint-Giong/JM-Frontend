@@ -66,7 +66,8 @@ async function handleProxy(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: 'Unable to connect to backend server. Please ensure the backend is running.',
+        message:
+          'Unable to connect to backend server. Please ensure the backend is running.',
         error: error instanceof Error ? error.message : 'Network error',
       },
       { status: 503 }
