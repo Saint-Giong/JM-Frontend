@@ -51,14 +51,27 @@ async function handleProxy(request: NextRequest) {
   });
 
   // Forward the request to the backend with filtered cookies
-  const response = await fetch(targetUrl, {
-    method: request.method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(authCookies ? { Cookie: authCookies } : {}),
-    },
-    body,
-  });
+  let response: Response;
+  try {
+    response = await fetch(targetUrl, {
+      method: request.method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(authCookies ? { Cookie: authCookies } : {}),
+      },
+      body,
+    });
+  } catch (error) {
+    console.error('[Proxy] Backend connection failed:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        message: 'Unable to connect to backend server. Please ensure the backend is running.',
+        error: error instanceof Error ? error.message : 'Network error',
+      },
+      { status: 503 }
+    );
+  }
 
   // Get response body
   const responseBody = await response.text();
