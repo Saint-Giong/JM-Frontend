@@ -33,6 +33,7 @@ export async function register(
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include', // Include cookies for consistency
     body: JSON.stringify(data),
   });
 
@@ -120,6 +121,7 @@ export async function getGoogleRedirectUrl(): Promise<string> {
   const response = await fetch(url, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
   });
 
   if (!response.ok) {

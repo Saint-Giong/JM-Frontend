@@ -3,6 +3,11 @@ import { type NextRequest, NextResponse } from 'next/server';
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'https://localhost:8072';
 
+// In development, allow self-signed certificates for the backend
+if (process.env.NODE_ENV === 'development') {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
 // Only forward these specific cookies to the backend
 const AUTH_COOKIES = ['auth_token', 'refresh_token', 'temp_token'];
 
@@ -46,14 +51,28 @@ async function handleProxy(request: NextRequest) {
   });
 
   // Forward the request to the backend with filtered cookies
-  const response = await fetch(targetUrl, {
-    method: request.method,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(authCookies ? { Cookie: authCookies } : {}),
-    },
-    body,
-  });
+  let response: Response;
+  try {
+    response = await fetch(targetUrl, {
+      method: request.method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(authCookies ? { Cookie: authCookies } : {}),
+      },
+      body,
+    });
+  } catch (error) {
+    console.error('[Proxy] Backend connection failed:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          'Unable to connect to backend server. Please ensure the backend is running.',
+        error: error instanceof Error ? error.message : 'Network error',
+      },
+      { status: 503 }
+    );
+  }
 
   // Get response body
   const responseBody = await response.text();
