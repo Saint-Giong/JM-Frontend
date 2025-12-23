@@ -6,10 +6,12 @@ import { Crown } from 'lucide-react';
 
 interface PremiumStatusCardProps {
   renewalDate?: Date;
+  onManageBilling?: () => void;
 }
 
 export function PremiumStatusCard({
   renewalDate = getDateFromNow(1),
+  onManageBilling,
 }: PremiumStatusCardProps) {
   return (
     <Card className="overflow-hidden border-0 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30">
@@ -27,11 +29,13 @@ export function PremiumStatusCard({
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onManageBilling}
+              disabled={!onManageBilling}
+            >
               Manage Billing
-            </Button>
-            <Button variant="ghost" size="sm" className="text-muted-foreground">
-              Cancel Plan
             </Button>
           </div>
         </div>
