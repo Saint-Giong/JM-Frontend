@@ -60,11 +60,11 @@ io.on('connection', (socket) => {
 setInterval(() => {
   const id = Math.random().toString(36).substring(7);
   console.log(`[Mock WS] Sending periodic notification: ${id}`);
-  io.emit('notification', {
+  io.emit('notification', { // mock for now
     id,
     title: 'New Applicant Match',
     message: 'A new applicant matches your search criteria.',
     type: 'success',
     createdAt: new Date().toISOString(),
   });
-}, 30000);
+}, 300000); // 5 min
