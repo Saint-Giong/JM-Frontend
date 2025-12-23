@@ -1,4 +1,5 @@
 import {
+  Activity,
   Bell,
   Briefcase,
   Building2,
@@ -51,4 +52,10 @@ export const systemItems: NavItem[] = [
     disabled: false,
   },
   { title: 'Settings', icon: Settings, href: '/settings', disabled: false },
+  {
+    title: 'WebSocket Test',
+    icon: Activity,
+    href: '/test-ws',
+    disabled: false,
+  },
 ];
