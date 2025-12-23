@@ -111,7 +111,6 @@ export default function NotificationsPage() {
                   <QuickActions
                     isConnected={isConnected}
                     onTriggerNotification={triggerTestNotification}
-                    onMarkRead={markNotificationRead}
                     onClearMessages={clearMessages}
                   />
                   <MessageInput

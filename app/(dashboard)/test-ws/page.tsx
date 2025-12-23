@@ -30,7 +30,6 @@ export default function TestWebSocketPage() {
             <QuickActions
               isConnected={isConnected}
               onTriggerNotification={triggerTestNotification}
-              onMarkRead={markNotificationRead}
               onClearMessages={clearMessages}
             />
             <MessageInput

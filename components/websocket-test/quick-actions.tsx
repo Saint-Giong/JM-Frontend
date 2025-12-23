@@ -1,14 +1,12 @@
 interface QuickActionsProps {
   isConnected: boolean;
   onTriggerNotification: () => void;
-  onMarkRead: (id: string) => void;
   onClearMessages: () => void;
 }
 
 export function QuickActions({
   isConnected,
   onTriggerNotification,
-  onMarkRead,
   onClearMessages,
 }: QuickActionsProps) {
   return (
@@ -22,14 +20,6 @@ export function QuickActions({
           className="px-3 py-2 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
         >
           Trigger Test Notification
-        </button>
-        <button
-          type="button"
-          onClick={() => onMarkRead('test-id')}
-          disabled={!isConnected}
-          className="px-3 py-2 text-sm bg-purple-500 text-white rounded hover:bg-purple-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-        >
-          Mark Notification Read
         </button>
         <button
           type="button"
