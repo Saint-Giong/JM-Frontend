@@ -32,14 +32,22 @@ export function AppSidebar() {
     initials,
     handleLogout,
     router,
+    unreadCount,
   } = useSidebarState();
+
+  // Update notification badge dynamically
+  const dynamicMainNavItems = mainNavItems.map((item) =>
+    item.href === '/notifications'
+      ? { ...item, badge: unreadCount > 0 ? unreadCount : undefined }
+      : item
+  );
 
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader open={open} onToggle={toggleSidebar} />
 
       <SidebarContent>
-        <NavGroup items={mainNavItems} pathname={pathname} />
+        <NavGroup items={dynamicMainNavItems} pathname={pathname} />
         <NavGroup
           label="Recruitment"
           items={recruitmentItems}

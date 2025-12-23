@@ -40,6 +40,17 @@ io.on('connection', (socket) => {
     });
   });
 
+  // Generic test message handler - echoes back any message
+  socket.on('test:message', (data) => {
+    console.log(`[Mock WS] Test message received from ${socket.id}:`, data);
+    socket.emit('test:message:response', {
+      original: data,
+      echo: data.message || data,
+      timestamp: new Date().toISOString(),
+      socketId: socket.id,
+    });
+  });
+
   socket.on('disconnect', () => {
     console.log(`[Mock WS] Client disconnected: ${socket.id}`);
   });
@@ -57,14 +68,3 @@ setInterval(() => {
     createdAt: new Date().toISOString(),
   });
 }, 30000);
-
-// Simple matching applicant event
-setInterval(() => {
-  const id = Math.random().toString(36).substring(7);
-  io.emit('matching_applicant', {
-    id,
-    name: 'John Doe',
-    role: 'Senior Frontend Engineer',
-    matchScore: 95,
-  });
-}, 45000);

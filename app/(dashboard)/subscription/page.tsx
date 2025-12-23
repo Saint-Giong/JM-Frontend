@@ -8,6 +8,7 @@ import {
   TabsTrigger,
 } from '@saint-giong/bamboo-ui';
 import { Plus, Search, Sparkles } from 'lucide-react';
+import { Suspense } from 'react';
 import {
   HowItWorksCard,
   PlanComparison,
@@ -22,7 +23,7 @@ import {
   useSubscription,
 } from './_components';
 
-export default function SubscriptionPage() {
+function SubscriptionContent() {
   const {
     isPremium,
     isProcessing,
@@ -31,6 +32,7 @@ export default function SubscriptionPage() {
     isSaving,
     formData,
     handleUpgrade,
+    handleManageBilling,
     toggleArrayItem,
     setFormField,
     handleSaveProfile,
@@ -59,7 +61,7 @@ export default function SubscriptionPage() {
               </TabsList>
 
               <TabsContent value="features" className="space-y-6">
-                <PremiumStatusCard />
+                <PremiumStatusCard onManageBilling={handleManageBilling} />
                 <PremiumFeaturesGrid />
                 <QuickActionsCard onCreateProfile={startCreating} />
               </TabsContent>
@@ -129,5 +131,13 @@ export default function SubscriptionPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function SubscriptionPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SubscriptionContent />
+    </Suspense>
   );
 }

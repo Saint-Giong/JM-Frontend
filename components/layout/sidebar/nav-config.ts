@@ -22,7 +22,6 @@ export const mainNavItems: NavItem[] = [
     title: 'Notifications',
     icon: Bell,
     href: '/notifications',
-    badge: 2,
     disabled: false,
   },
   {
