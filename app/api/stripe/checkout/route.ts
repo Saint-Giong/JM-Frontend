@@ -60,7 +60,8 @@ export async function POST(request: NextRequest) {
             currency: 'usd',
             product_data: {
               name: 'Premium Plan',
-              description: 'Unlock powerful AI-driven matching, real-time notifications, and custom search profiles',
+              description:
+                'Unlock powerful AI-driven matching, real-time notifications, and custom search profiles',
             },
             unit_amount: PREMIUM_PRICE_CENTS,
             recurring: {
@@ -101,4 +102,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

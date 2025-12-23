@@ -99,9 +99,8 @@ export async function POST(request: NextRequest) {
       const subscriptionId = invoice.subscription as string;
 
       if (subscriptionId) {
-        const subscription = await stripe.subscriptions.retrieve(
-          subscriptionId
-        );
+        const subscription =
+          await stripe.subscriptions.retrieve(subscriptionId);
         const companyId = subscription.metadata?.companyId;
 
         console.log('Payment succeeded:', {
@@ -118,9 +117,8 @@ export async function POST(request: NextRequest) {
       const subscriptionId = invoice.subscription as string;
 
       if (subscriptionId) {
-        const subscription = await stripe.subscriptions.retrieve(
-          subscriptionId
-        );
+        const subscription =
+          await stripe.subscriptions.retrieve(subscriptionId);
         const companyId = subscription.metadata?.companyId;
 
         console.log('Payment failed:', {
@@ -138,4 +136,3 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ received: true });
 }
-

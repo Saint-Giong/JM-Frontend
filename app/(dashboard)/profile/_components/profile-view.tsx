@@ -1,6 +1,11 @@
 'use client';
 
-import { Avatar, AvatarFallback, Badge, Separator } from '@saint-giong/bamboo-ui';
+import {
+  Avatar,
+  AvatarFallback,
+  Badge,
+  Separator,
+} from '@saint-giong/bamboo-ui';
 import { useSubscriptionStore } from '@/stores';
 import { Crown, ExternalLink } from 'lucide-react';
 import { ActivitiesSection, type Activity } from './activities-section';

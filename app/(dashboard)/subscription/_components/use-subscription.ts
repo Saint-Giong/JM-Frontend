@@ -121,7 +121,9 @@ export function useSubscription() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || 'Failed to create billing portal session');
+        throw new Error(
+          error.error || 'Failed to create billing portal session'
+        );
       }
 
       const { url } = await response.json();
