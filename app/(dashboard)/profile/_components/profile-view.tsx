@@ -1,7 +1,8 @@
 'use client';
 
-import { Avatar, AvatarFallback, Separator } from '@saint-giong/bamboo-ui';
-import { ExternalLink } from 'lucide-react';
+import { Avatar, AvatarFallback, Badge, Separator } from '@saint-giong/bamboo-ui';
+import { useSubscriptionStore } from '@/stores';
+import { Crown, ExternalLink } from 'lucide-react';
 import { ActivitiesSection, type Activity } from './activities-section';
 import { JobPostsSection } from './job-posts-section';
 import { ProfileSidebar } from './profile-sidebar';
@@ -28,6 +29,8 @@ export function ProfileView({
   activities,
   companyId,
 }: ProfileViewProps) {
+  const isPremium = useSubscriptionStore((state) => state.isPremium);
+
   return (
     <div className="flex flex-col gap-8 lg:flex-row">
       {/* Main Content */}
@@ -40,7 +43,15 @@ export function ProfileView({
             </AvatarFallback>
           </Avatar>
           <div className="space-y-2">
-            <h2 className="font-serif text-3xl md:text-4xl">{displayName}</h2>
+            <div className="flex items-center gap-3">
+              <h2 className="font-serif text-3xl md:text-4xl">{displayName}</h2>
+              {isPremium && (
+                <Badge>
+                  <Crown />
+                  Premium
+                </Badge>
+              )}
+            </div>
             <p className="text-muted-foreground">
               {city}, {country}
             </p>
