@@ -45,17 +45,23 @@ export function useNotifications() {
   // Convert store notifications to mock format
   const notifications = storeNotifications.map(convertStoreToMock);
 
-  const handleMarkAsRead = useCallback((id: string) => {
-    storeMark(id);
-  }, [storeMark]);
+  const handleMarkAsRead = useCallback(
+    (id: string) => {
+      storeMark(id);
+    },
+    [storeMark]
+  );
 
   const handleMarkAllAsRead = useCallback(() => {
     storeMarkAll();
   }, [storeMarkAll]);
 
-  const handleDelete = useCallback((id: string) => {
-    storeRemove(id);
-  }, [storeRemove]);
+  const handleDelete = useCallback(
+    (id: string) => {
+      storeRemove(id);
+    },
+    [storeRemove]
+  );
 
   const handleClearAll = useCallback(() => {
     storeClearAll();
@@ -77,18 +83,21 @@ export function useNotifications() {
     setIsSaving(false);
   }, []);
 
-  const addNotification = useCallback((notification: Omit<NotificationFromMock, 'id' | 'timestamp' | 'read'>) => {
-    storeAdd({
-      type: notification.type.toUpperCase() as any,
-      title: notification.title,
-      message: notification.message,
-      metadata: {
-        type: notification.type,
-        applicantName: notification.applicantName,
-        jobTitle: notification.jobTitle,
-      },
-    });
-  }, [storeAdd]);
+  const addNotification = useCallback(
+    (notification: Omit<NotificationFromMock, 'id' | 'timestamp' | 'read'>) => {
+      storeAdd({
+        type: notification.type.toUpperCase() as any,
+        title: notification.title,
+        message: notification.message,
+        metadata: {
+          type: notification.type,
+          applicantName: notification.applicantName,
+          jobTitle: notification.jobTitle,
+        },
+      });
+    },
+    [storeAdd]
+  );
 
   return {
     notifications,

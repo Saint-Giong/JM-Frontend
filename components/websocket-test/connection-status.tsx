@@ -3,7 +3,10 @@ interface ConnectionStatusProps {
   socketId: string;
 }
 
-export function ConnectionStatus({ isConnected, socketId }: ConnectionStatusProps) {
+export function ConnectionStatus({
+  isConnected,
+  socketId,
+}: ConnectionStatusProps) {
   return (
     <div className="bg-white rounded-lg shadow p-4">
       <div className="flex items-center justify-between">
@@ -22,7 +25,10 @@ export function ConnectionStatus({ isConnected, socketId }: ConnectionStatusProp
           </span>
           {socketId && (
             <span className="text-xs text-gray-500">
-              ID: <code className="bg-gray-100 px-2 py-0.5 rounded">{socketId.slice(0, 8)}...</code>
+              ID:{' '}
+              <code className="bg-gray-100 px-2 py-0.5 rounded">
+                {socketId.slice(0, 8)}...
+              </code>
             </span>
           )}
         </div>

@@ -5,7 +5,10 @@ interface MessageInputProps {
   onSendMessage: (message: string) => void;
 }
 
-export function MessageInput({ isConnected, onSendMessage }: MessageInputProps) {
+export function MessageInput({
+  isConnected,
+  onSendMessage,
+}: MessageInputProps) {
   const [inputMessage, setInputMessage] = useState('');
 
   const handleSend = () => {
@@ -23,7 +26,9 @@ export function MessageInput({ isConnected, onSendMessage }: MessageInputProps) 
 
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-800 mb-2">Send Custom Message</h2>
+      <h2 className="text-sm font-semibold text-gray-800 mb-2">
+        Send Custom Message
+      </h2>
       <div className="flex flex-col gap-2">
         <input
           type="text"

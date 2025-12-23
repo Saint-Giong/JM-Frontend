@@ -105,7 +105,7 @@ export default function NotificationsPage() {
 
             <TabsContent value="test" className="space-y-4">
               <ConnectionStatus isConnected={isConnected} socketId={socketId} />
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="bg-white rounded-lg shadow p-4 space-y-4">
                   <QuickActions
@@ -119,7 +119,7 @@ export default function NotificationsPage() {
                   />
                   <Instructions />
                 </div>
-                
+
                 <MessageList messages={messages} />
               </div>
             </TabsContent>

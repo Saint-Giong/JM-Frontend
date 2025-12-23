@@ -11,7 +11,9 @@ export function QuickActions({
 }: QuickActionsProps) {
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-800 mb-2">Quick Actions</h2>
+      <h2 className="text-sm font-semibold text-gray-800 mb-2">
+        Quick Actions
+      </h2>
       <div className="flex flex-col gap-2">
         <button
           type="button"
