@@ -26,13 +26,8 @@ const initialFormData: SearchProfileFormData = {
 };
 
 export function useSubscription() {
-  const {
-    isPremium,
-    setIsPremium,
-    customerId,
-    setCustomerId,
-    setSubscriptionId,
-  } = useSubscriptionStore();
+  const { isPremium, setIsPremium, customerId, setCustomerId } =
+    useSubscriptionStore();
   const { companyId, userEmail } = useAuthStore();
   const searchParams = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -102,7 +97,7 @@ export function useSubscription() {
       setIsProcessing(false);
       // You might want to show an error toast here
     }
-  }, [companyId, userEmail]);
+  }, [companyId, userEmail, setCustomerId]);
 
   const handleManageBilling = useCallback(async () => {
     if (!customerId) {

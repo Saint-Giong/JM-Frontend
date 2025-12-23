@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
 
 // Commented out until Stripe API keys are configured
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-//   apiVersion: '2024-12-18.acacia',
+//   apiVersion: '2025-12-15.clover',
 // });
 // const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
 
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   }
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2024-12-18.acacia',
+    apiVersion: '2025-12-15.clover',
   });
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -96,7 +96,12 @@ export async function POST(request: NextRequest) {
 
     case 'invoice.payment_succeeded': {
       const invoice = event.data.object as Stripe.Invoice;
-      const subscriptionId = invoice.subscription as string;
+      // Handle subscription which can be string | Subscription | null
+      const subscriptionId =
+        (invoice as any).subscription &&
+        typeof (invoice as any).subscription === 'string'
+          ? (invoice as any).subscription
+          : (invoice as any).subscription?.id;
 
       if (subscriptionId) {
         const subscription =
@@ -114,7 +119,12 @@ export async function POST(request: NextRequest) {
 
     case 'invoice.payment_failed': {
       const invoice = event.data.object as Stripe.Invoice;
-      const subscriptionId = invoice.subscription as string;
+      // Handle subscription which can be string | Subscription | null
+      const subscriptionId =
+        (invoice as any).subscription &&
+        typeof (invoice as any).subscription === 'string'
+          ? (invoice as any).subscription
+          : (invoice as any).subscription?.id;
 
       if (subscriptionId) {
         const subscription =

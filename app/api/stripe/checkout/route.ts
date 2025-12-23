@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 // Commented out until Stripe API keys are configured
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-//   apiVersion: '2024-12-18.acacia',
+//   apiVersion: '2025-12-15.clover',
 // });
 
 // Premium plan price: $29/month (in cents)
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   }
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2024-12-18.acacia',
+    apiVersion: '2025-12-15.clover',
   });
 
   try {
