@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuthStore } from '@/stores';
+import { useAuthStore, useNotificationStore } from '@/stores';
 import { useSidebar, useTheme } from '@saint-giong/bamboo-ui';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -19,6 +19,7 @@ export function useSidebarState() {
   const { open, toggleSidebar } = useSidebar();
   const { theme, setTheme } = useTheme();
   const { isAuthenticated, companyProfile, userEmail, logout } = useAuthStore();
+  const unreadCount = useNotificationStore((state) => state.unreadCount);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -55,5 +56,6 @@ export function useSidebarState() {
     initials,
     handleLogout,
     router,
+    unreadCount,
   };
 }
