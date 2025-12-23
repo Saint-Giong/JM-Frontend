@@ -58,6 +58,17 @@ export function useNotifications() {
     setIsSaving(false);
   }, []);
 
+  const addNotification = useCallback((notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
+    const newNotification: Notification = {
+      id: `ws-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+      timestamp: 'Just now',
+      read: false,
+      ...notification,
+    };
+    setNotifications((prev) => [newNotification, ...prev]);
+    return newNotification.id;
+  }, []);
+
   return {
     notifications,
     unreadCount,
@@ -69,5 +80,6 @@ export function useNotifications() {
     handleClearAll,
     updatePreference,
     handleSavePreferences,
+    addNotification,
   };
 }

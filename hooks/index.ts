@@ -22,3 +22,4 @@ export {
   type ViewMode,
 } from './use-job-list';
 export { useSearchProfiles } from './use-search-profiles';
+export { useWebSocketTest, type Message } from './use-websocket-test';

@@ -1,5 +1,3 @@
-import { Message } from '../use-websocket-test';
-
 interface ConnectionStatusProps {
   isConnected: boolean;
   socketId: string;

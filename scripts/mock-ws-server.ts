@@ -68,14 +68,3 @@ setInterval(() => {
     createdAt: new Date().toISOString(),
   });
 }, 30000);
-
-// Simple matching applicant event
-setInterval(() => {
-  const id = Math.random().toString(36).substring(7);
-  io.emit('matching_applicant', {
-    id,
-    name: 'John Doe',
-    role: 'Senior Frontend Engineer',
-    matchScore: 95,
-  });
-}, 45000);

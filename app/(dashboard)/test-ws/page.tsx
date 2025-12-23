@@ -1,13 +1,13 @@
 'use client';
 
-import { useWebSocketTest } from './use-websocket-test';
+import { useWebSocketTest } from '@/hooks';
 import {
   ConnectionStatus,
   QuickActions,
   MessageInput,
   Instructions,
   MessageList,
-} from './_components';
+} from '@/components/websocket-test';
 
 export default function TestWebSocketPage() {
   const {

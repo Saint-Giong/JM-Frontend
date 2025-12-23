@@ -1,4 +1,4 @@
-import { Message } from '../use-websocket-test';
+import type { Message } from '@/hooks';
 
 interface MessageItemProps {
   message: Message;
