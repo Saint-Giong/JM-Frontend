@@ -24,9 +24,11 @@ export function NavMenuItem({ item, isActive }: NavMenuItemProps) {
       {item.badge && (
         <Badge
           variant="destructive"
-          className="ml-auto flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
+          className="ml-auto relative h-5 w-5 overflow-hidden rounded-full !p-0 text-xs"
         >
-          {item.badge}
+          <span style={{ transform: 'translateY(-0.75px)' }}>
+            {item.badge}
+          </span>
         </Badge>
       )}
     </>
