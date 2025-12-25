@@ -2,7 +2,7 @@
 
 import { useNotificationStore } from '@/stores';
 import type { Notification as NotificationFromMock } from '@/mocks/notifications';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import type { NotificationPreferences } from './types';
 
 const defaultPreferences: NotificationPreferences = {
@@ -12,6 +12,8 @@ const defaultPreferences: NotificationPreferences = {
   weeklyDigest: false,
   systemNotifications: true,
 };
+
+const ITEMS_PER_PAGE = 10; // load per chunk
 
 // Convert between store notification format and mock format
 function convertStoreToMock(storeNotif: any): NotificationFromMock {
@@ -42,8 +44,34 @@ export function useNotifications() {
   const [preferences, setPreferences] =
     useState<NotificationPreferences>(defaultPreferences);
 
+  // Pagination state
+  const [displayedCount, setDisplayedCount] = useState(ITEMS_PER_PAGE);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
   // Convert store notifications to mock format
-  const notifications = storeNotifications.map(convertStoreToMock);
+  const allNotifications = useMemo(
+    () => storeNotifications.map(convertStoreToMock),
+    [storeNotifications]
+  );
+
+  // Get paginated notifications
+  const notifications = useMemo(
+    () => allNotifications.slice(0, displayedCount),
+    [allNotifications, displayedCount]
+  );
+
+  const hasMore = displayedCount < allNotifications.length;
+
+  const handleLoadMore = useCallback(() => {
+    if (isLoadingMore || !hasMore) return;
+
+    setIsLoadingMore(true);
+    // Simulate network delay for smooth UX
+    setTimeout(() => {
+      setDisplayedCount((prev) => prev + ITEMS_PER_PAGE);
+      setIsLoadingMore(false);
+    }, 300);
+  }, [isLoadingMore, hasMore, displayedCount, allNotifications.length]);
 
   const handleMarkAsRead = useCallback(
     (id: string) => {
@@ -65,6 +93,7 @@ export function useNotifications() {
 
   const handleClearAll = useCallback(() => {
     storeClearAll();
+    setDisplayedCount(ITEMS_PER_PAGE); // Reset pagination
   }, [storeClearAll]);
 
   const updatePreference = useCallback(
@@ -104,6 +133,8 @@ export function useNotifications() {
     unreadCount,
     preferences,
     isSaving,
+    hasMore,
+    isLoadingMore,
     handleMarkAsRead,
     handleMarkAllAsRead,
     handleDelete,
@@ -111,5 +142,6 @@ export function useNotifications() {
     updatePreference,
     handleSavePreferences,
     addNotification,
+    handleLoadMore,
   };
 }

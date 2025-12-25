@@ -1,11 +1,8 @@
 'use client';
 
-import {
-  Badge,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from '@saint-giong/bamboo-ui';
+import { SidebarMenuButton, SidebarMenuItem } from '@saint-giong/bamboo-ui';
 import Link from 'next/link';
+import { NotificationBadge } from '@/components/ui/notification-badge';
 import type { NavItem } from './nav-config';
 
 interface NavMenuItemProps {
@@ -19,16 +16,9 @@ export function NavMenuItem({ item, isActive }: NavMenuItemProps) {
 
   const content = (
     <>
-      <item.icon className="h-4 w-4" />
+      <item.icon />
       <span>{item.title}</span>
-      {item.badge && (
-        <Badge
-          variant="destructive"
-          className="ml-auto flex h-5 w-5 items-center justify-center rounded-full p-0 text-xs"
-        >
-          {item.badge}
-        </Badge>
-      )}
+      {item.badge && <NotificationBadge count={item.badge} variant="desktop" />}
     </>
   );
 
