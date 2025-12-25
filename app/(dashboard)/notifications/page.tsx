@@ -74,6 +74,8 @@ export default function NotificationsPage() {
       <NotificationsHeader
         unreadCount={unreadCount}
         onMarkAllAsRead={handleMarkAllAsRead}
+        onClearAll={handleClearAll}
+        hasNotifications={notifications.length > 0}
       />
 
       <main className="flex-1 overflow-y-auto p-6">
@@ -102,7 +104,6 @@ export default function NotificationsPage() {
                 notifications={notifications}
                 onMarkAsRead={handleMarkAsRead}
                 onDelete={handleDelete}
-                onClearAll={handleClearAll}
                 hasMore={hasMore}
                 isLoadingMore={isLoadingMore}
                 onLoadMore={handleLoadMore}

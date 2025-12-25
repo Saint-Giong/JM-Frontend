@@ -20,14 +20,14 @@ export function useInfiniteScroll({
   onLoadMore,
   hasMore,
   isLoading,
-  threshold = 300
+  threshold = 300,
 }: UseInfiniteScrollOptions) {
   const observerTarget = useRef<HTMLDivElement>(null);
 
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const [target] = entries;
-      
+
       if (target.isIntersecting && hasMore && !isLoading) {
         onLoadMore();
       }

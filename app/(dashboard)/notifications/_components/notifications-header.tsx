@@ -1,16 +1,20 @@
 'use client';
 
 import { Badge, Button } from '@saint-giong/bamboo-ui';
-import { Bell, CheckCheck } from 'lucide-react';
+import { Bell, CheckCheck, Trash2 } from 'lucide-react';
 
 interface NotificationsHeaderProps {
   unreadCount: number;
   onMarkAllAsRead: () => void;
+  onClearAll: () => void;
+  hasNotifications: boolean;
 }
 
 export function NotificationsHeader({
   unreadCount,
   onMarkAllAsRead,
+  onClearAll,
+  hasNotifications,
 }: NotificationsHeaderProps) {
   return (
     <header className="flex items-center justify-between gap-4 border-b px-6 py-4">
@@ -40,6 +44,17 @@ export function NotificationsHeader({
           >
             <CheckCheck className="h-4 w-4" />
             <span className="hidden sm:inline">Mark all read</span>
+          </Button>
+        )}
+        {hasNotifications && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-2 text-destructive hover:text-destructive"
+            onClick={onClearAll}
+          >
+            <Trash2 className="h-4 w-4" />
+            <span className="hidden sm:inline">Clear all</span>
           </Button>
         )}
       </div>

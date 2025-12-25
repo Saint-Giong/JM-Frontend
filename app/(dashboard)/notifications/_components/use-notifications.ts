@@ -43,7 +43,7 @@ export function useNotifications() {
   const [isSaving, setIsSaving] = useState(false);
   const [preferences, setPreferences] =
     useState<NotificationPreferences>(defaultPreferences);
-  
+
   // Pagination state
   const [displayedCount, setDisplayedCount] = useState(ITEMS_PER_PAGE);
   const [isLoadingMore, setIsLoadingMore] = useState(false);

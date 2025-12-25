@@ -10,7 +10,6 @@ interface NotificationListProps {
   notifications: Notification[];
   onMarkAsRead: (id: string) => void;
   onDelete: (id: string) => void;
-  onClearAll: () => void;
   hasMore?: boolean;
   isLoadingMore?: boolean;
   onLoadMore?: () => void;
@@ -20,7 +19,6 @@ export function NotificationList({
   notifications,
   onMarkAsRead,
   onDelete,
-  onClearAll,
   hasMore = false,
   isLoadingMore = false,
   onLoadMore = () => {},
@@ -78,17 +76,6 @@ export function NotificationList({
           )}
         </CardContent>
       </Card>
-
-      <div className="mt-4 text-center">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onClearAll}
-          className="text-muted-foreground"
-        >
-          Clear all notifications
-        </Button>
-      </div>
     </>
   );
 }
