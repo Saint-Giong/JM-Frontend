@@ -1,8 +1,9 @@
 'use client';
 
 import { Button, Card, CardContent } from '@saint-giong/bamboo-ui';
-import { BellOff } from 'lucide-react';
+import { BellOff, Loader2 } from 'lucide-react';
 import { NotificationItem } from './notification-item';
+import { useInfiniteScroll } from './use-infinite-scroll';
 import type { Notification } from './types';
 
 interface NotificationListProps {
@@ -10,6 +11,9 @@ interface NotificationListProps {
   onMarkAsRead: (id: string) => void;
   onDelete: (id: string) => void;
   onClearAll: () => void;
+  hasMore?: boolean;
+  isLoadingMore?: boolean;
+  onLoadMore?: () => void;
 }
 
 export function NotificationList({
@@ -17,7 +21,17 @@ export function NotificationList({
   onMarkAsRead,
   onDelete,
   onClearAll,
+  hasMore = false,
+  isLoadingMore = false,
+  onLoadMore = () => {},
 }: NotificationListProps) {
+  const { observerTarget } = useInfiniteScroll({
+    onLoadMore,
+    hasMore,
+    isLoading: isLoadingMore,
+    threshold: 300,
+  });
+
   if (notifications.length === 0) {
     return (
       <Card>
@@ -48,6 +62,20 @@ export function NotificationList({
               />
             ))}
           </div>
+
+          {hasMore && ( // infinite scroll
+            <div
+              ref={observerTarget}
+              className="flex items-center justify-center py-4 border-t"
+            >
+              {isLoadingMore && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">Loading more noti...</span>
+                </div>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
 

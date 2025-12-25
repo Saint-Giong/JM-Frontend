@@ -28,6 +28,8 @@ export default function NotificationsPage() {
     unreadCount,
     preferences,
     isSaving,
+    hasMore,
+    isLoadingMore,
     handleMarkAsRead,
     handleMarkAllAsRead,
     handleDelete,
@@ -35,6 +37,7 @@ export default function NotificationsPage() {
     updatePreference,
     handleSavePreferences,
     addNotification,
+    handleLoadMore,
   } = useNotifications();
 
   const {
@@ -100,6 +103,9 @@ export default function NotificationsPage() {
                 onMarkAsRead={handleMarkAsRead}
                 onDelete={handleDelete}
                 onClearAll={handleClearAll}
+                hasMore={hasMore}
+                isLoadingMore={isLoadingMore}
+                onLoadMore={handleLoadMore}
               />
             </TabsContent>
 
