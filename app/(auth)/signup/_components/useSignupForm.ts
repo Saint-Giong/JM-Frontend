@@ -1,9 +1,10 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import { useFormValidation } from '@/components/headless/form';
+import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/stores';
-import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
 import { passwordRequirements, signupSchema } from '../api/schema';
 
 export const SIGNUP_STEPS = [
@@ -33,6 +34,7 @@ const initialValues = {
  */
 export function useSignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const {
     signup,
     loginWithGoogle,
@@ -42,6 +44,7 @@ export function useSignupForm() {
     error: authError,
     fieldErrors: authFieldErrors,
     clearError,
+    fetchCompanyProfile,
   } = useAuthStore();
   const form = useFormValidation(signupSchema, initialValues);
   const [currentStep, setCurrentStep] = useState(1);
@@ -49,6 +52,24 @@ export function useSignupForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
+
+  // Detect Google signup mode from URL params
+  const isGoogleSignup = searchParams.get('google') === 'true';
+  const googleEmail = searchParams.get('email') || '';
+  const googleName = searchParams.get('name') || '';
+
+  // Prefill form with Google data
+  // biome-ignore lint/correctness/useExhaustiveDependencies: form.setValue is stable
+  useEffect(() => {
+    if (isGoogleSignup) {
+      if (googleEmail) {
+        form.setValue('email', googleEmail);
+      }
+      if (googleName) {
+        form.setValue('companyName', googleName);
+      }
+    }
+  }, [isGoogleSignup, googleEmail, googleName]);
 
   const clearLocalError = () => setError(null);
 
@@ -72,6 +93,10 @@ export function useSignupForm() {
   const isCurrentStepValid = useMemo((): boolean => {
     if (currentStep === 1) {
       const hasEmail = !!form.values.email && !form.errors.email;
+      // For Google signup, skip password validation
+      if (isGoogleSignup) {
+        return hasEmail;
+      }
       const hasPassword = !!form.values.password && !form.errors.password;
       return hasEmail && hasPassword && allPasswordRequirementsMet;
     }
@@ -94,7 +119,14 @@ export function useSignupForm() {
       return otp.length === 6;
     }
     return true;
-  }, [form.values, form.errors, currentStep, otp, allPasswordRequirementsMet]);
+  }, [
+    form.values,
+    form.errors,
+    currentStep,
+    otp,
+    allPasswordRequirementsMet,
+    isGoogleSignup,
+  ]);
 
   const goToNextStep = () => {
     if (currentStep < totalSteps && isCurrentStepValid) {
@@ -123,6 +155,47 @@ export function useSignupForm() {
       if (data) {
         setIsLoading(true);
         setError(null);
+
+        if (isGoogleSignup) {
+          // Google signup: use googleRegister API (no password required)
+          try {
+            const result = await authApi.googleRegister({
+              email: data.email,
+              companyName: data.companyName,
+              country: data.country,
+              phoneNumber:
+                data.dialCode && data.phoneNumber
+                  ? `${data.dialCode}${data.phoneNumber}`
+                  : null,
+              city: data.city || null,
+              address: data.address || null,
+            });
+
+            if (result.success) {
+              // Update auth state and redirect to dashboard
+              useAuthStore.setState({
+                isAuthenticated: true,
+                isActivated: true,
+                companyId: result.data?.companyId || null,
+                userEmail: result.data?.email || data.email,
+              });
+
+              await fetchCompanyProfile();
+              router.push('/dashboard');
+            } else {
+              setError(result.message || 'Registration failed');
+            }
+          } catch (err) {
+            setError(
+              err instanceof Error ? err.message : 'Registration failed'
+            );
+          } finally {
+            setIsLoading(false);
+          }
+          return;
+        }
+
+        // Regular signup flow
         const result = await signup(data);
         setIsLoading(false);
         if (result.success) {
@@ -198,6 +271,8 @@ export function useSignupForm() {
     isCurrentStepValid,
     isFirstStep: currentStep === 1,
     isLastStep: currentStep === totalSteps,
+    // Google signup mode
+    isGoogleSignup,
     // OTP verification
     otp,
     setOtp,

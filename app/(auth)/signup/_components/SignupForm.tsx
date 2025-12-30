@@ -25,6 +25,7 @@ export default function SignupForm() {
     otp,
     setOtp,
     isVerified,
+    isGoogleSignup,
   } = useSignupForm();
 
   const currentStepConfig = steps.find((s) => s.id === currentStep);
@@ -64,6 +65,7 @@ export default function SignupForm() {
             onEmailBlur={() => form.setFieldTouched('email')}
             onPasswordChange={(e) => form.setValue('password', e.target.value)}
             onPasswordBlur={() => form.setFieldTouched('password')}
+            isGoogleSignup={isGoogleSignup}
           />
         )}
 
@@ -114,6 +116,7 @@ export default function SignupForm() {
           isCurrentStepValid={isCurrentStepValid}
           onPreviousStep={goToPreviousStep}
           onGoogleSignup={handleGoogleSignup}
+          isGoogleSignup={isGoogleSignup}
         />
       )}
     </Form>

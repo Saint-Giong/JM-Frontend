@@ -1,9 +1,9 @@
 'use client';
 
-import { GoogleSSOButton } from '@/app/(auth)/_components/SSOButton';
-import { FormActions, FormSubmitButton } from '@/components/common/Form';
 import { Button } from '@saint-giong/bamboo-ui';
 import { ArrowLeft } from 'lucide-react';
+import { GoogleSSOButton } from '@/app/(auth)/_components/SSOButton';
+import { FormActions, FormSubmitButton } from '@/components/common/Form';
 
 const buttonLabels: Record<number, string> = {
   3: 'Create account',
@@ -17,6 +17,7 @@ interface SignupFormActionsProps {
   isCurrentStepValid: boolean;
   onPreviousStep: () => void;
   onGoogleSignup: () => void;
+  isGoogleSignup?: boolean;
 }
 
 export function SignupFormActions({
@@ -26,6 +27,7 @@ export function SignupFormActions({
   isCurrentStepValid,
   onPreviousStep,
   onGoogleSignup,
+  isGoogleSignup = false,
 }: SignupFormActionsProps) {
   const buttonLabel = buttonLabels[currentStep] ?? 'Continue';
 
@@ -53,7 +55,8 @@ export function SignupFormActions({
         </FormSubmitButton>
       </div>
 
-      {isFirstStep && (
+      {/* Hide Google SSO button when already in Google signup mode */}
+      {isFirstStep && !isGoogleSignup && (
         <GoogleSSOButton onAuth={onGoogleSignup}>
           Sign up with Google
         </GoogleSSOButton>

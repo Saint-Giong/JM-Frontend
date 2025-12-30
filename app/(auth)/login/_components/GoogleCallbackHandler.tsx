@@ -1,8 +1,8 @@
 'use client';
 
-import { useAuthStore } from '@/stores/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { useAuthStore } from '@/stores/auth';
 
 interface GoogleCallbackHandlerProps {
   onLoading?: (loading: boolean) => void;
@@ -50,12 +50,13 @@ export function GoogleCallbackHandler({
       }
 
       if (result.needsRegistration && result.prefill) {
-        // Redirect to Google signup form with prefill data
+        // Redirect to multi-step signup form with Google mode
         const params = new URLSearchParams({
+          google: 'true',
           email: result.prefill.email,
           name: result.prefill.name,
         });
-        router.push(`/signup/google?${params.toString()}`);
+        router.push(`/signup?${params.toString()}`);
       } else {
         // Existing user logged in successfully
         router.push('/dashboard');
