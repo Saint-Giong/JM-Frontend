@@ -4,8 +4,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useFormValidation } from '@/components/headless/form';
 import { authApi } from '@/lib/api';
+import { HttpError } from '@/lib/http';
 import { useAuthStore } from '@/stores';
-import { passwordRequirements, signupSchema } from '../api/schema';
+import { googleSignupSchema, passwordRequirements, signupSchema } from '../api/schema';
 
 export const SIGNUP_STEPS = [
   { id: 1, title: 'Account', fields: ['email', 'password'] },
@@ -58,18 +59,13 @@ export function useSignupForm() {
   const googleEmail = searchParams.get('email') || '';
   const googleName = searchParams.get('name') || '';
 
-  // Prefill form with Google data
+  // Prefill form with Google data (only email, NOT company name - Google name is personal, not company)
   // biome-ignore lint/correctness/useExhaustiveDependencies: form.setValue is stable
   useEffect(() => {
-    if (isGoogleSignup) {
-      if (googleEmail) {
-        form.setValue('email', googleEmail);
-      }
-      if (googleName) {
-        form.setValue('companyName', googleName);
-      }
+    if (isGoogleSignup && googleEmail) {
+      form.setValue('email', googleEmail);
     }
-  }, [isGoogleSignup, googleEmail, googleName]);
+  }, [isGoogleSignup, googleEmail]);
 
   const clearLocalError = () => setError(null);
 
@@ -151,59 +147,85 @@ export function useSignupForm() {
 
     // Step 3 -> Step 4: Create account and show verification
     if (currentStep === 3) {
-      const data = form.validate();
-      if (data) {
-        setIsLoading(true);
-        setError(null);
+      // For Google signup, use googleSignupSchema (no password required)
+      // For regular signup, use the regular signupSchema
+      const validationSchema = isGoogleSignup ? googleSignupSchema : signupSchema;
+      const validationResult = validationSchema.safeParse(form.values);
+      
+      if (!validationResult.success) {
+        // Set errors from validation
+        const firstError = validationResult.error.issues[0];
+        setError(firstError?.message || 'Validation failed');
+        return;
+      }
 
-        if (isGoogleSignup) {
-          // Google signup: use googleRegister API (no password required)
-          try {
-            const result = await authApi.googleRegister({
-              email: data.email,
-              companyName: data.companyName,
-              country: data.country,
-              phoneNumber:
-                data.dialCode && data.phoneNumber
-                  ? `${data.dialCode}${data.phoneNumber}`
-                  : null,
-              city: data.city || null,
-              address: data.address || null,
+      const data = validationResult.data;
+      setIsLoading(true);
+      setError(null);
+
+      if (isGoogleSignup) {
+        // Google signup: use googleRegister API (no password required)
+        try {
+          const result = await authApi.googleRegister({
+            email: data.email,
+            companyName: data.companyName,
+            country: data.country,
+            phoneNumber:
+              data.dialCode && data.phoneNumber
+                ? `${data.dialCode}${data.phoneNumber}`
+                : null,
+            city: data.city || null,
+            address: data.address || null,
+          });
+
+          if (result.success) {
+            // Update auth state and redirect to dashboard
+            useAuthStore.setState({
+              isAuthenticated: true,
+              isActivated: true,
+              companyId: result.data?.companyId || null,
+              userEmail: result.data?.email || data.email,
             });
 
-            if (result.success) {
-              // Update auth state and redirect to dashboard
-              useAuthStore.setState({
-                isAuthenticated: true,
-                isActivated: true,
-                companyId: result.data?.companyId || null,
-                userEmail: result.data?.email || data.email,
-              });
-
-              await fetchCompanyProfile();
-              router.push('/dashboard');
-            } else {
-              setError(result.message || 'Registration failed');
-            }
-          } catch (err) {
+            await fetchCompanyProfile();
+            router.push('/dashboard');
+          } else {
+            setError(result.message || 'Registration failed');
+          }
+        } catch (err) {
+          console.error('Google registration error:', err);
+          if (err instanceof HttpError) {
+            // Extract message from backend error response
+            const backendError = err.data as { message?: string } | null;
+            setError(backendError?.message || err.statusText || 'Registration failed');
+          } else {
             setError(
               err instanceof Error ? err.message : 'Registration failed'
             );
-          } finally {
-            setIsLoading(false);
           }
-          return;
+        } finally {
+          setIsLoading(false);
         }
+        return;
+      }
 
-        // Regular signup flow
-        const result = await signup(data);
+      // Regular signup flow - password is required
+      if (!data.password) {
+        setError('Password is required');
         setIsLoading(false);
-        if (result.success) {
-          // Account created, proceed to verification step
-          goToNextStep();
-        } else if (authError) {
-          setError(authError);
-        }
+        return;
+      }
+      
+      const result = await signup({
+        ...data,
+        password: data.password,
+      });
+      setIsLoading(false);
+      if (result.success) {
+        // Account created, proceed to verification step
+        goToNextStep();
+      } else if (authError) {
+        setError(authError);
       }
       return;
     }

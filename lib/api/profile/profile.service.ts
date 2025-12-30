@@ -1,5 +1,6 @@
 import { buildEndpoint } from '@/lib/api';
 import { HttpError } from '@/lib/http';
+import { fetchWithAuth } from '../fetch-with-auth';
 import type {
   CompanyProfile,
   CompanyProfileResponse,
@@ -22,12 +23,11 @@ const PROFILE_ENDPOINT = 'profile';
 export async function getProfile(id: string): Promise<CompanyProfile> {
   const url = buildEndpoint(`${PROFILE_ENDPOINT}/${id}`);
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -46,12 +46,11 @@ export async function getProfile(id: string): Promise<CompanyProfile> {
 export async function getAllProfiles(): Promise<CompanyProfile[]> {
   const url = buildEndpoint(`${PROFILE_ENDPOINT}/profiles`);
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -78,12 +77,11 @@ export async function updateProfile(
     Object.entries(data).filter(([, value]) => value !== undefined)
   );
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
     body: JSON.stringify(cleanedData),
   });
 
@@ -108,12 +106,11 @@ export async function updateProfile(
 export async function deleteProfile(id: string): Promise<{ success: boolean }> {
   const url = buildEndpoint(`${PROFILE_ENDPOINT}/${id}`);
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
   });
 
   if (!response.ok) {

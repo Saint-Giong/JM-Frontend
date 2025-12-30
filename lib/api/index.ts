@@ -27,5 +27,7 @@ export {
   getApiBaseUrl,
   getApiUrl,
 } from './config';
+// Re-export fetch with auth
+export { fetchWithAuth, onSessionExpired, onTokenRefreshed } from './fetch-with-auth';
 // Re-export profile API
 export * from './profile';

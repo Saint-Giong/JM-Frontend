@@ -37,13 +37,14 @@ function isUrlAllowed(targetUrl: string): boolean {
 }
 
 export async function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
 
   // Only proxy requests to /api/proxy/*
   if (pathname.startsWith('/api/proxy/')) {
     // Remove the /api/proxy prefix to get the actual API path
     const apiPath = pathname.replace('/api/proxy', '');
-    const targetUrl = `${API_BASE_URL}${apiPath}`;
+    // Include query string parameters in the target URL
+    const targetUrl = `${API_BASE_URL}${apiPath}${search}`;
 
     // Validate that the target URL is allowed (prevent SSRF)
     if (!isUrlAllowed(targetUrl)) {

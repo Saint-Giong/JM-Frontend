@@ -35,7 +35,7 @@ function isUrlAllowed(targetUrl: string): boolean {
 }
 
 // Only forward these specific cookies to the backend
-const AUTH_COOKIES = ['auth_token', 'refresh_token', 'temp_token'];
+const AUTH_COOKIES = ['ACCESS_TOKEN', 'REFRESH_TOKEN', 'TEMP_TOKEN'];
 
 function filterAuthCookies(cookieHeader: string | null): string | null {
   if (!cookieHeader) return null;

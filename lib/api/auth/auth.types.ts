@@ -78,10 +78,29 @@ export interface GoogleCallbackPrefillData {
   name: string;
 }
 
+// Response for existing user Google SSO login
+export interface GoogleLoginData {
+  companyId: string;
+  email: string;
+}
+
+// The data can be prefill data (new user) or login data (existing user)
+export type GoogleCallbackData = GoogleCallbackPrefillData | GoogleLoginData;
+
+// Helper to check if data is for new user registration
+export function isGooglePrefillData(data: GoogleCallbackData): data is GoogleCallbackPrefillData {
+  return 'name' in data;
+}
+
+// Helper to check if data is for existing user login  
+export function isGoogleLoginData(data: GoogleCallbackData): data is GoogleLoginData {
+  return 'companyId' in data;
+}
+
 export interface GoogleCallbackResponse {
   success: boolean;
   message: string;
-  data?: GoogleCallbackPrefillData | null; // null = existing user logged in
+  data?: GoogleCallbackData | null;
 }
 
 // Generic response wrapper

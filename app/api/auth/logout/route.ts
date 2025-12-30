@@ -6,8 +6,8 @@ export async function POST() {
     { status: 200 }
   );
 
-  // Clear auth_token cookie
-  response.cookies.set('auth_token', '', {
+  // Clear ACCESS_TOKEN cookie
+  response.cookies.set('ACCESS_TOKEN', '', {
     path: '/',
     maxAge: 0,
     httpOnly: true,
@@ -15,8 +15,17 @@ export async function POST() {
     sameSite: 'lax',
   });
 
-  // Clear refresh_token cookie
-  response.cookies.set('refresh_token', '', {
+  // Clear REFRESH_TOKEN cookie
+  response.cookies.set('REFRESH_TOKEN', '', {
+    path: '/',
+    maxAge: 0,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  });
+
+  // Clear TEMP_TOKEN cookie (in case of incomplete Google signup)
+  response.cookies.set('TEMP_TOKEN', '', {
     path: '/',
     maxAge: 0,
     httpOnly: true,

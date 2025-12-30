@@ -3,6 +3,7 @@
 import type { SignupFormData } from '@/app/(auth)/signup/api/schema';
 import { authApi, profileApi } from '@/lib/api';
 import type { GoogleCallbackPrefillData, LoginRequest } from '@/lib/api/auth';
+import { isGooglePrefillData, isGoogleLoginData } from '@/lib/api/auth';
 import type { CompanyProfile } from '@/lib/api/profile';
 import { HttpError } from '@/lib/http';
 import { create } from 'zustand';
@@ -121,17 +122,38 @@ export const useAuthStore = create<AuthState>()(
           const result = await authApi.handleGoogleCallback(code);
 
           if (result.data) {
-            // New user - needs to complete registration
-            set({ isLoading: false });
-            return {
-              success: true,
-              needsRegistration: true,
-              prefill: result.data,
-            };
+            // Check if this is prefill data (new user) or login data (existing user)
+            if (isGooglePrefillData(result.data)) {
+              // New user - needs to complete registration
+              set({ isLoading: false });
+              return {
+                success: true,
+                needsRegistration: true,
+                prefill: result.data,
+              };
+            }
+            
+            if (isGoogleLoginData(result.data)) {
+              // Existing user - logged in via cookies, data contains companyId and email
+              set({ 
+                isAuthenticated: true, 
+                isActivated: true, 
+                companyId: result.data.companyId,
+                userEmail: result.data.email,
+                isLoading: false 
+              });
+              
+              // Fetch company profile after successful login
+              await get().fetchCompanyProfile();
+              
+              return { success: true, needsRegistration: false };
+            }
           }
 
-          // Existing user - logged in via cookies
+          // Fallback for legacy response without data (shouldn't happen with updated backend)
           set({ isAuthenticated: true, isActivated: true, isLoading: false });
+          await get().fetchCompanyProfile();
+          
           return { success: true, needsRegistration: false };
         } catch (err) {
           const errorData =
