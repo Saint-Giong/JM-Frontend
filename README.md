@@ -25,29 +25,29 @@ The frontend application for the **Job Manager Subsystem** of the DEVision platf
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                              Frontend                                     │
-│  ┌────────────────┐  ┌──────────────┐  ┌─────────────┐  ┌─────────────┐ │
-│  │  Next.js 16    │  │  React 19    │  │   Zustand   │  │ React Query │ │
-│  │  (App Router)  │  │              │  │ (Auth Store)│  │  (Server)   │ │
-│  └───────┬────────┘  └──────────────┘  └─────────────┘  └─────────────┘ │
+│                              Frontend                                    │
+│  ┌────────────────┐  ┌──────────────┐  ┌─────────────┐  ┌─────────────┐  │
+│  │  Next.js 16    │  │  React 19    │  │   Zustand   │  │ React Query │  │
+│  │  (App Router)  │  │              │  │ (Auth Store)│  │  (Server)   │  │
+│  └───────┬────────┘  └──────────────┘  └─────────────┘  └─────────────┘  │
 │          │                                                               │
 │          ▼                                                               │
-│  ┌────────────────────────────────────────────────────────────────────┐ │
-│  │                    API Layer (lib/api, lib/http)                    │ │
-│  │  • HttpClient class with type-safe methods                          │ │
-│  │  • React Query integration via fetcher utilities                    │ │
-│  │  • Development proxy for CORS bypass                                │ │
-│  └───────┬────────────────────────────────────────────────────────────┘ │
-└──────────┼──────────────────────────────────────────────────────────────┘
+│  ┌────────────────────────────────────────────────────────────────────┐  │
+│  │                    API Layer (lib/api, lib/http)                   │  │
+│  │  • HttpClient class with type-safe methods                         │  │
+│  │  • React Query integration via fetcher utilities                   │  │
+│  │  • Development proxy for CORS bypass                               │  │
+│  └───────┬────────────────────────────────────────────────────────────┘  │
+└──────────┼───────────────────────────────────────────────────────────────┘
            │ REST API
            ▼
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                       Backend (JM-CompanyProfileService)                  │
-│  ┌────────────────┐  ┌──────────────┐  ┌─────────────┐  ┌─────────────┐ │
-│  │ Spring Boot    │  │  Spring JPA  │  │   Kafka     │  │   Eureka    │ │
-│  │   3.5.7        │  │ (PostgreSQL) │  │  (Events)   │  │  (Service   │ │
-│  │                │  │              │  │             │  │  Discovery) │ │
-│  └────────────────┘  └──────────────┘  └─────────────┘  └─────────────┘ │
+│                       Backend (JM-CompanyProfileService)                 │
+│  ┌────────────────┐  ┌──────────────┐  ┌─────────────┐  ┌─────────────┐  │
+│  │ Spring Boot    │  │  Spring JPA  │  │   Kafka     │  │   Eureka    │  │
+│  │   3.5.7        │  │ (PostgreSQL) │  │  (Events)   │  │  (Service   │  │
+│  │                │  │              │  │             │  │  Discovery) │  │
+│  └────────────────┘  └──────────────┘  └─────────────┘  └─────────────┘  │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -59,7 +59,7 @@ The frontend application for the **Job Manager Subsystem** of the DEVision platf
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
-| [Next.js](https://nextjs.org) | 16.1.0 | React framework with App Router |
+| [Next.js](https://nextjs.org) | 16.1.1 | React framework with App Router |
 | [React](https://react.dev) | 19.2.3 | UI library |
 | [React Query](https://tanstack.com/query) | 5.90.12 | Server state management |
 | [Zustand](https://zustand.docs.pmnd.rs) | 5.0.9 | Client state management |
@@ -67,6 +67,7 @@ The frontend application for the **Job Manager Subsystem** of the DEVision platf
 | [Zod](https://zod.dev) | 4.2.1 | Schema validation |
 | [Biome](https://biomejs.dev) | 2.3.10 | Formatting & linting |
 | [@saint-giong/bamboo-ui](https://www.npmjs.com/package/@saint-giong/bamboo-ui) | 0.5.1 | UI component library |
+| [Stripe](https://stripe.com/) | 20.1.0 | Payment Methods API |
 
 ### Backend
 
@@ -162,26 +163,15 @@ JM-Frontend/
 bun install
 
 # Start development server
-bun dev
+bun dev:frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app.
+Open [https://localhost:3000](https://localhost:3000) to view the app.
 
 ### Backend Development
 
 ```bash
-# Start PostgreSQL & Kafka via Docker
-cd ../JM-CompanyProfileService/src/main/docker
-docker compose up -d
-
-# Run Spring Boot application
-cd ../../..
-./mvnw spring-boot:run
-```
-
-Or use the combined script:
-```bash
-bun run backend:profile
+bun dev:backend
 ```
 
 ---
@@ -205,7 +195,9 @@ bun run backend:profile
 
 ```bash
 # .env.local
-NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
+NODE_TLS_REJECT_UNAUTHORIZED=0NEXT_PUBLIC_USE_MOCK_WS=true
+NEXT_PUBLIC_API_BASE_URL=https://localhost:8072
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51Sgfu3PXF4YUJlw8ggSJUVzHBadfKrnOFvIch7BVH2xy76VOyM16N0YQYGpX7LrYfCEKNOs0QDtvujJ5HT528hzA002bfOwKF1
 ```
 
 ---
