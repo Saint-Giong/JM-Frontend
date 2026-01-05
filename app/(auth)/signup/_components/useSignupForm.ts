@@ -6,7 +6,11 @@ import { useFormValidation } from '@/components/headless/form';
 import { authApi } from '@/lib/api';
 import { HttpError } from '@/lib/http';
 import { useAuthStore } from '@/stores';
-import { googleSignupSchema, passwordRequirements, signupSchema } from '../api/schema';
+import {
+  googleSignupSchema,
+  passwordRequirements,
+  signupSchema,
+} from '../api/schema';
 
 export const SIGNUP_STEPS = [
   { id: 1, title: 'Account', fields: ['email', 'password'] },
@@ -149,9 +153,11 @@ export function useSignupForm() {
     if (currentStep === 3) {
       // For Google signup, use googleSignupSchema (no password required)
       // For regular signup, use the regular signupSchema
-      const validationSchema = isGoogleSignup ? googleSignupSchema : signupSchema;
+      const validationSchema = isGoogleSignup
+        ? googleSignupSchema
+        : signupSchema;
       const validationResult = validationSchema.safeParse(form.values);
-      
+
       if (!validationResult.success) {
         // Set errors from validation
         const firstError = validationResult.error.issues[0];
@@ -197,7 +203,9 @@ export function useSignupForm() {
           if (err instanceof HttpError) {
             // Extract message from backend error response
             const backendError = err.data as { message?: string } | null;
-            setError(backendError?.message || err.statusText || 'Registration failed');
+            setError(
+              backendError?.message || err.statusText || 'Registration failed'
+            );
           } else {
             setError(
               err instanceof Error ? err.message : 'Registration failed'
@@ -215,7 +223,7 @@ export function useSignupForm() {
         setIsLoading(false);
         return;
       }
-      
+
       const result = await signup({
         ...data,
         password: data.password,

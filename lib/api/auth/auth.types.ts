@@ -88,12 +88,16 @@ export interface GoogleLoginData {
 export type GoogleCallbackData = GoogleCallbackPrefillData | GoogleLoginData;
 
 // Helper to check if data is for new user registration
-export function isGooglePrefillData(data: GoogleCallbackData): data is GoogleCallbackPrefillData {
+export function isGooglePrefillData(
+  data: GoogleCallbackData
+): data is GoogleCallbackPrefillData {
   return 'name' in data;
 }
 
-// Helper to check if data is for existing user login  
-export function isGoogleLoginData(data: GoogleCallbackData): data is GoogleLoginData {
+// Helper to check if data is for existing user login
+export function isGoogleLoginData(
+  data: GoogleCallbackData
+): data is GoogleLoginData {
   return 'companyId' in data;
 }
 

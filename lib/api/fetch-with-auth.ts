@@ -1,6 +1,6 @@
 /**
  * Fetch wrapper with automatic token refresh on 401 errors
- * 
+ *
  * Flow:
  * 1. FE calls API (e.g., Profile) → gets 401
  * 2. FE calls /refresh-token to get new tokens
@@ -54,7 +54,8 @@ async function refreshAccessToken(): Promise<RefreshResult> {
     if (!response.ok) {
       console.error('[Auth] Token refresh failed:', response.status);
       return { success: false };
-    }    const data = await response.json();
+    }
+    const data = await response.json();
     if (data.success === true) {
       return {
         success: true,
@@ -88,7 +89,10 @@ async function handleUnauthorized(): Promise<RefreshResult> {
     return result;
   } catch (error) {
     const failedResult: RefreshResult = { success: false };
-    processQueue(failedResult, error instanceof Error ? error : new Error('Unknown error'));
+    processQueue(
+      failedResult,
+      error instanceof Error ? error : new Error('Unknown error')
+    );
     return failedResult;
   } finally {
     isRefreshing = false;
@@ -98,7 +102,7 @@ async function handleUnauthorized(): Promise<RefreshResult> {
 
 /**
  * Fetch with automatic token refresh on 401 errors
- * 
+ *
  * Usage:
  * ```ts
  * const response = await fetchWithAuth('/api/proxy/v1/profile/me', {
@@ -123,22 +127,24 @@ export async function fetchWithAuth(
   // If 401, try to refresh token and retry
   if (response.status === 401) {
     console.log('[Auth] Got 401, attempting token refresh...');
-    
+
     const refreshResult = await handleUnauthorized();
-    
+
     if (refreshResult.success) {
       console.log('[Auth] Token refreshed, retrying original request...');
-        // Update auth store with companyId from refresh response
+      // Update auth store with companyId from refresh response
       if (refreshResult.companyId) {
         if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('auth:token-refreshed', {
-            detail: {
-              companyId: refreshResult.companyId,
-            }
-          }));
+          window.dispatchEvent(
+            new CustomEvent('auth:token-refreshed', {
+              detail: {
+                companyId: refreshResult.companyId,
+              },
+            })
+          );
         }
       }
-      
+
       // Retry the original request
       response = await fetch(url, fetchOptions);
     } else {
@@ -164,7 +170,7 @@ export function onSessionExpired(callback: () => void): () => void {
 
   const handler = () => callback();
   window.addEventListener('auth:session-expired', handler);
-  
+
   return () => {
     window.removeEventListener('auth:session-expired', handler);
   };
@@ -185,9 +191,9 @@ export function onTokenRefreshed(
     const customEvent = event as CustomEvent<{ companyId?: string }>;
     callback(customEvent.detail);
   };
-  
+
   window.addEventListener('auth:token-refreshed', handler);
-  
+
   return () => {
     window.removeEventListener('auth:token-refreshed', handler);
   };
