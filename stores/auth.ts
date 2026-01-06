@@ -132,20 +132,20 @@ export const useAuthStore = create<AuthState>()(
                 prefill: result.data,
               };
             }
-            
+
             if (isGoogleLoginData(result.data)) {
               // Existing user - logged in via cookies, data contains companyId and email
-              set({ 
-                isAuthenticated: true, 
-                isActivated: true, 
+              set({
+                isAuthenticated: true,
+                isActivated: true,
                 companyId: result.data.companyId,
                 userEmail: result.data.email,
-                isLoading: false 
+                isLoading: false,
               });
-              
+
               // Fetch company profile after successful login
               await get().fetchCompanyProfile();
-              
+
               return { success: true, needsRegistration: false };
             }
           }
@@ -153,7 +153,7 @@ export const useAuthStore = create<AuthState>()(
           // Fallback for legacy response without data (shouldn't happen with updated backend)
           set({ isAuthenticated: true, isActivated: true, isLoading: false });
           await get().fetchCompanyProfile();
-          
+
           return { success: true, needsRegistration: false };
         } catch (err) {
           const errorData =
