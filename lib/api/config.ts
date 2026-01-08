@@ -3,37 +3,28 @@
  *
  * This module provides centralized API configuration with swappable base URLs.
  * Set the NEXT_PUBLIC_API_BASE_URL environment variable to change the API endpoint.
- *
- * In development, requests are proxied through Next.js to avoid CORS issues.
- * The proxy is configured in next.config.ts.
  */
 
+// Whitelisted backend URLs
+const BACKEND_URLS = {
+  development: 'https://localhost:8072',
+  production: 'https://sgjm-api.vohoangphuc.com',
+} as const;
+
 // Default API base URL - can be overridden via environment variable
-const DEFAULT_API_BASE_URL = 'https://localhost:8072';
+const DEFAULT_API_BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? BACKEND_URLS.production
+    : BACKEND_URLS.development;
 
 // API version prefix
 const API_VERSION = 'v1';
 
 /**
- * Check if we should use the proxy (client-side always uses proxy to avoid CORS)
- */
-function shouldUseProxy(): boolean {
-  // Always use proxy on client-side to avoid CORS issues
-  return typeof window !== 'undefined';
-}
-
-/**
  * Get the configured API base URL.
- * On client-side, always uses the proxy to avoid CORS.
- * Priority: Proxy (client) > Environment variable > Default value
+ * Priority: Environment variable > Default value (based on NODE_ENV)
  */
 export function getApiBaseUrl(): string {
-  if (shouldUseProxy()) {
-    // Use Next.js proxy on client-side to avoid CORS
-    return '/api/proxy';
-  }
-
-  // Server-side - direct connection to backend
   return process.env.NEXT_PUBLIC_API_BASE_URL ?? DEFAULT_API_BASE_URL;
 }
 
@@ -73,4 +64,4 @@ declare global {
   }
 }
 
-export { API_VERSION, DEFAULT_API_BASE_URL };
+export { API_VERSION, BACKEND_URLS, DEFAULT_API_BASE_URL };
