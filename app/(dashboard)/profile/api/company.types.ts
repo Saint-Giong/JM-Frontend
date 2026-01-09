@@ -14,6 +14,7 @@ export const companyDataSchema = z.object({
   aboutUs: z.string().optional(),
   admissionDescription: z.string().optional(),
   logoUrl: z.string().optional(),
+  id: z.string().uuid().optional(),
 });
 
 // Company schema with ID (for responses)

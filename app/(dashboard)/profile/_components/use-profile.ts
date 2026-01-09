@@ -147,6 +147,7 @@ export function useProfile() {
         success = !!updated;
       } else {
         const created = await createCompany({
+          id: companyId,
           name: formData.companyName,
           phone: formData.phone || undefined,
           address: formData.address || undefined,
@@ -169,7 +170,15 @@ export function useProfile() {
         setTimeout(() => setSaveSuccess(false), 2000);
       }
     },
-    [formData, company, updateCompany, createCompany, clearError, setEditMode]
+    [
+      formData,
+      company,
+      companyId,
+      updateCompany,
+      createCompany,
+      clearError,
+      setEditMode,
+    ]
   );
 
   const toggleEditMode = useCallback(() => {
