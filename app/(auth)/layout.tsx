@@ -35,8 +35,15 @@ export default function AuthLayout({
   return (
     <div className="flex h-screen overflow-hidden p-5">
       {/* image section */}
-      <div className="hidden items-center justify-center rounded-2xl bg-muted lg:flex lg:w-1/2">
-        Placeholder
+      <div className="hidden items-center justify-center overflow-hidden rounded-2xl bg-muted lg:flex lg:w-1/2">
+        <Image
+          src="/auth-hero.png"
+          alt="Professional networking illustration"
+          width={800}
+          height={800}
+          className="h-full w-full object-cover"
+          priority
+        />
       </div>
 
       {/* form section */}
