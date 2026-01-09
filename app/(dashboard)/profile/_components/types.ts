@@ -11,6 +11,7 @@ export interface ProfileFormData {
   country: string;
   phone: string;
   email: string;
+  logoUrl?: string;
 }
 
 /**
@@ -27,6 +28,7 @@ export function toCompanyUpdate(
     country: formData.country,
     aboutUs: formData.aboutUs,
     admissionDescription: formData.whoWeAreLookingFor,
+    logoUrl: formData.logoUrl,
   };
 }
 
@@ -47,5 +49,6 @@ export function fromCompany(
     country: company.country ?? '',
     phone: company.phone ?? '',
     email: defaults?.email ?? '',
+    logoUrl: company.logoUrl,
   };
 }

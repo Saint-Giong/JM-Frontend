@@ -1,6 +1,7 @@
 export { ActivitiesSection, type Activity } from './activities-section';
 export { CreateProfilePrompt } from './create-profile-prompt';
 export { JobPostsSection } from './job-posts-section';
+export { LogoUpload } from './logo-upload';
 export { ProfileEditForm } from './profile-edit-form';
 export { ProfileHeader } from './profile-header';
 export { ProfileSidebar } from './profile-sidebar';

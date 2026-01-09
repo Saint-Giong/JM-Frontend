@@ -68,6 +68,7 @@ export default function ProfilePage() {
           saveSuccess={saveSuccess}
           error={error}
           fieldErrors={fieldErrors}
+          companyId={companyId}
           onFieldChange={updateFormField}
           onSubmit={handleSaveProfile}
           onCancel={cancelEdit}

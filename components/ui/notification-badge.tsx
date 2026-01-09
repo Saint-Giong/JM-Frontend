@@ -26,7 +26,7 @@ export function NotificationBadge({
       <Badge
         variant="destructive"
         className={cn(
-          'absolute -right-2 -top-2 h-4 min-w-4 px-1 text-[10px] font-semibold flex items-center justify-center',
+          'absolute -top-2 -right-2 flex h-4 min-w-4 items-center justify-center px-1 font-semibold text-[10px]',
           className
         )}
       >
@@ -40,7 +40,7 @@ export function NotificationBadge({
     <Badge
       variant="destructive"
       className={cn(
-        'ml-auto h-6 w-6 overflow-hidden rounded-full !p-0 text-xs flex items-center justify-center',
+        '!p-0 ml-auto flex h-6 w-6 items-center justify-center overflow-hidden rounded-full text-xs',
         className
       )}
     >

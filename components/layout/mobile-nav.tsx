@@ -34,7 +34,7 @@ export function MobileNav() {
               key={item.title}
               href={item.href}
               className={cn(
-                'flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors relative',
+                'relative flex flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors',
                 isActive
                   ? 'text-primary'
                   : 'text-muted-foreground hover:text-foreground'

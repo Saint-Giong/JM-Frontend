@@ -1,6 +1,14 @@
 'use client';
 
 import {
+  ConnectionStatus,
+  Instructions,
+  MessageInput,
+  MessageList,
+  QuickActions,
+} from '@/components/websocket-test';
+import { useWebSocketTest } from '@/hooks';
+import {
   Tabs,
   TabsContent,
   TabsList,
@@ -13,14 +21,6 @@ import {
   NotificationsHeader,
   useNotifications,
 } from './_components';
-import {
-  ConnectionStatus,
-  QuickActions,
-  MessageInput,
-  Instructions,
-  MessageList,
-} from '@/components/websocket-test';
-import { useWebSocketTest } from '@/hooks';
 
 export default function NotificationsPage() {
   const {
@@ -46,7 +46,6 @@ export default function NotificationsPage() {
     messages,
     sendCustomMessage,
     triggerTestNotification: originalTriggerTestNotification,
-    markNotificationRead,
     clearMessages,
   } = useWebSocketTest();
 
@@ -113,8 +112,8 @@ export default function NotificationsPage() {
             <TabsContent value="test" className="space-y-4">
               <ConnectionStatus isConnected={isConnected} socketId={socketId} />
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="bg-white rounded-lg shadow p-4 space-y-4">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div className="space-y-4 rounded-lg bg-white p-4 shadow">
                   <QuickActions
                     isConnected={isConnected}
                     onTriggerNotification={triggerTestNotification}

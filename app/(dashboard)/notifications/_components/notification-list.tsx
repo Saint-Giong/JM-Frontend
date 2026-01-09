@@ -1,10 +1,10 @@
 'use client';
 
-import { Button, Card, CardContent } from '@saint-giong/bamboo-ui';
+import { Card, CardContent } from '@saint-giong/bamboo-ui';
 import { BellOff, Loader2 } from 'lucide-react';
 import { NotificationItem } from './notification-item';
-import { useInfiniteScroll } from './use-infinite-scroll';
 import type { Notification } from './types';
+import { useInfiniteScroll } from './use-infinite-scroll';
 
 interface NotificationListProps {
   notifications: Notification[];
@@ -47,35 +47,33 @@ export function NotificationList({
   }
 
   return (
-    <>
-      <Card>
-        <CardContent className="p-0">
-          <div className="divide-y">
-            {notifications.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                notification={notification}
-                onMarkAsRead={onMarkAsRead}
-                onDelete={onDelete}
-              />
-            ))}
-          </div>
+    <Card>
+      <CardContent className="p-0">
+        <div className="divide-y">
+          {notifications.map((notification) => (
+            <NotificationItem
+              key={notification.id}
+              notification={notification}
+              onMarkAsRead={onMarkAsRead}
+              onDelete={onDelete}
+            />
+          ))}
+        </div>
 
-          {hasMore && ( // infinite scroll
-            <div
-              ref={observerTarget}
-              className="flex items-center justify-center py-4 border-t"
-            >
-              {isLoadingMore && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm">Loading more noti...</span>
-                </div>
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </>
+        {hasMore && ( // infinite scroll
+          <div
+            ref={observerTarget}
+            className="flex items-center justify-center border-t py-4"
+          >
+            {isLoadingMore && (
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="text-sm">Loading more noti...</span>
+              </div>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

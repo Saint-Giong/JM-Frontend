@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { useCallback, useEffect, useState } from 'react';
+import { io, type Socket } from 'socket.io-client';
 
 export type Message = {
   id: string;
@@ -14,6 +14,15 @@ export function useWebSocketTest(serverUrl: string = 'http://localhost:4000') {
   const [isConnected, setIsConnected] = useState(false);
   const [socketId, setSocketId] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
+
+  const addMessage = useCallback((msg: Omit<Message, 'id' | 'timestamp'>) => {
+    const newMessage: Message = {
+      id: Math.random().toString(36).substring(7),
+      timestamp: new Date().toISOString(),
+      ...msg,
+    };
+    setMessages((prev) => [...prev, newMessage]);
+  }, []);
 
   useEffect(() => {
     // Connect to WebSocket server
@@ -75,16 +84,7 @@ export function useWebSocketTest(serverUrl: string = 'http://localhost:4000') {
     return () => {
       socketInstance.disconnect();
     };
-  }, [serverUrl]);
-
-  const addMessage = (msg: Omit<Message, 'id' | 'timestamp'>) => {
-    const newMessage: Message = {
-      id: Math.random().toString(36).substring(7),
-      timestamp: new Date().toISOString(),
-      ...msg,
-    };
-    setMessages((prev) => [...prev, newMessage]);
-  };
+  }, [serverUrl, addMessage]);
 
   const sendCustomMessage = (message: string) => {
     if (!socket || !message.trim()) return;

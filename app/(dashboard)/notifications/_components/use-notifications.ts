@@ -1,8 +1,8 @@
 'use client';
 
-import { useNotificationStore } from '@/stores';
 import type { Notification as NotificationFromMock } from '@/mocks/notifications';
-import { useCallback, useState, useMemo } from 'react';
+import { useNotificationStore } from '@/stores';
+import { useCallback, useMemo, useState } from 'react';
 import type { NotificationPreferences } from './types';
 
 const defaultPreferences: NotificationPreferences = {
@@ -71,7 +71,7 @@ export function useNotifications() {
       setDisplayedCount((prev) => prev + ITEMS_PER_PAGE);
       setIsLoadingMore(false);
     }, 300);
-  }, [isLoadingMore, hasMore, displayedCount, allNotifications.length]);
+  }, [isLoadingMore, hasMore]);
 
   const handleMarkAsRead = useCallback(
     (id: string) => {

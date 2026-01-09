@@ -2,8 +2,6 @@
 
 import type { FieldErrors } from '@/hooks';
 import {
-  Avatar,
-  AvatarFallback,
   Button,
   Input,
   Label,
@@ -11,6 +9,7 @@ import {
   Textarea,
 } from '@saint-giong/bamboo-ui';
 import { Check } from 'lucide-react';
+import { LogoUpload } from './logo-upload';
 import type { ProfileFormData } from './types';
 
 interface ProfileEditFormProps {
@@ -22,6 +21,7 @@ interface ProfileEditFormProps {
   saveSuccess: boolean;
   error?: string | null;
   fieldErrors?: FieldErrors;
+  companyId?: string;
   onFieldChange: <K extends keyof ProfileFormData>(
     field: K,
     value: ProfileFormData[K]
@@ -44,6 +44,7 @@ export function ProfileEditForm({
   saveSuccess,
   error,
   fieldErrors = {},
+  companyId,
   onFieldChange,
   onSubmit,
   onCancel,
@@ -52,17 +53,14 @@ export function ProfileEditForm({
     <form onSubmit={onSubmit} className="space-y-8">
       {/* Company Info */}
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
-        {/* Avatar Upload */}
-        <div className="flex flex-col items-center gap-3">
-          <Avatar className="h-24 w-24 md:h-32 md:w-32">
-            <AvatarFallback className="text-2xl md:text-3xl">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          <Button variant="outline" size="sm">
-            Upload Logo
-          </Button>
-        </div>
+        {/* Logo Upload */}
+        <LogoUpload
+          currentLogoUrl={formData.logoUrl}
+          companyId={companyId ?? ''}
+          onUploadComplete={(url) => onFieldChange('logoUrl', url)}
+          initials={initials}
+          disabled={!companyId || isSaving}
+        />
 
         {/* Company Details Form */}
         <div className="flex-1 space-y-4">

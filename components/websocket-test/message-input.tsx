@@ -26,7 +26,7 @@ export function MessageInput({
 
   return (
     <div>
-      <h2 className="text-sm font-semibold text-gray-800 mb-2">
+      <h2 className="mb-2 font-semibold text-gray-800 text-sm">
         Send Custom Message
       </h2>
       <div className="flex flex-col gap-2">
@@ -37,13 +37,13 @@ export function MessageInput({
           onKeyPress={handleKeyPress}
           placeholder="Type your message..."
           disabled={!isConnected}
-          className="px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+          className="rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
         />
         <button
           type="button"
           onClick={handleSend}
           disabled={!isConnected || !inputMessage.trim()}
-          className="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          className="rounded bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-300"
         >
           Send Message
         </button>

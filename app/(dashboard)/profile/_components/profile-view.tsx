@@ -1,12 +1,13 @@
 'use client';
 
+import { useSubscriptionStore } from '@/stores';
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
   Badge,
   Separator,
 } from '@saint-giong/bamboo-ui';
-import { useSubscriptionStore } from '@/stores';
 import { Crown, ExternalLink } from 'lucide-react';
 import { ActivitiesSection, type Activity } from './activities-section';
 import { JobPostsSection } from './job-posts-section';
@@ -43,6 +44,9 @@ export function ProfileView({
         {/* Company Header */}
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
           <Avatar className="h-24 w-24 md:h-32 md:w-32">
+            {formData.logoUrl && (
+              <AvatarImage src={formData.logoUrl} alt={displayName} />
+            )}
             <AvatarFallback className="text-2xl md:text-3xl">
               {initials}
             </AvatarFallback>

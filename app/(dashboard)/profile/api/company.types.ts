@@ -13,6 +13,7 @@ export const companyDataSchema = z.object({
   country: z.string().optional(),
   aboutUs: z.string().optional(),
   admissionDescription: z.string().optional(),
+  logoUrl: z.string().optional(),
 });
 
 // Company schema with ID (for responses)

@@ -36,24 +36,24 @@ function MessageItem({ message }: MessageItemProps) {
   };
 
   return (
-    <div className={`p-3 border-l-4 ${getMessageColor(message.type)}`}>
-      <div className="flex items-center gap-2 mb-1">
+    <div className={`border-l-4 p-3 ${getMessageColor(message.type)}`}>
+      <div className="mb-1 flex items-center gap-2">
         <span
-          className={`text-xs font-semibold uppercase px-2 py-0.5 rounded ${getBadgeColor(message.type)}`}
+          className={`rounded px-2 py-0.5 font-semibold text-xs uppercase ${getBadgeColor(message.type)}`}
         >
           {message.type}
         </span>
-        <span className="text-xs text-gray-500">
+        <span className="text-gray-500 text-xs">
           {new Date(message.timestamp).toLocaleTimeString()}
         </span>
       </div>
-      <p className="text-sm text-gray-900 break-words">{message.content}</p>
+      <p className="break-words text-gray-900 text-sm">{message.content}</p>
       {message.data && (
-        <details className="text-xs mt-1">
+        <details className="mt-1 text-xs">
           <summary className="cursor-pointer text-gray-600 hover:text-gray-800">
             Raw Data
           </summary>
-          <pre className="mt-1 p-2 bg-gray-100 rounded overflow-x-auto text-xs">
+          <pre className="mt-1 overflow-x-auto rounded bg-gray-100 p-2 text-xs">
             {JSON.stringify(message.data, null, 2)}
           </pre>
         </details>
@@ -68,15 +68,15 @@ interface MessageListProps {
 
 export function MessageList({ messages }: MessageListProps) {
   return (
-    <div className="bg-white rounded-lg shadow p-4 flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-sm font-semibold text-gray-800">
+    <div className="flex flex-col overflow-hidden rounded-lg bg-white p-4 shadow">
+      <div className="mb-2 flex items-center justify-between">
+        <h2 className="font-semibold text-gray-800 text-sm">
           Messages ({messages.length})
         </h2>
       </div>
-      <div className="flex-1 overflow-y-auto border border-gray-200 rounded">
+      <div className="flex-1 overflow-y-auto rounded border border-gray-200">
         {messages.length === 0 ? (
-          <div className="p-4 text-center text-sm text-gray-500">
+          <div className="p-4 text-center text-gray-500 text-sm">
             No messages yet
           </div>
         ) : (
