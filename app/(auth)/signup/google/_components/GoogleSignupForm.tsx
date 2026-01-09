@@ -123,7 +123,17 @@ function GoogleSignupFormContent() {
 
       {error && (
         <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-600 text-sm">
-          {error}
+          <div>{error}</div>
+          {/* Show restart button for session expiry errors */}
+          {error?.toLowerCase().includes('session') && (
+            <button
+              type="button"
+              onClick={() => useAuthStore.getState().loginWithGoogle()}
+              className="mt-2 font-medium text-red-700 underline hover:text-red-800"
+            >
+              Try Google Sign-up Again
+            </button>
+          )}
         </div>
       )}
 

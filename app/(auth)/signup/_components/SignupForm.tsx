@@ -43,7 +43,7 @@ export default function SignupForm() {
       )}
 
       {(signupError || fieldErrors) && (
-        <div className="space-y-1 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-600 text-sm">
+        <div className="space-y-2 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-600 text-sm">
           {signupError && <div>{signupError}</div>}
           {fieldErrors &&
             Object.entries(fieldErrors).map(([field, message]) => (
@@ -51,6 +51,16 @@ export default function SignupForm() {
                 <strong className="capitalize">{field}:</strong> {message}
               </div>
             ))}
+          {/* Show restart button for session expiry errors */}
+          {isGoogleSignup && signupError?.toLowerCase().includes('session') && (
+            <button
+              type="button"
+              onClick={handleGoogleSignup}
+              className="mt-2 font-medium text-red-700 underline hover:text-red-800"
+            >
+              Try Google Sign-up Again
+            </button>
+          )}
         </div>
       )}
 

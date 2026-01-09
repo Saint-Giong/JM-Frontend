@@ -67,8 +67,13 @@ export interface GoogleRegisterResponse {
   message: string;
   data?: {
     companyId: string;
-    companyName: string;
     email: string;
+    tokenPair?: {
+      accessToken: string;
+      accessTokenExpiresIn: number;
+      refreshToken: string;
+      refreshTokenExpiresIn: number;
+    };
   };
 }
 
