@@ -1,18 +1,18 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
 import { useFormValidation } from '@/components/headless/form';
 import { authApi } from '@/lib/api';
 import { HttpError } from '@/lib/http';
 import { useAuthStore } from '@/stores';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import {
   googleSignupSchema,
   passwordRequirements,
   signupSchema,
 } from '../api/schema';
 
-export const SIGNUP_STEPS = [
+const BASE_SIGNUP_STEPS = [
   { id: 1, title: 'Account', fields: ['email', 'password'] },
   {
     id: 2,
@@ -20,8 +20,15 @@ export const SIGNUP_STEPS = [
     fields: ['companyName', 'country', 'dialCode', 'phoneNumber'],
   },
   { id: 3, title: 'Location', fields: ['city', 'address'] },
-  { id: 4, title: 'Verify', fields: [] },
 ] as const;
+
+const VERIFY_STEP = { id: 4, title: 'Verify', fields: [] } as const;
+
+// For SSO signup, skip the Verify step (Google already verified email)
+export const getSignupSteps = (isGoogleSignup: boolean) =>
+  isGoogleSignup
+    ? BASE_SIGNUP_STEPS
+    : ([...BASE_SIGNUP_STEPS, VERIFY_STEP] as const);
 
 const initialValues = {
   companyName: '',
@@ -61,7 +68,6 @@ export function useSignupForm() {
   // Detect Google signup mode from URL params
   const isGoogleSignup = searchParams.get('google') === 'true';
   const googleEmail = searchParams.get('email') || '';
-  const googleName = searchParams.get('name') || '';
 
   // Prefill form with Google data (only email, NOT company name - Google name is personal, not company)
   // biome-ignore lint/correctness/useExhaustiveDependencies: form.setValue is stable
@@ -73,7 +79,8 @@ export function useSignupForm() {
 
   const clearLocalError = () => setError(null);
 
-  const totalSteps = SIGNUP_STEPS.length;
+  const steps = useMemo(() => getSignupSteps(isGoogleSignup), [isGoogleSignup]);
+  const totalSteps = steps.length;
 
   // Compute password requirements with met status
   const computedPasswordRequirements = useMemo(
@@ -294,7 +301,7 @@ export function useSignupForm() {
     // Multi-step
     currentStep,
     totalSteps,
-    steps: SIGNUP_STEPS,
+    steps,
     goToNextStep,
     goToPreviousStep,
     goToStep,
