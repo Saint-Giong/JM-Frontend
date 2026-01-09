@@ -189,6 +189,7 @@ export function useSignupForm() {
                 : null,
             city: data.city || null,
             address: data.address || null,
+            tempToken: searchParams.get('tempToken') || undefined, // Pass tempToken from URL
           });
 
           if (result.success) {

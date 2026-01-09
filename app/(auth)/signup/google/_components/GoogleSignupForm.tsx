@@ -77,6 +77,7 @@ function GoogleSignupFormContent() {
         phoneNumber: `${formData.dialCode}${formData.phoneNumber}`,
         city: formData.city || '',
         address: formData.address || undefined,
+        tempToken: searchParams.get('tempToken') || undefined, // Pass tempToken from URL
       });
 
       if (result.success) {

@@ -60,6 +60,7 @@ export interface GoogleRegisterRequest {
   phoneNumber: string | null;
   city: string | null;
   address?: string | null;
+  tempToken?: string; // Fallback for cookie issues
 }
 
 export interface GoogleRegisterResponse {
@@ -81,6 +82,7 @@ export interface GoogleRegisterResponse {
 export interface GoogleCallbackPrefillData {
   email: string;
   name: string;
+  tempToken?: string; // Fallback for cookie issues
 }
 
 // Response for existing user Google SSO login

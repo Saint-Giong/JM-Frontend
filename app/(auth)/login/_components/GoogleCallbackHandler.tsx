@@ -1,8 +1,8 @@
 'use client';
 
+import { useAuthStore } from '@/stores/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { useAuthStore } from '@/stores/auth';
 
 interface GoogleCallbackHandlerProps {
   onLoading?: (loading: boolean) => void;
@@ -56,6 +56,12 @@ export function GoogleCallbackHandler({
           email: result.prefill.email,
           name: result.prefill.name,
         });
+
+        // Pass tempToken if present (fallback for cookie issues)
+        if (result.prefill.tempToken) {
+          params.append('tempToken', result.prefill.tempToken);
+        }
+
         router.push(`/signup?${params.toString()}`);
       } else {
         // Existing user logged in successfully
