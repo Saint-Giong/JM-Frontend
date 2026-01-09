@@ -1,5 +1,6 @@
 'use client';
 
+import { getSubscriptionStatus, createSubscriptionProfile } from '@/lib/api';
 import { type SearchProfile, mockSearchProfiles } from '@/mocks/subscription';
 import { useAuthStore, useSubscriptionStore } from '@/stores';
 import { useCallback, useEffect, useState } from 'react';
@@ -26,11 +27,17 @@ const initialFormData: SearchProfileFormData = {
 };
 
 export function useSubscription() {
-  const { isPremium, setIsPremium, customerId, setCustomerId } =
-    useSubscriptionStore();
+  const {
+    isPremium,
+    setIsPremium,
+    customerId,
+    setCustomerId,
+    setSubscriptionProfileId,
+  } = useSubscriptionStore();
   const { companyId, userEmail } = useAuthStore();
   const searchParams = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchProfiles, setSearchProfiles] =
     useState<SearchProfile[]>(mockSearchProfiles);
   const [isCreating, setIsCreating] = useState(false);
@@ -38,22 +45,55 @@ export function useSubscription() {
   const [formData, setFormData] =
     useState<SearchProfileFormData>(initialFormData);
 
+  // Fetch subscription status on mount
+  useEffect(() => {
+    async function fetchSubscriptionStatus() {
+      if (!companyId) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await getSubscriptionStatus(companyId);
+        setIsPremium(response.status === 'ACTIVE');
+      } catch (error) {
+        // If 404 or other error, assume no subscription
+        console.log('[Subscription] Status fetch error:', error);
+        setIsPremium(false);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchSubscriptionStatus();
+  }, [companyId, setIsPremium]);
+
   // Handle Stripe checkout success/cancel
   useEffect(() => {
-    const success = searchParams.get('success');
-    const canceled = searchParams.get('canceled');
-    const sessionId = searchParams.get('session_id');
+    async function handleCheckoutResult() {
+      const success = searchParams.get('success');
+      const canceled = searchParams.get('canceled');
+      const sessionId = searchParams.get('session_id');
 
-    if (success === 'true' && sessionId) {
-      // Payment successful - subscription will be activated via webhook
-      // For now, we'll optimistically set premium status
-      // In production, you should verify the session and subscription status
-      setIsPremium(true);
-    } else if (canceled === 'true') {
-      // User canceled checkout
-      console.log('Checkout canceled');
+      if (success === 'true' && sessionId && companyId) {
+        // Payment successful - create subscription profile in backend
+        try {
+          const profile = await createSubscriptionProfile({ companyId });
+          setSubscriptionProfileId(profile.id);
+          setIsPremium(true);
+        } catch (error) {
+          console.error('[Subscription] Failed to create profile:', error);
+          // Optimistically set premium anyway as Stripe payment succeeded
+          setIsPremium(true);
+        }
+      } else if (canceled === 'true') {
+        // User canceled checkout
+        console.log('Checkout canceled');
+      }
     }
-  }, [searchParams, setIsPremium]);
+
+    handleCheckoutResult();
+  }, [searchParams, companyId, setIsPremium, setSubscriptionProfileId]);
 
   const handleUpgrade = useCallback(async () => {
     if (!companyId || !userEmail) {
@@ -206,6 +246,7 @@ export function useSubscription() {
     // State
     isPremium,
     isProcessing,
+    isLoading,
     searchProfiles,
     isCreating,
     isSaving,
