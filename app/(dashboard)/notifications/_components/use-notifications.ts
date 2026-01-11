@@ -167,7 +167,10 @@ export function useNotifications() {
   // Add notification (for WebSocket/local additions)
   const addNotification = useCallback(
     (
-      notification: Omit<Notification, 'id' | 'timestamp' | 'read' | 'companyId'>
+      notification: Omit<
+        Notification,
+        'id' | 'timestamp' | 'read' | 'companyId'
+      >
     ) => {
       storeAddNotification({
         id: crypto.randomUUID(),
