@@ -1,10 +1,8 @@
 'use client';
 
-import {
-  getApplicationCountsByStatus,
-  getApplicationsForJob,
-  getJobPostById,
-} from '@/mocks';
+import { useJobPost } from '@/hooks/use-jobpost';
+import { toJobPost } from '@/lib/api/jobpost';
+import { getApplicationCountsByStatus, getApplicationsForJob } from '@/mocks';
 import {
   Button,
   Separator,
@@ -13,9 +11,10 @@ import {
   TabsList,
   TabsTrigger,
 } from '@saint-giong/bamboo-ui';
+import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { JobDetailsContent, JobDetailsHeader } from './_components';
 import { JobApplicationsTab } from './_components/job-applications-tab';
 
@@ -23,15 +22,51 @@ export default function JobDetailsPage() {
   const params = useParams();
   const jobId = params.id as string;
   const [activeTab, setActiveTab] = useState('job-post');
+  const { currentJob, isLoading, error, fetchJob } = useJobPost();
 
-  // Get job data
-  const jobPost = useMemo(() => getJobPostById(jobId), [jobId]);
+  // Fetch job data from API
+  useEffect(() => {
+    if (jobId) {
+      fetchJob(jobId);
+    }
+  }, [jobId, fetchJob]);
+
+  // Transform API response to frontend JobPost type
+  const jobPost = useMemo(() => {
+    return currentJob ? toJobPost(currentJob) : null;
+  }, [currentJob]);
+
+  // Get applications (still using mock for now - applications service integration would be separate)
   const applications = useMemo(() => getApplicationsForJob(jobId), [jobId]);
   const applicationCounts = useMemo(
     () => getApplicationCountsByStatus(jobId),
     [jobId]
   );
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <p className="text-muted-foreground">Loading job details...</p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <h1 className="font-semibold text-2xl">Error loading job</h1>
+        <p className="text-muted-foreground">{error}</p>
+        <Link href="/jobs">
+          <Button>Back to Jobs</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  // Not found state
   if (!jobPost) {
     return (
       <div className="flex h-screen flex-col items-center justify-center gap-4">

@@ -41,3 +41,5 @@ export * from './payment';
 export * from './profile';
 // Re-export subscription API
 export * from './subscription';
+// Re-export job post API
+export * from './jobpost';

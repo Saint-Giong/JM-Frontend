@@ -1,6 +1,9 @@
 'use client';
 
 import { JobForm, type JobFormData } from '@/components/job';
+import { useJobPost } from '@/hooks/use-jobpost';
+import { toCreateRequest } from '@/lib/api/jobpost';
+import { useAuthStore } from '@/stores/auth';
 import {
   Button,
   Card,
@@ -11,27 +14,28 @@ import {
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 export default function CreateJobPage() {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { companyId } = useAuthStore();
+  const { createJob, isCreating, error, clearError } = useJobPost();
 
   const handleSubmit = async (data: JobFormData) => {
-    setIsSubmitting(true);
-    try {
-      // TODO: Replace with actual API call
-      console.log('Creating job:', data);
+    if (!companyId) {
+      console.error('No company ID available');
+      return;
+    }
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    clearError();
 
+    // Transform form data to API request format
+    const request = toCreateRequest(data, companyId, true);
+
+    const job = await createJob(request);
+
+    if (job) {
       // Redirect to jobs list after successful creation
       router.push('/jobs');
-    } catch (error) {
-      console.error('Failed to create job:', error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -59,6 +63,13 @@ export default function CreateJobPage() {
       {/* Content */}
       <main className="flex-1 overflow-y-auto p-6">
         <div className="mx-auto max-w-3xl">
+          {/* Error Display */}
+          {error && (
+            <div className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+              <p className="text-destructive text-sm">{error}</p>
+            </div>
+          )}
+
           <Card>
             <CardHeader>
               <CardTitle>Job Details</CardTitle>
@@ -68,7 +79,7 @@ export default function CreateJobPage() {
                 onSubmit={handleSubmit}
                 onCancel={handleCancel}
                 submitLabel="Create Job Post"
-                isLoading={isSubmitting}
+                isLoading={isCreating}
               />
             </CardContent>
           </Card>
