@@ -4,9 +4,9 @@ import { getGreeting } from '@/lib';
 import { jobPostApi } from '@/lib/api/jobpost/jobpost.service';
 import { profileApi } from '@/lib/api/profile/profile.service';
 import {
-  activeJobs,
+  type ActiveJob,
   dashboardStats,
-  recentApplications,
+  type RecentApplication,
 } from '@/mocks/dashboard';
 import { useEffect, useState } from 'react';
 
@@ -20,6 +20,16 @@ export function useDashboard() {
         title: 'Total Jobs',
         value: '-',
         description: 'Active job postings',
+        trend: '',
+        trendUp: true,
+      };
+    }
+    if (initial[1]) {
+      initial[1] = {
+        ...initial[1],
+        value: '-',
+        description: 'Not integrated',
+        trend: '',
       };
     }
     if (initial[2]) {
@@ -28,10 +38,23 @@ export function useDashboard() {
         title: 'Total Companies',
         value: '-',
         description: 'Registered companies',
+        trend: '',
+        trendUp: true,
+      };
+    }
+    if (initial[3]) {
+      initial[3] = {
+        ...initial[3],
+        value: '-',
+        description: 'Not integrated',
+        trend: '',
       };
     }
     return initial;
   });
+
+  const [activeJobsList, setActiveJobsList] = useState<ActiveJob[]>([]);
+  const [recentAppsList, setRecentAppsList] = useState<RecentApplication[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // With cookie-based auth, company name would come from a profile API
@@ -71,6 +94,26 @@ export function useDashboard() {
 
           return newStats;
         });
+
+        // Map jobs to ActiveJob format
+        const mappedJobs: ActiveJob[] = jobs.slice(0, 5).map((job) => {
+          const now = new Date();
+          const expiry = new Date(job.expiryDate);
+          const diffTime = Math.max(0, expiry.getTime() - now.getTime());
+          const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+          return {
+            id: job.id,
+            title: job.title,
+            applications: 0, // Not integrated
+            views: 0, // Not integrated
+            daysLeft,
+          };
+        });
+        setActiveJobsList(mappedJobs);
+
+        // Clear recent applications as we don't have API
+        setRecentAppsList([]);
       } catch (error) {
         console.error('Failed to fetch dashboard stats', error);
       } finally {
@@ -85,8 +128,8 @@ export function useDashboard() {
     displayName,
     greeting,
     stats,
-    recentApplications,
-    activeJobs,
+    recentApplications: recentAppsList,
+    activeJobs: activeJobsList,
     isLoading,
   };
 }
