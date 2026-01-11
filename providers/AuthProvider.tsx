@@ -57,5 +57,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [router]);
 
+  // Verify session on mount (or re-connection)
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const fetchCompanyProfile = useAuthStore(
+    (state) => state.fetchCompanyProfile
+  );
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      // fetching profile triggers a network call, which will fail if backend is down
+      // and trigger the logout logic in fetchWithAuth
+      fetchCompanyProfile();
+    }
+  }, [isAuthenticated, fetchCompanyProfile]);
+
   return <>{children}</>;
 }
