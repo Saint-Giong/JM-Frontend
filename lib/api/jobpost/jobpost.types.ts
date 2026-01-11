@@ -395,4 +395,3 @@ function formatRelativeDate(isoDate: string): string {
   if (diffDays < 60) return '1 month ago';
   return `${Math.floor(diffDays / 30)} months ago`;
 }
-

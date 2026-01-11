@@ -2,10 +2,7 @@
 
 import { useJobPost } from '@/hooks/use-jobpost';
 import { toJobPost } from '@/lib/api/jobpost';
-import {
-  getApplicationCountsByStatus,
-  getApplicationsForJob,
-} from '@/mocks';
+import { getApplicationCountsByStatus, getApplicationsForJob } from '@/mocks';
 import {
   Button,
   Separator,

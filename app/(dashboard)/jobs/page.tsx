@@ -24,7 +24,12 @@ import { useEffect, useMemo } from 'react';
 export default function JobsPage() {
   const router = useRouter();
   const { companyId } = useAuthStore();
-  const { jobs: jobResponses, isLoading, error, fetchJobsByCompany } = useJobPost();
+  const {
+    jobs: jobResponses,
+    isLoading,
+    error,
+    fetchJobsByCompany,
+  } = useJobPost();
 
   // Transform API responses to frontend Job type
   const transformedJobs = useMemo(() => {
