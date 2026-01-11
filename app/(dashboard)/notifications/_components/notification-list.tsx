@@ -1,9 +1,9 @@
 'use client';
 
+import type { Notification } from '@/lib/api/notifications';
 import { Card, CardContent } from '@saint-giong/bamboo-ui';
 import { BellOff, Loader2 } from 'lucide-react';
 import { NotificationItem } from './notification-item';
-import type { Notification } from './types';
 import { useInfiniteScroll } from './use-infinite-scroll';
 
 interface NotificationListProps {
@@ -68,7 +68,7 @@ export function NotificationList({
             {isLoadingMore && (
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span className="text-sm">Loading more noti...</span>
+                <span className="text-sm">Loading more...</span>
               </div>
             )}
           </div>

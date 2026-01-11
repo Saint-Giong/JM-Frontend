@@ -1,4 +1,7 @@
-export type { Notification, NotificationType } from '@/mocks/notifications';
+export type {
+  Notification,
+  NotificationType,
+} from '@/lib/api/notifications';
 
 export interface NotificationPreferences {
   emailNotifications: boolean;

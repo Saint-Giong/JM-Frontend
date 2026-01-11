@@ -39,3 +39,5 @@ export * from './media';
 export * from './payment';
 // Re-export profile API
 export * from './profile';
+// Re-export notification API
+export * from './notifications';

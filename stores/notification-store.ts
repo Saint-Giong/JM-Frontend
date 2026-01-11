@@ -1,29 +1,27 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-export interface Notification {
-  id: string;
-  type: 'INFO' | 'SUCCESS' | 'WARNING' | 'ERROR' | 'MATCHING_APPLICANT';
-  title: string;
-  message: string;
-  timestamp: string;
-  isRead: boolean;
-  metadata?: Record<string, any>;
-}
+import type { Notification } from '@/lib/api/notifications';
 
 export interface NotificationState {
   notifications: Notification[];
   unreadCount: number;
+  isLoading: boolean;
+  error: string | null;
+  currentPage: number;
+  hasMore: boolean;
+  totalElements: number;
 
   // Actions
-  addNotification: (
-    notification: Omit<Notification, 'id' | 'timestamp' | 'isRead'>
-  ) => void;
+  setNotifications: (notifications: Notification[]) => void;
+  appendNotifications: (notifications: Notification[]) => void;
+  addNotification: (notification: Notification) => void;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
   removeNotification: (id: string) => void;
   clearAll: () => void;
-  setNotifications: (notifications: Notification[]) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+  setPagination: (page: number, hasMore: boolean, total: number) => void;
 }
 
 export const useNotificationStore = create<NotificationState>()(
@@ -31,23 +29,40 @@ export const useNotificationStore = create<NotificationState>()(
     (set) => ({
       notifications: [],
       unreadCount: 0,
+      isLoading: false,
+      error: null,
+      currentPage: 0,
+      hasMore: true,
+      totalElements: 0,
 
-      addNotification: (data) => {
-        const newNotification: Notification = {
-          ...data,
-          id: Math.random().toString(36).substring(2, 11),
-          timestamp: new Date().toISOString(),
-          isRead: false,
-        };
+      setNotifications: (notifications) => {
+        set({
+          notifications,
+          unreadCount: notifications.filter((n) => !n.read).length,
+        });
+      },
 
+      appendNotifications: (newNotifications) => {
         set((state) => {
-          const updatedNotifications = [
-            newNotification,
-            ...state.notifications,
-          ];
+          // Filter out duplicates based on id
+          const existingIds = new Set(state.notifications.map((n) => n.id));
+          const uniqueNew = newNotifications.filter(
+            (n) => !existingIds.has(n.id)
+          );
+          const updatedNotifications = [...state.notifications, ...uniqueNew];
           return {
             notifications: updatedNotifications,
-            unreadCount: updatedNotifications.filter((n) => !n.isRead).length,
+            unreadCount: updatedNotifications.filter((n) => !n.read).length,
+          };
+        });
+      },
+
+      addNotification: (notification) => {
+        set((state) => {
+          const updatedNotifications = [notification, ...state.notifications];
+          return {
+            notifications: updatedNotifications,
+            unreadCount: updatedNotifications.filter((n) => !n.read).length,
           };
         });
       },
@@ -55,11 +70,11 @@ export const useNotificationStore = create<NotificationState>()(
       markAsRead: (id) => {
         set((state) => {
           const updatedNotifications = state.notifications.map((n) =>
-            n.id === id ? { ...n, isRead: true } : n
+            n.id === id ? { ...n, read: true } : n
           );
           return {
             notifications: updatedNotifications,
-            unreadCount: updatedNotifications.filter((n) => !n.isRead).length,
+            unreadCount: updatedNotifications.filter((n) => !n.read).length,
           };
         });
       },
@@ -68,7 +83,7 @@ export const useNotificationStore = create<NotificationState>()(
         set((state) => {
           const updatedNotifications = state.notifications.map((n) => ({
             ...n,
-            isRead: true,
+            read: true,
           }));
           return {
             notifications: updatedNotifications,
@@ -84,24 +99,43 @@ export const useNotificationStore = create<NotificationState>()(
           );
           return {
             notifications: updatedNotifications,
-            unreadCount: updatedNotifications.filter((n) => !n.isRead).length,
+            unreadCount: updatedNotifications.filter((n) => !n.read).length,
           };
         });
       },
 
       clearAll: () => {
-        set({ notifications: [], unreadCount: 0 });
+        set({
+          notifications: [],
+          unreadCount: 0,
+          currentPage: 0,
+          hasMore: true,
+          totalElements: 0,
+        });
       },
 
-      setNotifications: (notifications) => {
-        set({
-          notifications,
-          unreadCount: notifications.filter((n) => !n.isRead).length,
-        });
+      setLoading: (isLoading) => {
+        set({ isLoading });
+      },
+
+      setError: (error) => {
+        set({ error });
+      },
+
+      setPagination: (currentPage, hasMore, totalElements) => {
+        set({ currentPage, hasMore, totalElements });
       },
     }),
     {
       name: 'notification-storage',
+      partialize: (state) => ({
+        // Only persist notifications, not loading/error states
+        notifications: state.notifications,
+        unreadCount: state.unreadCount,
+      }),
     }
   )
 );
+
+// Re-export Notification type for convenience
+export type { Notification } from '@/lib/api/notifications';

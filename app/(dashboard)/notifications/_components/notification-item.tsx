@@ -1,8 +1,8 @@
 'use client';
 
+import type { Notification, NotificationType } from '@/lib/api/notifications';
 import { Button } from '@saint-giong/bamboo-ui';
 import { Bell, Check, Clock, Trash2, User, Users } from 'lucide-react';
-import type { Notification, NotificationType } from './types';
 
 // Map notification types to their corresponding icons
 const iconMap: Record<
@@ -20,12 +20,40 @@ interface NotificationItemProps {
   onDelete: (id: string) => void;
 }
 
+/**
+ * Format timestamp for display
+ */
+function formatTimestamp(timestamp: string): string {
+  try {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffHours < 1) {
+      const diffMinutes = Math.floor(diffMs / (1000 * 60));
+      return diffMinutes <= 1 ? 'Just now' : `${diffMinutes} minutes ago`;
+    }
+    if (diffHours < 24) {
+      return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    }
+    if (diffDays < 7) {
+      return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+    }
+    return date.toLocaleDateString();
+  } catch {
+    return timestamp;
+  }
+}
+
 export function NotificationItem({
   notification,
   onMarkAsRead,
   onDelete,
 }: NotificationItemProps) {
   const Icon = iconMap[notification.type] || Bell;
+  const formattedTime = formatTimestamp(notification.timestamp);
 
   return (
     <div
@@ -55,11 +83,6 @@ export function NotificationItem({
               {notification.title}
             </p>
             <p className="text-muted-foreground text-sm">
-              {notification.applicantName && (
-                <span className="font-medium text-foreground">
-                  {notification.applicantName}{' '}
-                </span>
-              )}
               {notification.message}
             </p>
           </div>
@@ -73,7 +96,7 @@ export function NotificationItem({
         <div className="mt-2 flex items-center gap-4">
           <span className="flex items-center gap-1 text-muted-foreground text-xs">
             <Clock className="h-3 w-3" />
-            {notification.timestamp}
+            {formattedTime}
           </span>
 
           {/* Action Buttons */}
