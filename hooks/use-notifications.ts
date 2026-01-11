@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useMemo } from 'react';
-import { notificationService } from '@/lib/api/notifications';
+import { markNotificationAsRead } from '@/lib/api/notifications';
 import { notificationChannel } from '@/lib/realtime/notification-channel';
 import { useNotificationStore } from '@/stores/notification-store';
 
@@ -21,11 +21,11 @@ export function useNotifications() {
 
   // Memoize filtered lists
   const readNotifications = useMemo(
-    () => notifications.filter((n) => n.isRead),
+    () => notifications.filter((n) => n.read),
     [notifications]
   );
   const unreadNotifications = useMemo(
-    () => notifications.filter((n) => !n.isRead),
+    () => notifications.filter((n) => !n.read),
     [notifications]
   );
 
@@ -35,7 +35,7 @@ export function useNotifications() {
       // Emit WebSocket event for real-time sync
       notificationChannel.markAsRead(id);
       // Call REST API for server-side persistence
-      notificationService.markAsRead(id).catch((err) => {
+      markNotificationAsRead(id).catch((err) => {
         console.error('[Notifications] Failed to mark as read on server:', err);
       });
     },

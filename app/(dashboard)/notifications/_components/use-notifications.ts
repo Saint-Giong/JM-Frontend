@@ -1,8 +1,14 @@
 'use client';
 
-import type { Notification as NotificationFromMock } from '@/mocks/notifications';
+import {
+  deleteNotification,
+  getNotifications,
+  markNotificationAsRead,
+  type Notification,
+} from '@/lib/api/notifications';
 import { useNotificationStore } from '@/stores';
-import { useCallback, useMemo, useState } from 'react';
+import { useAuthStore } from '@/stores/auth';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { NotificationPreferences } from './types';
 
 const defaultPreferences: NotificationPreferences = {
@@ -13,89 +19,134 @@ const defaultPreferences: NotificationPreferences = {
   systemNotifications: true,
 };
 
-const ITEMS_PER_PAGE = 10; // load per chunk
-
-// Convert between store notification format and mock format
-function convertStoreToMock(storeNotif: any): NotificationFromMock {
-  return {
-    id: storeNotif.id,
-    type: storeNotif.metadata?.type || 'system',
-    title: storeNotif.title,
-    message: storeNotif.message,
-    timestamp: new Date(storeNotif.timestamp).toLocaleString(),
-    read: storeNotif.isRead,
-    applicantName: storeNotif.metadata?.applicantName,
-    jobTitle: storeNotif.metadata?.jobTitle,
-  };
-}
+const ITEMS_PER_PAGE = 10;
 
 export function useNotifications() {
+  const { companyId } = useAuthStore();
   const {
-    notifications: storeNotifications,
+    notifications,
     unreadCount,
-    markAsRead: storeMark,
-    markAllAsRead: storeMarkAll,
-    removeNotification: storeRemove,
+    hasMore,
+    isLoading,
+    currentPage,
+    setNotifications,
+    appendNotifications,
+    markAsRead: storeMarkAsRead,
+    markAllAsRead: storeMarkAllAsRead,
+    removeNotification: storeRemoveNotification,
     clearAll: storeClearAll,
-    addNotification: storeAdd,
+    addNotification: storeAddNotification,
+    setLoading,
+    setError,
+    setPagination,
   } = useNotificationStore();
 
   const [isSaving, setIsSaving] = useState(false);
   const [preferences, setPreferences] =
     useState<NotificationPreferences>(defaultPreferences);
-
-  // Pagination state
-  const [displayedCount, setDisplayedCount] = useState(ITEMS_PER_PAGE);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasFetched, setHasFetched] = useState(false);
 
-  // Convert store notifications to mock format
-  const allNotifications = useMemo(
-    () => storeNotifications.map(convertStoreToMock),
-    [storeNotifications]
-  );
+  // Fetch notifications on mount
+  useEffect(() => {
+    if (!companyId || hasFetched) return;
 
-  // Get paginated notifications
-  const notifications = useMemo(
-    () => allNotifications.slice(0, displayedCount),
-    [allNotifications, displayedCount]
-  );
+    const fetchNotifications = async () => {
+      setLoading(true);
+      setError(null);
 
-  const hasMore = displayedCount < allNotifications.length;
+      try {
+        const result = await getNotifications(companyId, 0, ITEMS_PER_PAGE);
+        setNotifications(result.notifications);
+        setPagination(0, result.hasMore, result.totalElements);
+        setHasFetched(true);
+      } catch (err) {
+        console.error('[Notifications] Failed to fetch:', err);
+        setError(
+          err instanceof Error ? err.message : 'Failed to fetch notifications'
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleLoadMore = useCallback(() => {
-    if (isLoadingMore || !hasMore) return;
+    fetchNotifications();
+  }, [
+    companyId,
+    hasFetched,
+    setNotifications,
+    setPagination,
+    setLoading,
+    setError,
+  ]);
+
+  // Load more notifications
+  const handleLoadMore = useCallback(async () => {
+    if (isLoadingMore || !hasMore || !companyId) return;
 
     setIsLoadingMore(true);
-    // Simulate network delay for smooth UX
-    setTimeout(() => {
-      setDisplayedCount((prev) => prev + ITEMS_PER_PAGE);
+    try {
+      const nextPage = currentPage + 1;
+      const result = await getNotifications(
+        companyId,
+        nextPage,
+        ITEMS_PER_PAGE
+      );
+      appendNotifications(result.notifications);
+      setPagination(nextPage, result.hasMore, result.totalElements);
+    } catch (err) {
+      console.error('[Notifications] Failed to load more:', err);
+    } finally {
       setIsLoadingMore(false);
-    }, 300);
-  }, [isLoadingMore, hasMore]);
+    }
+  }, [
+    isLoadingMore,
+    hasMore,
+    companyId,
+    currentPage,
+    appendNotifications,
+    setPagination,
+  ]);
 
+  // Mark notification as read | no BE
   const handleMarkAsRead = useCallback(
-    (id: string) => {
-      storeMark(id);
+    async (id: string) => {
+      storeMarkAsRead(id);
+
+      try {
+        await markNotificationAsRead(id);
+      } catch (err) {
+        console.error('[Notifications] Failed to mark as read:', err);
+      }
     },
-    [storeMark]
+    [storeMarkAsRead]
   );
 
+  // Mark all as read | no BE
   const handleMarkAllAsRead = useCallback(() => {
-    storeMarkAll();
-  }, [storeMarkAll]);
+    storeMarkAllAsRead();
+  }, [storeMarkAllAsRead]);
 
+  // Delete notification
   const handleDelete = useCallback(
-    (id: string) => {
-      storeRemove(id);
+    async (id: string) => {
+      storeRemoveNotification(id);
+
+      try {
+        await deleteNotification(id);
+      } catch (err) {
+        console.error('[Notifications] Failed to delete:', err);
+      }
     },
-    [storeRemove]
+    [storeRemoveNotification]
   );
 
+  // Clear all (local only)
   const handleClearAll = useCallback(() => {
     storeClearAll();
-    setDisplayedCount(ITEMS_PER_PAGE); // Reset pagination
   }, [storeClearAll]);
 
+  // Update preference
   const updatePreference = useCallback(
     <K extends keyof NotificationPreferences>(
       key: K,
@@ -106,26 +157,30 @@ export function useNotifications() {
     []
   );
 
+  // Save preferences | no BE
   const handleSavePreferences = useCallback(async () => {
     setIsSaving(true);
     await new Promise((resolve) => setTimeout(resolve, 500));
     setIsSaving(false);
   }, []);
 
+  // Add notification (for WebSocket/local additions)
   const addNotification = useCallback(
-    (notification: Omit<NotificationFromMock, 'id' | 'timestamp' | 'read'>) => {
-      storeAdd({
-        type: notification.type.toUpperCase() as any,
-        title: notification.title,
-        message: notification.message,
-        metadata: {
-          type: notification.type,
-          applicantName: notification.applicantName,
-          jobTitle: notification.jobTitle,
-        },
+    (
+      notification: Omit<
+        Notification,
+        'id' | 'timestamp' | 'read' | 'companyId'
+      >
+    ) => {
+      storeAddNotification({
+        id: crypto.randomUUID(),
+        timestamp: new Date().toISOString(),
+        read: false,
+        companyId: companyId || '',
+        ...notification,
       });
     },
-    [storeAdd]
+    [storeAddNotification, companyId]
   );
 
   return {
@@ -134,6 +189,7 @@ export function useNotifications() {
     preferences,
     isSaving,
     hasMore,
+    isLoading,
     isLoadingMore,
     handleMarkAsRead,
     handleMarkAllAsRead,

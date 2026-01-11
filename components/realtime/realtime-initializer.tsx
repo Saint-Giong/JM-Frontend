@@ -3,7 +3,29 @@
 import { useEffect } from 'react';
 import { notificationChannel } from '@/lib/realtime/notification-channel';
 import { wsClient } from '@/lib/realtime/ws-client';
+import type { Notification, NotificationType } from '@/lib/api/notifications';
 import { useNotificationStore } from '@/stores/notification-store';
+import { useAuthStore } from '@/stores/auth';
+
+/**
+ * Create a notification from WebSocket data
+ */
+function createNotificationFromWsData(
+  data: Record<string, unknown>,
+  companyId: string,
+  defaultType: NotificationType = 'system'
+): Notification {
+  const type = (data.type as NotificationType) || defaultType;
+  return {
+    id: (data.id as string) || crypto.randomUUID(),
+    type,
+    title: (data.title as string) || 'New Notification',
+    message: (data.message as string) || '',
+    timestamp: (data.timestamp as string) || new Date().toISOString(),
+    read: false,
+    companyId,
+  };
+}
 
 /**
  * Component to initialize the WebSocket connection and set up event listeners.
@@ -13,18 +35,7 @@ export function RealtimeInitializer() {
   const addNotification = useNotificationStore(
     (state) => state.addNotification
   );
-
-  // undo this comment to test connection
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     addNotification({
-  //       type: 'INFO',
-  //       title: 'Test Notification',
-  //       message: 'This is a test notification triggered manually.',
-  //     });
-  //   }, 5000);
-  //   return () => clearTimeout(timer);
-  // }, [addNotification]);
+  const { companyId } = useAuthStore();
 
   useEffect(() => {
     // Initialize connection
@@ -34,12 +45,9 @@ export function RealtimeInitializer() {
     const unsubscribeNotification = notificationChannel.onNotification(
       (data) => {
         console.log('[Realtime] New notification received:', data);
-        addNotification({
-          type: data.type || 'INFO',
-          title: data.title || 'New Notification',
-          message: data.message || '',
-          metadata: data.metadata,
-        });
+        addNotification(
+          createNotificationFromWsData(data, companyId || '', 'system')
+        );
       }
     );
 
@@ -47,25 +55,30 @@ export function RealtimeInitializer() {
     const unsubscribeMatching = notificationChannel.onMatchingApplicant(
       (data) => {
         console.log('[Realtime] New matching applicant:', data);
-        addNotification({
-          type: 'MATCHING_APPLICANT',
-          title: 'New Talent Match!',
-          message: `A new applicant matching your criteria has appeared: ${data.name}`,
-          metadata: data,
-        });
+        addNotification(
+          createNotificationFromWsData(
+            {
+              ...data,
+              type: 'match',
+              title: 'New Talent Match!',
+              message: `A new applicant matching your criteria has appeared: ${data.name}`,
+            },
+            companyId || '',
+            'match'
+          )
+        );
       }
     );
 
     // Add test trigger for development
     if (process.env.NODE_ENV === 'development') {
-      (window as any).testReceiveNotification = (data: any) => {
+      (window as unknown as Record<string, unknown>).testReceiveNotification = (
+        data: Record<string, unknown>
+      ) => {
         console.log('[Test] Simulating received notification:', data);
-        addNotification({
-          type: data.type || 'INFO',
-          title: data.title || 'Test Notification',
-          message: data.message || 'This is a test notification.',
-          metadata: data.metadata,
-        });
+        addNotification(
+          createNotificationFromWsData(data, companyId || '', 'system')
+        );
       };
     }
 
@@ -75,10 +88,11 @@ export function RealtimeInitializer() {
       unsubscribeMatching();
       wsClient.disconnect();
       if (process.env.NODE_ENV === 'development') {
-        delete (window as any).testReceiveNotification;
+        delete (window as unknown as Record<string, unknown>)
+          .testReceiveNotification;
       }
     };
-  }, [addNotification]);
+  }, [addNotification, companyId]);
 
   return null; // This component doesn't render anything
 }

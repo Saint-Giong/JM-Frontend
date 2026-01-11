@@ -39,6 +39,8 @@ export * from './media';
 export * from './payment';
 // Re-export profile API
 export * from './profile';
+// Re-export notification API
+export * from './notifications';
 // Re-export subscription API
 export * from './subscription';
 // Re-export job post API
