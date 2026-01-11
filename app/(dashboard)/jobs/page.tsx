@@ -64,7 +64,7 @@ export default function JobsPage() {
   };
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-[calc(100vh-4rem)] flex-col overflow-hidden md:h-screen">
       {/* Header */}
       <header className="flex h-[4rem] items-center justify-between gap-4 border-border border-b px-6 py-4">
         <h1 className="font-semibold text-2xl">Jobs</h1>
