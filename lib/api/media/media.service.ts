@@ -27,9 +27,9 @@ export async function uploadLogo(
   // Create form data with meta (JSON) and file
   const formData = new FormData();
 
-  // Add meta as JSON blob
+  // Add meta as simple string (backend reads bytes so this works and is safer than Blob w/o filename)
   const meta = JSON.stringify({ companyId });
-  formData.append('meta', new Blob([meta], { type: 'application/json' }));
+  formData.append('meta', meta);
 
   // Add file
   formData.append('file', file);

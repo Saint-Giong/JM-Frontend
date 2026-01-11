@@ -1,7 +1,9 @@
 'use client';
 
 import { JobForm, type JobFormData } from '@/components/job';
-import { getJobPostById } from '@/mocks';
+import { useJobPost } from '@/hooks/use-jobpost';
+import { toFormData, toUpdateRequest } from '@/lib/api/jobpost';
+import { useAuthStore } from '@/stores/auth';
 import {
   Button,
   Card,
@@ -9,48 +11,56 @@ import {
   CardHeader,
   CardTitle,
 } from '@saint-giong/bamboo-ui';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export default function EditJobPage() {
   const params = useParams();
   const router = useRouter();
   const jobId = params.id as string;
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { companyId } = useAuthStore();
+  const {
+    currentJob,
+    isLoading,
+    isUpdating,
+    error,
+    fetchJob,
+    updateJob,
+    clearError,
+  } = useJobPost();
 
-  // Get job data (in real app, this would be fetched from API)
-  const jobPost = useMemo(() => getJobPostById(jobId), [jobId]);
+  // Fetch job data from API
+  useEffect(() => {
+    if (jobId) {
+      fetchJob(jobId);
+    }
+  }, [jobId, fetchJob]);
 
-  const initialData: Partial<JobFormData> | undefined = useMemo(() => {
-    if (!jobPost) return undefined;
-    return {
-      title: jobPost.title,
-      description: jobPost.description,
-      employmentTypes: jobPost.employmentTypes,
-      salary: jobPost.salary,
-      location: jobPost.location,
-      skills: jobPost.skills,
-      expiryDate: jobPost.expiryDate,
-    };
-  }, [jobPost]);
+  // Transform API response to form data
+  const initialData = useMemo(() => {
+    return currentJob ? toFormData(currentJob) : undefined;
+  }, [currentJob]);
 
   const handleSubmit = async (data: JobFormData) => {
-    setIsSubmitting(true);
-    try {
-      // TODO: Replace with actual API call
-      console.log('Updating job:', jobId, data);
+    if (!companyId) {
+      console.error('No company ID available');
+      return;
+    }
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    clearError();
 
+    // Transform form data to API request format
+    // Preserve the published status from the current job
+    const isPublished = currentJob?.published ?? false;
+    const request = toUpdateRequest(data, companyId, isPublished);
+
+    const success = await updateJob(jobId, request);
+
+    if (success) {
       // Redirect to job details after successful update
       router.push(`/jobs/${jobId}`);
-    } catch (error) {
-      console.error('Failed to update job:', error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -58,7 +68,18 @@ export default function EditJobPage() {
     router.push(`/jobs/${jobId}`);
   };
 
-  if (!jobPost) {
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <p className="text-muted-foreground">Loading job details...</p>
+      </div>
+    );
+  }
+
+  // Not found state
+  if (!currentJob && !isLoading) {
     return (
       <div className="flex h-screen flex-col items-center justify-center gap-4">
         <h1 className="font-semibold text-2xl">Job not found</h1>
@@ -92,6 +113,13 @@ export default function EditJobPage() {
       {/* Content */}
       <main className="flex-1 overflow-y-auto p-6">
         <div className="mx-auto max-w-3xl">
+          {/* Error Display */}
+          {error && (
+            <div className="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+              <p className="text-destructive text-sm">{error}</p>
+            </div>
+          )}
+
           <Card>
             <CardHeader>
               <CardTitle>Job Details</CardTitle>
@@ -102,7 +130,7 @@ export default function EditJobPage() {
                 onSubmit={handleSubmit}
                 onCancel={handleCancel}
                 submitLabel="Save Changes"
-                isLoading={isSubmitting}
+                isLoading={isUpdating}
               />
             </CardContent>
           </Card>

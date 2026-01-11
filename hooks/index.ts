@@ -22,6 +22,7 @@ export {
   type ViewMode,
 } from './use-job-list';
 export { useLogoUpload } from './use-logo-upload';
+export { useJobPost } from './use-jobpost';
 export { usePayment } from './use-payment';
 export { useSearchProfiles } from './use-search-profiles';
 export { useWebSocketTest, type Message } from './use-websocket-test';

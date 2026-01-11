@@ -122,7 +122,27 @@ export async function fetchWithAuth(
   };
 
   // First attempt
-  let response = await fetch(url, fetchOptions);
+  let response: Response;
+  try {
+    response = await fetch(url, fetchOptions);
+  } catch (error) {
+    console.error('[Auth] Network error during request:', error);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('auth:session-expired'));
+    }
+    throw error;
+  }
+
+  // Handle server errors (5xx)
+  if (response.status >= 500) {
+    console.error('[Auth] Server error:', response.status);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('auth:session-expired'));
+    }
+    // We still return the response so the caller can handle the error state if needed
+    // (though the app should redirect to login shortly)
+    return response;
+  }
 
   // If 401, try to refresh token and retry
   if (response.status === 401) {
@@ -146,7 +166,16 @@ export async function fetchWithAuth(
       }
 
       // Retry the original request
-      response = await fetch(url, fetchOptions);
+      try {
+        response = await fetch(url, fetchOptions);
+      } catch (error) {
+        // Handle network error on retry
+        console.error('[Auth] Network error during retry:', error);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('auth:session-expired'));
+        }
+        throw error;
+      }
     } else {
       console.log('[Auth] Token refresh failed, user needs to re-login');
       // Dispatch an event that can be caught to redirect to login
