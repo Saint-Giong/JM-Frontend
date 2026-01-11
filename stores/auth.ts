@@ -3,7 +3,7 @@
 import type { SignupFormData } from '@/app/(auth)/signup/api/schema';
 import { authApi, profileApi } from '@/lib/api';
 import type { GoogleCallbackPrefillData, LoginRequest } from '@/lib/api/auth';
-import { isGooglePrefillData, isGoogleLoginData } from '@/lib/api/auth';
+import { isGoogleLoginData, isGooglePrefillData } from '@/lib/api/auth';
 import type { CompanyProfile } from '@/lib/api/profile';
 import { HttpError } from '@/lib/http';
 import { create } from 'zustand';
@@ -268,6 +268,14 @@ export const useAuthStore = create<AuthState>()(
           return profile;
         } catch (err) {
           console.error('Failed to fetch company profile:', err);
+
+          // If profile not found (404), it means the user/company might have been deleted
+          // or the ID is invalid - we should log them out
+          if (err instanceof HttpError && err.status === 404) {
+            console.log('[AuthStore] Profile not found (404), logging out...');
+            get().logout();
+          }
+
           return null;
         }
       },
