@@ -12,12 +12,15 @@ export interface SubscriptionState {
   subscriptionId: string | null;
   // Backend subscription profile ID
   subscriptionProfileId: string | null;
+  // Hydration flag
+  hasHydrated: boolean;
 
   // Actions
   setIsPremium: (isPremium: boolean) => void;
   setCustomerId: (customerId: string | null) => void;
   setSubscriptionId: (subscriptionId: string | null) => void;
   setSubscriptionProfileId: (subscriptionProfileId: string | null) => void;
+  setHasHydrated: (hasHydrated: boolean) => void;
   reset: () => void;
 }
 
@@ -28,12 +31,14 @@ export const useSubscriptionStore = create<SubscriptionState>()(
       customerId: null,
       subscriptionId: null,
       subscriptionProfileId: null,
+      hasHydrated: false,
 
       setIsPremium: (isPremium) => set({ isPremium }),
       setCustomerId: (customerId) => set({ customerId }),
       setSubscriptionId: (subscriptionId) => set({ subscriptionId }),
       setSubscriptionProfileId: (subscriptionProfileId) =>
         set({ subscriptionProfileId }),
+      setHasHydrated: (hasHydrated) => set({ hasHydrated }),
 
       reset: () =>
         set({
@@ -45,6 +50,16 @@ export const useSubscriptionStore = create<SubscriptionState>()(
     }),
     {
       name: 'subscription-storage',
+      // Only persist data fields, not actions or hydration flag
+      partialize: (state) => ({
+        isPremium: state.isPremium,
+        customerId: state.customerId,
+        subscriptionId: state.subscriptionId,
+        subscriptionProfileId: state.subscriptionProfileId,
+      }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

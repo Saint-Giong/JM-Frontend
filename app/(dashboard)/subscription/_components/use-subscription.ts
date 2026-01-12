@@ -33,6 +33,7 @@ export function useSubscription() {
     customerId,
     setCustomerId,
     setSubscriptionProfileId,
+    hasHydrated,
   } = useSubscriptionStore();
   const { companyId, userEmail } = useAuthStore();
   const searchParams = useSearchParams();
@@ -45,9 +46,14 @@ export function useSubscription() {
   const [formData, setFormData] =
     useState<SearchProfileFormData>(initialFormData);
 
-  // Fetch subscription status on mount
+  // Fetch subscription status on mount (only after hydration)
   useEffect(() => {
     async function fetchSubscriptionStatus() {
+      // Wait for hydration to complete before fetching
+      if (!hasHydrated) {
+        return;
+      }
+
       if (!companyId) {
         setIsLoading(false);
         return;
@@ -61,16 +67,16 @@ export function useSubscription() {
           (response as unknown as { status: string }).status;
         setIsPremium(status === 'ACTIVE');
       } catch (error) {
-        // If 404 or other error, assume no subscription
+        // If 404 or other error, don't overwrite persisted value
+        // Only log the error - the persisted isPremium state will be used
         console.log('[Subscription] Status fetch error:', error);
-        setIsPremium(false);
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchSubscriptionStatus();
-  }, [companyId, setIsPremium]);
+  }, [companyId, setIsPremium, hasHydrated]);
 
   // Handle Stripe checkout success/cancel
   useEffect(() => {
