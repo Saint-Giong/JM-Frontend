@@ -133,17 +133,14 @@ export async function getGoogleRedirectUrl(): Promise<string> {
 
 /**
  * Register with Google OAuth
- * Requires temp_token cookie from Google callback
+ * Uses Next.js API proxy to handle cookies properly
  */
 export async function googleRegister(
   data: GoogleRegisterRequest
 ): Promise<GoogleRegisterResponse> {
-  const url = buildEndpoint(`${AUTH_ENDPOINT}/google/register`);
-
-  const response = await fetch(url, {
+  const response = await fetch('/api/auth/google/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    credentials: 'include', // Include temp_token cookie
     body: JSON.stringify(data),
   });
 
@@ -157,20 +154,17 @@ export async function googleRegister(
 
 /**
  * Handle Google OAuth callback
- * Exchanges authorization code for authentication
- * Returns prefill data for new users or null for existing users (who get logged in via cookies)
+ * Uses Next.js API proxy to handle cookies properly
  */
 export async function handleGoogleCallback(
   code: string
 ): Promise<GoogleCallbackResponse> {
-  const url = buildEndpoint(
-    `${AUTH_ENDPOINT}/google/auth?code=${encodeURIComponent(code)}`
+  const response = await fetch(
+    `/api/auth/google/callback?code=${encodeURIComponent(code)}`,
+    {
+      method: 'GET',
+    }
   );
-
-  const response = await fetch(url, {
-    method: 'GET',
-    credentials: 'include', // Receive auth/temp cookies from backend
-  });
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
