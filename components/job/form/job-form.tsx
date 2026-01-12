@@ -18,17 +18,23 @@ import { useJobForm } from './use-job-form';
 interface JobFormProps {
   initialData?: Partial<JobFormData>;
   onSubmit: (data: JobFormData) => void | Promise<void>;
+  onSaveDraft?: (data: JobFormData) => void | Promise<void>;
   onCancel?: () => void;
   submitLabel?: string;
+  saveDraftLabel?: string;
   isLoading?: boolean;
+  isSavingDraft?: boolean;
 }
 
 export function JobForm({
   initialData,
   onSubmit,
+  onSaveDraft,
   onCancel,
   submitLabel = 'Save',
+  saveDraftLabel = 'Save as Draft',
   isLoading = false,
+  isSavingDraft = false,
 }: JobFormProps) {
   const {
     formData,
@@ -56,7 +62,13 @@ export function JobForm({
     handleSubmit();
   };
 
-  const submitting = isSubmitting || isLoading;
+  const submitting = isSubmitting || isLoading || isSavingDraft;
+
+  const handleSaveDraft = () => {
+    if (onSaveDraft) {
+      onSaveDraft(formData);
+    }
+  };
 
   return (
     <form onSubmit={handleFormSubmit} className="space-y-6">
@@ -192,8 +204,19 @@ export function JobForm({
             Cancel
           </Button>
         )}
+        {onSaveDraft && (
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={handleSaveDraft}
+            disabled={submitting}
+          >
+            {isSavingDraft && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {saveDraftLabel}
+          </Button>
+        )}
         <Button type="submit" disabled={submitting}>
-          {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {submitLabel}
         </Button>
       </div>

@@ -14,11 +14,13 @@ import {
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function CreateJobPage() {
   const router = useRouter();
   const { companyId } = useAuthStore();
   const { createJob, isCreating, error, clearError } = useJobPost();
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
 
   const handleSubmit = async (data: JobFormData) => {
     if (!companyId) {
@@ -28,13 +30,35 @@ export default function CreateJobPage() {
 
     clearError();
 
-    // Transform form data to API request format
+    // Transform form data to API request format (isPublished = true)
     const request = toCreateRequest(data, companyId, true);
 
     const job = await createJob(request);
 
     if (job) {
       // Redirect to jobs list after successful creation
+      router.push('/jobs');
+    }
+  };
+
+  const handleSaveDraft = async (data: JobFormData) => {
+    if (!companyId) {
+      console.error('No company ID available');
+      return;
+    }
+
+    clearError();
+    setIsSavingDraft(true);
+
+    // Transform form data to API request format (isPublished = false for draft)
+    const request = toCreateRequest(data, companyId, false);
+
+    const job = await createJob(request);
+
+    setIsSavingDraft(false);
+
+    if (job) {
+      // Redirect to jobs list after successful save
       router.push('/jobs');
     }
   };
@@ -77,9 +101,12 @@ export default function CreateJobPage() {
             <CardContent>
               <JobForm
                 onSubmit={handleSubmit}
+                onSaveDraft={handleSaveDraft}
                 onCancel={handleCancel}
-                submitLabel="Create Job Post"
+                submitLabel="Publish Job Post"
+                saveDraftLabel="Save as Draft"
                 isLoading={isCreating}
+                isSavingDraft={isSavingDraft}
               />
             </CardContent>
           </Card>
