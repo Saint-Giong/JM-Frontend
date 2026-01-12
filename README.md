@@ -15,9 +15,10 @@ The frontend application for the **Job Manager Subsystem** of the DEVision platf
 
 ## Links
 
-- **Live Site**: [jm.saintgiong.ttr.gg](https://jm.saintgiong.ttr.gg)
-- **Storybook**: [storybook.saintgiong.ttr.gg](https://storybook.saintgiong.ttr.gg)
-- **Documentation**: [docs.jm.saintgiong.ttr.gg](https://docs.jm.saintgiong.ttr.gg)
+- **JM Frontend**: [jm.saintgiong.ttr.gg](https://jm.saintgiong.ttr.gg)
+- **JM Docs**: [docs.jm.saintgiong.ttr.gg](https://docs.jm.saintgiong.ttr.gg)
+- **JM Storybook**: [storybook.saintgiong.ttr.gg](https://storybook.saintgiong.ttr.gg)
+- **JA Frontend**: [ja.saintgiong.ttr.gg](https://ja.saintgiong.ttr.gg)
 
 ---
 

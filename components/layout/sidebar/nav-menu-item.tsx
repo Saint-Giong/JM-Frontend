@@ -22,6 +22,18 @@ export function NavMenuItem({ item, isActive }: NavMenuItemProps) {
     </>
   );
 
+  if (item.external) {
+    return (
+      <SidebarMenuItem>
+        <SidebarMenuButton asChild tooltip={tooltip}>
+          <a href={item.href} target="_blank" rel="noopener noreferrer">
+            {content}
+          </a>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+  }
+
   return (
     <SidebarMenuItem>
       <SidebarMenuButton

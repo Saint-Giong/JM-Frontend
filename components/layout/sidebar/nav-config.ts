@@ -1,12 +1,15 @@
 import {
   Bell,
+  BookOpen,
   Briefcase,
   Building2,
   CreditCard,
+  ExternalLink,
   Home,
   Search,
   Settings,
   Terminal,
+  Users,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -15,6 +18,7 @@ export interface NavItem {
   href: string;
   badge?: number;
   disabled?: boolean;
+  external?: boolean;
 }
 
 export const mainNavItems: NavItem[] = [
@@ -52,4 +56,25 @@ export const systemItems: NavItem[] = [
   },
   { title: 'Settings', icon: Settings, href: '/settings', disabled: false },
   { title: 'Dev Tools', icon: Terminal, href: '/admin', disabled: false },
+];
+
+export const externalLinks: NavItem[] = [
+  {
+    title: 'JM Docs',
+    icon: BookOpen,
+    href: 'https://docs.jm.saintgiong.ttr.gg',
+    external: true,
+  },
+  {
+    title: 'JM Storybook',
+    icon: ExternalLink,
+    href: 'https://storybook.saintgiong.ttr.gg',
+    external: true,
+  },
+  {
+    title: 'JA Frontend',
+    icon: Users,
+    href: 'https://ja.saintgiong.ttr.gg',
+    external: true,
+  },
 ];

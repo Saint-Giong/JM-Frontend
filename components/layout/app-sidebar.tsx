@@ -9,6 +9,7 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { usePathname } from 'next/navigation';
 import {
+  externalLinks,
   mainNavItems,
   NavGroup,
   recruitmentItems,
@@ -54,6 +55,7 @@ export function AppSidebar() {
           pathname={pathname}
         />
         <NavGroup label="System" items={systemItems} pathname={pathname} />
+        <NavGroup label="Links" items={externalLinks} pathname={pathname} />
       </SidebarContent>
 
       <SidebarFooter>
