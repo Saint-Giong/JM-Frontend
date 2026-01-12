@@ -120,3 +120,33 @@ export interface GenericResponse<T = unknown> {
   message: string;
   data?: T;
 }
+
+// Password management
+export interface SetPasswordRequest {
+  password: string;
+}
+
+export interface ChangePasswordRequest {
+  oldPassword: string;
+  newPassword: string;
+}
+
+export interface PasswordResponse {
+  success: boolean;
+  message: string;
+}
+
+// Token refresh
+export interface RefreshTokenResponse {
+  success: boolean;
+  message: string;
+}
+
+// Google account linking
+export interface LinkGoogleResponse {
+  success: boolean;
+  message: string;
+  data?: {
+    email: string;
+  };
+}

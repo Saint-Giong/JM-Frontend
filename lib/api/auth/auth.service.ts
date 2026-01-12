@@ -1,15 +1,20 @@
 import { buildEndpoint } from '@/lib/api';
 import { HttpError } from '@/lib/http';
 import type {
+  ChangePasswordRequest,
   GoogleCallbackResponse,
   GoogleRedirectResponse,
   GoogleRegisterRequest,
   GoogleRegisterResponse,
+  LinkGoogleResponse,
   LoginRequest,
   LoginResponse,
   OtpResponse,
+  PasswordResponse,
+  RefreshTokenResponse,
   RegisterRequest,
   RegisterResponse,
+  SetPasswordRequest,
   VerifyAccountRequest,
 } from './auth.types';
 
@@ -201,6 +206,151 @@ export async function logout(): Promise<OtpResponse> {
 }
 
 /**
+ * Activate account via email token link
+ * Endpoint: POST /v1/auth/activate-account
+ */
+export async function activateAccountByEmail(
+  token: string
+): Promise<OtpResponse> {
+  const url = buildEndpoint(
+    `${AUTH_ENDPOINT}/activate-account?token=${encodeURIComponent(token)}`
+  );
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new HttpError(response.status, response.statusText, errorData);
+  }
+
+  return response.json();
+}
+
+/**
+ * Set initial password for SSO accounts
+ * Requires ACCESS_TOKEN cookie
+ * Endpoint: POST /v1/auth/set-password
+ */
+export async function setPassword(
+  data: SetPasswordRequest
+): Promise<PasswordResponse> {
+  const url = buildEndpoint(`${AUTH_ENDPOINT}/set-password`);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new HttpError(response.status, response.statusText, errorData);
+  }
+
+  return response.json();
+}
+
+/**
+ * Change password for existing account
+ * Requires ACCESS_TOKEN cookie
+ * Endpoint: POST /v1/auth/change-password
+ */
+export async function changePassword(
+  data: ChangePasswordRequest
+): Promise<PasswordResponse> {
+  const url = buildEndpoint(`${AUTH_ENDPOINT}/change-password`);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new HttpError(response.status, response.statusText, errorData);
+  }
+
+  return response.json();
+}
+
+/**
+ * Refresh access token using refresh token
+ * Requires REFRESH_TOKEN cookie
+ * Endpoint: POST /v1/auth/refresh-token
+ */
+export async function refreshToken(): Promise<RefreshTokenResponse> {
+  const url = buildEndpoint(`${AUTH_ENDPOINT}/refresh-token`);
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new HttpError(response.status, response.statusText, errorData);
+  }
+
+  return response.json();
+}
+
+/**
+ * Link Google account to existing account
+ * Requires ACCESS_TOKEN cookie
+ * Endpoint: POST /v1/auth/google/link-google
+ */
+export async function linkGoogle(code: string): Promise<LinkGoogleResponse> {
+  const url = buildEndpoint(
+    `${AUTH_ENDPOINT}/google/link-google?code=${encodeURIComponent(code)}`
+  );
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new HttpError(response.status, response.statusText, errorData);
+  }
+
+  return response.json();
+}
+
+/**
+ * Re-link a new Google account (replace existing)
+ * Requires ACCESS_TOKEN cookie
+ * Endpoint: POST /v1/auth/google/relink-google
+ */
+export async function relinkGoogle(code: string): Promise<LinkGoogleResponse> {
+  const url = buildEndpoint(
+    `${AUTH_ENDPOINT}/google/relink-google?code=${encodeURIComponent(code)}`
+  );
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new HttpError(response.status, response.statusText, errorData);
+  }
+
+  return response.json();
+}
+
+/**
  * Auth API object with all methods
  */
 export const authApi = {
@@ -212,4 +362,11 @@ export const authApi = {
   handleGoogleCallback,
   googleRegister,
   logout,
+  // New methods
+  activateAccountByEmail,
+  setPassword,
+  changePassword,
+  refreshToken,
+  linkGoogle,
+  relinkGoogle,
 } as const;
