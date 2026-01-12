@@ -8,7 +8,7 @@ import {
 } from '@/lib/api/notifications';
 import { useNotificationStore } from '@/stores';
 import { useAuthStore } from '@/stores/auth';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { NotificationPreferences } from './types';
 
 const defaultPreferences: NotificationPreferences = {

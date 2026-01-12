@@ -6,6 +6,7 @@ import {
   Home,
   Search,
   Settings,
+  Terminal,
 } from 'lucide-react';
 
 export interface NavItem {
@@ -50,4 +51,5 @@ export const systemItems: NavItem[] = [
     disabled: false,
   },
   { title: 'Settings', icon: Settings, href: '/settings', disabled: false },
+  { title: 'Dev Tools', icon: Terminal, href: '/admin', disabled: false },
 ];
