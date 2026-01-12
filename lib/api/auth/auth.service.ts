@@ -22,23 +22,25 @@ import type {
  * Authentication API Service
  *
  * Provides authentication operations for company accounts.
- * All endpoints are automatically prefixed with the configured base URL.
+ *
+ * IMPORTANT: Core auth endpoints (login, register, verify, resend-otp, refresh-token)
+ * are proxied through Next.js API routes to handle cross-site cookie restrictions.
+ * Modern browsers block third-party cookies, so we proxy these requests through
+ * the same origin to ensure cookies are properly stored and sent.
  */
 
 const AUTH_ENDPOINT = 'auth';
 
 /**
  * Register a new company account
+ * Uses Next.js API proxy to handle cookies properly
  */
 export async function register(
   data: RegisterRequest
 ): Promise<RegisterResponse> {
-  const url = buildEndpoint(`${AUTH_ENDPOINT}/register`);
-
-  const response = await fetch(url, {
+  const response = await fetch('/api/auth/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    credentials: 'include', // Include cookies for consistency
     body: JSON.stringify(data),
   });
 
@@ -52,14 +54,12 @@ export async function register(
 
 /**
  * Login with email and password
+ * Uses Next.js API proxy to handle cookies properly
  */
 export async function login(data: LoginRequest): Promise<LoginResponse> {
-  const url = buildEndpoint(`${AUTH_ENDPOINT}/login`);
-
-  const response = await fetch(url, {
+  const response = await fetch('/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    credentials: 'include', // Include cookies for auth_token
     body: JSON.stringify(data),
   });
 
@@ -73,17 +73,14 @@ export async function login(data: LoginRequest): Promise<LoginResponse> {
 
 /**
  * Verify OTP and activate account
- * Requires auth_token cookie from login
+ * Uses Next.js API proxy to handle cookies properly
  */
 export async function verifyAccount(
   data: VerifyAccountRequest
 ): Promise<OtpResponse> {
-  const url = buildEndpoint(`${AUTH_ENDPOINT}/verify-account`);
-
-  const response = await fetch(url, {
+  const response = await fetch('/api/auth/verify-account', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    credentials: 'include', // Include auth_token cookie
     body: JSON.stringify(data),
   });
 
@@ -97,16 +94,12 @@ export async function verifyAccount(
 
 /**
  * Resend OTP to email
- * Requires auth_token cookie from login
+ * Uses Next.js API proxy to handle cookies properly
  */
 export async function resendOtp(): Promise<OtpResponse> {
-  const url = buildEndpoint(`${AUTH_ENDPOINT}/resend-otp`);
-
-  const response = await fetch(url, {
+  const response = await fetch('/api/auth/resend-otp', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    credentials: 'include', // Include auth_token cookie
-    body: JSON.stringify({}),
   });
 
   if (!response.ok) {
@@ -210,10 +203,10 @@ export async function logout(): Promise<OtpResponse> {
  * Endpoint: POST /v1/auth/activate-account
  */
 export async function activateAccountByEmail(
-  token: string
+  activationToken: string
 ): Promise<OtpResponse> {
   const url = buildEndpoint(
-    `${AUTH_ENDPOINT}/activate-account?token=${encodeURIComponent(token)}`
+    `${AUTH_ENDPOINT}/activate-account?activationToken=${encodeURIComponent(activationToken)}`
   );
 
   const response = await fetch(url, {
@@ -282,16 +275,12 @@ export async function changePassword(
 
 /**
  * Refresh access token using refresh token
- * Requires REFRESH_TOKEN cookie
- * Endpoint: POST /v1/auth/refresh-token
+ * Uses Next.js API proxy to handle cookies properly
  */
 export async function refreshToken(): Promise<RefreshTokenResponse> {
-  const url = buildEndpoint(`${AUTH_ENDPOINT}/refresh-token`);
-
-  const response = await fetch(url, {
+  const response = await fetch('/api/auth/refresh-token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
   });
 
   if (!response.ok) {
