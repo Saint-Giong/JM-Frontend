@@ -4,6 +4,7 @@ import {
   Briefcase,
   Building2,
   CreditCard,
+  Github,
   Home,
   Palette,
   Search,
@@ -52,6 +53,12 @@ export const resourceItems: NavItem[] = [
     title: 'Storybook',
     icon: Palette,
     href: 'https://storybook.saintgiong.ttr.gg',
+    external: true,
+  },
+  {
+    title: 'GitHub',
+    icon: Github,
+    href: 'https://github.com/Saint-Giong/JM-Frontend',
     external: true,
   },
   {
