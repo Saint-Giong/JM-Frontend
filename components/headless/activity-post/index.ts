@@ -1,31 +1,27 @@
 // Unstyled compound components
-export { ActivityPost, ActivityList, ActivityForm } from './ActivityPost';
-
-// Hooks
-export {
-  useActivityPost,
-  useActivityForm,
-  useActivityList,
-} from './hooks';
-
+export { ActivityForm, ActivityList, ActivityPost } from './ActivityPost';
 export type {
-  UseActivityPostOptions,
-  UseActivityPostReturn,
   UseActivityFormOptions,
   UseActivityFormReturn,
   UseActivityListOptions,
   UseActivityListReturn,
+  UseActivityPostOptions,
+  UseActivityPostReturn,
 } from './hooks';
-
-// Stores
+// Hooks
 export {
-  createActivityFormStore,
-  createActivityListStore,
-} from './stores';
-
+  useActivityForm,
+  useActivityList,
+  useActivityPost,
+} from './hooks';
 export type {
   Activity,
   ActivityFormData,
   ActivityFormState,
   ActivityListState,
+} from './stores';
+// Stores
+export {
+  createActivityFormStore,
+  createActivityListStore,
 } from './stores';

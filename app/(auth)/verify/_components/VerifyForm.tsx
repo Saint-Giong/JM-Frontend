@@ -1,5 +1,8 @@
 'use client';
 
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@saint-giong/bamboo-ui';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import {
   Form,
   FormActions,
@@ -7,9 +10,6 @@ import {
   FormSubmitButton,
 } from '@/components/common/Form';
 import { useAuthStore } from '@/stores';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@saint-giong/bamboo-ui';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 export default function VerifyForm() {
   const router = useRouter();

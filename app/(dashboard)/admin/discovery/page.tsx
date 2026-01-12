@@ -1,7 +1,5 @@
 'use client';
 
-import type { ApplicantDocument, ApplicantPage } from '@/lib/api/discovery';
-import { discoveryApi } from '@/lib/api/discovery';
 import {
   Badge,
   Tabs,
@@ -11,6 +9,8 @@ import {
 } from '@saint-giong/bamboo-ui';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
+import type { ApplicantDocument, ApplicantPage } from '@/lib/api/discovery';
+import { discoveryApi } from '@/lib/api/discovery';
 import {
   AdminToolbar,
   type ColumnDef,

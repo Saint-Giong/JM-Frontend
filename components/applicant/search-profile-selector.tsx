@@ -1,6 +1,5 @@
 'use client';
 
-import type { ApplicantSearchProfile } from './types';
 import {
   Button,
   DropdownMenu,
@@ -10,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@saint-giong/bamboo-ui';
 import { ChevronDown, FolderOpen, Trash2 } from 'lucide-react';
+import type { ApplicantSearchProfile } from './types';
 
 interface SearchProfileSelectorProps {
   profiles: ApplicantSearchProfile[];

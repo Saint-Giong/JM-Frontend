@@ -1,10 +1,10 @@
 'use client';
 
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useCompany } from '@/hooks';
 import { mockActivities } from '@/mocks/activities';
 import { mockJobs } from '@/mocks/jobs';
 import { useAuthStore, useProfileStore } from '@/stores';
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fromCompany, type ProfileFormData, toCompanyUpdate } from './types';
 
 function getInitials(name: string): string {

@@ -1,8 +1,8 @@
 'use client';
 
-import type { Notification } from '@/lib/api/notifications';
 import { Card, CardContent } from '@saint-giong/bamboo-ui';
 import { BellOff, Loader2 } from 'lucide-react';
+import type { Notification } from '@/lib/api/notifications';
 import { NotificationItem } from './notification-item';
 import { useInfiniteScroll } from './use-infinite-scroll';
 

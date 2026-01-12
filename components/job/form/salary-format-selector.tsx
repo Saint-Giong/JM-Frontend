@@ -1,13 +1,5 @@
 'use client';
 
-import type {
-  EstimationType,
-  JobSalary,
-  JobSalaryEstimation,
-  JobSalaryNegotiable,
-  JobSalaryRange,
-} from '../types';
-import { CURRENCY_OPTIONS, ESTIMATION_TYPE_OPTIONS } from '../types';
 import {
   Input,
   Label,
@@ -19,6 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@saint-giong/bamboo-ui';
+import type {
+  EstimationType,
+  JobSalary,
+  JobSalaryEstimation,
+  JobSalaryNegotiable,
+  JobSalaryRange,
+} from '../types';
+import { CURRENCY_OPTIONS, ESTIMATION_TYPE_OPTIONS } from '../types';
 
 interface SalaryFormatSelectorProps {
   value: JobSalary;

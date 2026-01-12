@@ -1,13 +1,13 @@
 'use client';
 
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import type { SignupFormData } from '@/app/(auth)/signup/api/schema';
 import { authApi, profileApi } from '@/lib/api';
 import type { GoogleCallbackPrefillData, LoginRequest } from '@/lib/api/auth';
 import { isGoogleLoginData, isGooglePrefillData } from '@/lib/api/auth';
 import type { CompanyProfile } from '@/lib/api/profile';
 import { HttpError } from '@/lib/http';
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
 
 // Backend error response structure
 interface BackendErrorData {

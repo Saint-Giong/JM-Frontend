@@ -1,6 +1,5 @@
 'use client';
 
-import type { FieldErrors } from '@/hooks';
 import {
   Button,
   Input,
@@ -9,6 +8,7 @@ import {
   Textarea,
 } from '@saint-giong/bamboo-ui';
 import { Check } from 'lucide-react';
+import type { FieldErrors } from '@/hooks';
 import { LogoUpload } from './logo-upload';
 import type { ProfileFormData } from './types';
 

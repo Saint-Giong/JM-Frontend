@@ -9,13 +9,13 @@ export {
 
 // Company Types
 export {
-  companyDataSchema,
-  companySchema,
-  companyUpdateSchema,
   type Company,
   type CompanyData,
   type CompanyDeleteResponse,
   type CompanyListResponse,
   type CompanyResponse,
   type CompanyUpdate,
+  companyDataSchema,
+  companySchema,
+  companyUpdateSchema,
 } from './company.types';

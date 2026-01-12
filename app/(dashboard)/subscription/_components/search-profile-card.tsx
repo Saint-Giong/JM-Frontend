@@ -19,8 +19,8 @@ import {
   Trash2,
   Wallet,
 } from 'lucide-react';
-import type { SearchProfile } from '@/lib/api/discovery/discovery.types';
 import Link from 'next/link';
+import type { SearchProfile } from '@/lib/api/discovery/discovery.types';
 
 // Employment type index to label mapping
 const EMPLOYMENT_TYPE_LABELS: Record<number, string> = {

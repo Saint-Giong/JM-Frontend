@@ -1,9 +1,9 @@
 'use client';
 
-import { useAuthStore, useNotificationStore } from '@/stores';
 import { useSidebar, useTheme } from '@saint-giong/bamboo-ui';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useAuthStore, useNotificationStore } from '@/stores';
 
 function getInitials(name: string): string {
   return name

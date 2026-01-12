@@ -1,6 +1,8 @@
 'use client';
 
-import type { JobPost } from '@/components/job/types';
+import { Button } from '@saint-giong/bamboo-ui';
+import { Eye, Pencil, Share2 } from 'lucide-react';
+import Link from 'next/link';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,9 +11,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/common/breadcrumb';
-import { Button } from '@saint-giong/bamboo-ui';
-import { Eye, Pencil, Share2 } from 'lucide-react';
-import Link from 'next/link';
+import type { JobPost } from '@/components/job/types';
 
 interface JobDetailsHeaderProps {
   job: JobPost;

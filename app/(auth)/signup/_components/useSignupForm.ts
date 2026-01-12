@@ -1,11 +1,11 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import { useFormValidation } from '@/components/headless/form';
 import { authApi } from '@/lib/api';
 import { HttpError } from '@/lib/http';
 import { useAuthStore } from '@/stores';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
 import {
   googleSignupSchema,
   passwordRequirements,

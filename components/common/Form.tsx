@@ -1,9 +1,5 @@
 'use client';
 
-import {
-  PasswordField,
-  usePasswordFieldContext,
-} from '@/components/headless/form';
 import { Button, cn, Label } from '@saint-giong/bamboo-ui';
 import { Eye, EyeOff } from 'lucide-react';
 import type {
@@ -11,6 +7,10 @@ import type {
   InputHTMLAttributes,
   ReactNode,
 } from 'react';
+import {
+  PasswordField,
+  usePasswordFieldContext,
+} from '@/components/headless/form';
 
 // Input styling constants
 const inputBaseStyles =

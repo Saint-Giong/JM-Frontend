@@ -1,8 +1,8 @@
 'use client';
 
-import { JobCard } from '@/components/job';
 import { Button } from '@saint-giong/bamboo-ui';
 import { ChevronRight, Plus } from 'lucide-react';
+import { JobCard } from '@/components/job';
 import type { Job } from './types';
 
 interface JobPostsSectionProps {

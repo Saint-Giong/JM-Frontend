@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { z } from 'zod';
 import type { EmploymentType } from '@/components/applicant/types';
 import type { JobFormData, JobSalary } from '../types';

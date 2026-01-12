@@ -1,6 +1,5 @@
 'use client';
 
-import { useSkillTagsQuery } from '@/hooks/use-skill-tags';
 import {
   Combobox,
   ComboboxContent,
@@ -12,6 +11,7 @@ import {
   ComboboxTrigger,
 } from '@saint-giong/bamboo-ui';
 import { useMemo } from 'react';
+import { useSkillTagsQuery } from '@/hooks/use-skill-tags';
 
 interface SkillComboboxProps {
   value: string[];

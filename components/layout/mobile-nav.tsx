@@ -1,11 +1,11 @@
 'use client';
 
-import { useNotificationStore } from '@/stores';
-import { NotificationBadge } from '@/components/ui/notification-badge';
 import { cn } from '@saint-giong/bamboo-ui';
 import { Bell, Briefcase, Home, Search, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { NotificationBadge } from '@/components/ui/notification-badge';
+import { useNotificationStore } from '@/stores';
 
 const navItems = [
   { title: 'Home', icon: Home, href: '/dashboard' },

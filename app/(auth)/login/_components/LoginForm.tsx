@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense, useState } from 'react';
 import { GoogleSSOButton } from '@/app/(auth)/_components/SSOButton';
 import {
   Form,
@@ -9,7 +10,6 @@ import {
   FormLink,
   FormSubmitButton,
 } from '@/components/common/Form';
-import { Suspense, useState } from 'react';
 import { GoogleCallbackHandler } from './GoogleCallbackHandler';
 import { useLoginForm } from './useLoginForm';
 

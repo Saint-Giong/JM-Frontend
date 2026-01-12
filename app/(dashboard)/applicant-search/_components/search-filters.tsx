@@ -1,16 +1,5 @@
 'use client';
 
-import type {
-  EducationDegree,
-  EmploymentType,
-  LocationFilter,
-  WorkExperienceFilter,
-} from '@/components/applicant/types';
-import {
-  EDUCATION_OPTIONS,
-  EMPLOYMENT_TYPE_OPTIONS,
-} from '@/components/applicant/types';
-import { SkillCombobox } from '@/components/ui/skill-combobox';
 import {
   Badge,
   Button,
@@ -32,6 +21,17 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { useState } from 'react';
+import type {
+  EducationDegree,
+  EmploymentType,
+  LocationFilter,
+  WorkExperienceFilter,
+} from '@/components/applicant/types';
+import {
+  EDUCATION_OPTIONS,
+  EMPLOYMENT_TYPE_OPTIONS,
+} from '@/components/applicant/types';
+import { SkillCombobox } from '@/components/ui/skill-combobox';
 
 interface SearchFiltersProps {
   fullTextSearch: string;

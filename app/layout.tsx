@@ -1,5 +1,5 @@
-import { AuthProvider, QueryProvider } from '@/providers';
 import { ThemeProvider } from '@saint-giong/bamboo-ui/client';
+import { AuthProvider, QueryProvider } from '@/providers';
 import '@saint-giong/bamboo-ui/globals.css';
 import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';

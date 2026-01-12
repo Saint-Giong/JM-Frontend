@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback, useEffect, useState } from 'react';
 import type {
   ApplicantSearchFilters,
   ApplicantSearchProfile,
@@ -7,16 +8,15 @@ import type {
   EmploymentType,
 } from '@/components/applicant/types';
 import {
+  type BackendEmploymentType,
   type CreateSearchProfileRequest,
   type DegreeType,
-  type BackendEmploymentType,
-  type SearchProfile,
-  type UpdateSearchProfileRequest,
   discoveryApi,
   fromEmploymentTypeIndices,
+  type SearchProfile,
   toEmploymentTypeIndices,
+  type UpdateSearchProfileRequest,
 } from '@/lib/api/discovery';
-import { useCallback, useEffect, useState } from 'react';
 
 // ============================================
 // Type transformation utilities

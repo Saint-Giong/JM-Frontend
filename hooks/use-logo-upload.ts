@@ -1,7 +1,7 @@
 'use client';
 
-import { mediaApi, validateLogoFile } from '@/lib/api/media';
 import { useCallback, useState } from 'react';
+import { mediaApi, validateLogoFile } from '@/lib/api/media';
 
 interface UseLogoUploadState {
   isUploading: boolean;

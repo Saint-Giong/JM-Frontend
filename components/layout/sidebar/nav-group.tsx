@@ -6,8 +6,8 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
 } from '@saint-giong/bamboo-ui';
-import { NavMenuItem } from './nav-menu-item';
 import type { NavItem } from './nav-config';
+import { NavMenuItem } from './nav-menu-item';
 
 interface NavGroupProps {
   label?: string;

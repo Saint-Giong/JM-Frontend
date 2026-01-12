@@ -1,12 +1,12 @@
 'use client';
 
-import type { EmploymentType } from '@/components/applicant/types';
 import {
   Checkbox,
   Label,
   RadioGroup,
   RadioGroupItem,
 } from '@saint-giong/bamboo-ui';
+import type { EmploymentType } from '@/components/applicant/types';
 
 interface EmploymentTypeSelectorProps {
   value: EmploymentType[];

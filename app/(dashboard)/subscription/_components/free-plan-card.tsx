@@ -1,6 +1,5 @@
 'use client';
 
-import { type PlanFeature, freeFeatures } from '@/mocks/subscription';
 import {
   Badge,
   Card,
@@ -11,6 +10,7 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { cn } from '@saint-giong/bamboo-ui/utils';
 import { Check, X } from 'lucide-react';
+import { freeFeatures, type PlanFeature } from '@/mocks/subscription';
 
 interface FreePlanCardProps {
   features?: PlanFeature[];

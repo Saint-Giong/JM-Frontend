@@ -1,7 +1,5 @@
 'use client';
 
-import type { ApplicationStatus, JobApplication } from '@/components/job/types';
-import { DEGREE_LABELS } from '@/lib/constants/education';
 import {
   Avatar,
   AvatarFallback,
@@ -25,6 +23,8 @@ import {
   Star,
   UserCheck,
 } from 'lucide-react';
+import type { ApplicationStatus, JobApplication } from '@/components/job/types';
+import { DEGREE_LABELS } from '@/lib/constants/education';
 
 interface ApplicationCardProps {
   application: JobApplication;

@@ -1,12 +1,12 @@
 'use client';
 
-import { FormHeader } from '@/components/common/Form';
-import { authApi } from '@/lib/api';
-import { HttpError } from '@/lib/http';
 import { Button } from '@saint-giong/bamboo-ui';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { FormHeader } from '@/components/common/Form';
+import { authApi } from '@/lib/api';
+import { HttpError } from '@/lib/http';
 
 type ActivationStatus = 'loading' | 'success' | 'error';
 

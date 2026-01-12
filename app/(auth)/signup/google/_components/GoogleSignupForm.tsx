@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 import { CountryPhoneRow } from '@/components/common/CountryPhoneRow';
 import {
   Form,
@@ -11,8 +13,6 @@ import {
 import { authApi } from '@/lib/api';
 import { HttpError } from '@/lib/http';
 import { useAuthStore } from '@/stores/auth';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
 
 interface FormData {
   email: string;

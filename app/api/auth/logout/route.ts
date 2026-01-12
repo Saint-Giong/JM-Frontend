@@ -1,5 +1,5 @@
-import { buildEndpoint } from '@/lib/api/config';
 import { NextResponse } from 'next/server';
+import { buildEndpoint } from '@/lib/api/config';
 
 export async function POST() {
   // First, call the backend logout endpoint to invalidate tokens on the server

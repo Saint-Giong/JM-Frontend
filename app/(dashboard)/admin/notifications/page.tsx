@@ -1,7 +1,5 @@
 'use client';
 
-import { notificationApi } from '@/lib/api/notifications';
-import { useAuthStore } from '@/stores';
 import {
   Badge,
   Button,
@@ -13,9 +11,10 @@ import {
   Input,
   Label,
 } from '@saint-giong/bamboo-ui';
-import { Bell, Send } from 'lucide-react';
-import Link from 'next/link';
+import { Send } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import { notificationApi } from '@/lib/api/notifications';
+import { useAuthStore } from '@/stores';
 import {
   AdminToolbar,
   type ColumnDef,

@@ -1,9 +1,5 @@
 'use client';
 
-import { FavoriteButton } from '@/components/applicant/favorite-button';
-import { WarningButton } from '@/components/applicant/warning-button';
-import type { ApplicationStatus, JobApplication } from '@/components/job/types';
-import { DEGREE_LABELS } from '@/lib/constants/education';
 import {
   Avatar,
   AvatarFallback,
@@ -14,6 +10,10 @@ import {
   Separator,
 } from '@saint-giong/bamboo-ui';
 import { ChevronRight, Clock } from 'lucide-react';
+import { FavoriteButton } from '@/components/applicant/favorite-button';
+import { WarningButton } from '@/components/applicant/warning-button';
+import type { ApplicationStatus, JobApplication } from '@/components/job/types';
+import { DEGREE_LABELS } from '@/lib/constants/education';
 
 interface ApplicationDetailPanelProps {
   application: JobApplication | null;

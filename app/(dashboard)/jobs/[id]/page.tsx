@@ -1,8 +1,5 @@
 'use client';
 
-import { useJobPost } from '@/hooks/use-jobpost';
-import { toJobPost } from '@/lib/api/jobpost';
-import { getApplicationCountsByStatus, getApplicationsForJob } from '@/mocks';
 import {
   Button,
   Separator,
@@ -15,6 +12,9 @@ import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { useJobPost } from '@/hooks/use-jobpost';
+import { toJobPost } from '@/lib/api/jobpost';
+import { getApplicationCountsByStatus, getApplicationsForJob } from '@/mocks';
 import { JobDetailsContent, JobDetailsHeader } from './_components';
 import { JobApplicationsTab } from './_components/job-applications-tab';
 

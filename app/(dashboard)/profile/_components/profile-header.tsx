@@ -1,5 +1,7 @@
 'use client';
 
+import { Button } from '@saint-giong/bamboo-ui';
+import { Edit, Eye, Share2 } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,8 +9,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/common/breadcrumb';
-import { Button } from '@saint-giong/bamboo-ui';
-import { Edit, Eye, Share2 } from 'lucide-react';
 
 interface ProfileHeaderProps {
   isEditMode: boolean;

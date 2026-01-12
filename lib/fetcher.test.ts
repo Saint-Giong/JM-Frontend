@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { HttpError } from './http';
 import {
   createApiClient,
   createDeleteFn,
@@ -9,6 +8,7 @@ import {
   createPutFn,
   createQueryFn,
 } from './fetcher';
+import { HttpError } from './http';
 
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
