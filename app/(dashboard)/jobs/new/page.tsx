@@ -1,9 +1,5 @@
 'use client';
 
-import { JobForm, type JobFormData } from '@/components/job';
-import { useJobPost } from '@/hooks/use-jobpost';
-import { toCreateRequest } from '@/lib/api/jobpost';
-import { useAuthStore } from '@/stores/auth';
 import {
   Button,
   Card,
@@ -15,6 +11,10 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { JobForm, type JobFormData } from '@/components/job';
+import { useJobPost } from '@/hooks/use-jobpost';
+import { toCreateRequest } from '@/lib/api/jobpost';
+import { useAuthStore } from '@/stores/auth';
 
 export default function CreateJobPage() {
   const router = useRouter();
