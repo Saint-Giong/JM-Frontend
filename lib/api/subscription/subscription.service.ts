@@ -11,12 +11,36 @@ import { fetchWithAuth } from '../fetch-with-auth';
 import type {
   CreateSubscriptionProfileRequest,
   CreateSubscriptionProfileResponse,
+  Subscription,
   SubscriptionStatusResponse,
   UpdateSubscriptionProfileRequest,
   UpdateSubscriptionProfileResponse,
 } from './subscription.types';
 
 const SUBSCRIPTION_ENDPOINT = 'subscription';
+
+/**
+ * Get all subscriptions
+ * Endpoint: GET /v1/subscription/
+ */
+export async function getAllSubscriptions(): Promise<Subscription[]> {
+  const url = buildEndpoint(`${SUBSCRIPTION_ENDPOINT}/`);
+
+  const response = await fetchWithAuth(url, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new HttpError(response.status, response.statusText, errorData);
+  }
+
+  const result = await response.json();
+  return Array.isArray(result) ? result : (result.data ?? []);
+}
 
 /**
  * Get subscription status for a company
@@ -97,6 +121,7 @@ export async function updateSubscriptionProfile(
  * Subscription API object with all methods
  */
 export const subscriptionApi = {
+  getAll: getAllSubscriptions,
   getStatus: getSubscriptionStatus,
   create: createSubscriptionProfile,
   update: updateSubscriptionProfile,

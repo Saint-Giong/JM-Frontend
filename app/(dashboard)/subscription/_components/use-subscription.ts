@@ -55,7 +55,11 @@ export function useSubscription() {
 
       try {
         const response = await getSubscriptionStatus(companyId);
-        setIsPremium(response.status === 'ACTIVE');
+        // Handle both wrapped and unwrapped responses
+        const status =
+          response.data?.status ??
+          (response as unknown as { status: string }).status;
+        setIsPremium(status === 'ACTIVE');
       } catch (error) {
         // If 404 or other error, assume no subscription
         console.log('[Subscription] Status fetch error:', error);
@@ -79,7 +83,11 @@ export function useSubscription() {
         // Payment successful - create subscription profile in backend
         try {
           const profile = await createSubscriptionProfile({ companyId });
-          setSubscriptionProfileId(profile.id);
+          // Handle both wrapped and unwrapped responses
+          const subscriptionId =
+            profile.data?.subscriptionId ??
+            (profile as unknown as { id: string }).id;
+          setSubscriptionProfileId(subscriptionId);
           setIsPremium(true);
         } catch (error) {
           console.error('[Subscription] Failed to create profile:', error);
