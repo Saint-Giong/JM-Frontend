@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import type { ReactNode } from 'react';
-import GoogleIcon from '@/assets/google.svg';
 import { Button } from '@/components/headless/button';
 
 interface SSOButtonProps {
@@ -42,7 +41,7 @@ export function GoogleSSOButton({
     <SSOButton
       icon={
         <Image
-          src={GoogleIcon}
+          src="/google.png"
           alt="Google"
           width={20}
           height={20}
