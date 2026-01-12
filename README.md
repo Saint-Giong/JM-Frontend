@@ -6,12 +6,26 @@ The frontend application for the **Job Manager Subsystem** of the DEVision platf
 
 **Saint Giong** (Thánh Gióng) is one of the four immortal heroes in Vietnamese folklore, symbolizing strength, strategic thinking, and community support — values that guide our development approach.
 
-## Frontend Team
+## Squad Team
 
-| Name | Role | Student ID |
-|------|------|------------|
-| Vo Hoang Phuc | Frontend Leader | S3926761 |
-| Nguyen Le Thuc Quynh | Frontend Developer | S3924993 |
+### Job Manager Team
+
+| Name | Email |
+|------|-------|
+| Tung Nguyen Son | S3979348@rmit.edu.vn |
+| Viet Nguyen Dinh | S3927291@rmit.edu.vn |
+| Ngoc Nguyen The Bao | S3924436@rmit.edu.vn |
+| Phuc Vo Hoang | S3926761@rmit.edu.vn |
+| Quynh Nguyen Le Thuc | S3924993@rmit.edu.vn |
+
+### Job Applicant Team
+
+| Name | Email |
+|------|-------|
+| Huan Nguyen Dang | S3927467@rmit.edu.vn |
+| Quoc Doan Huu | S3927776@student.rmit.edu.au |
+| Tai Ngo Van | S3974892@rmit.edu.vn |
+| Nhan Truong Vo Thien | S3929215@rmit.edu.vn |
 
 ## Links
 

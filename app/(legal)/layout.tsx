@@ -17,6 +17,12 @@ export default function LegalLayout({
           </Link>
           <nav className="flex gap-1">
             <Link
+              href="/about"
+              className="rounded-md px-3 py-2 font-medium text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
+            >
+              About
+            </Link>
+            <Link
               href="/terms"
               className="rounded-md px-3 py-2 font-medium text-muted-foreground text-sm transition-colors hover:bg-muted hover:text-foreground"
             >
@@ -39,6 +45,12 @@ export default function LegalLayout({
               &copy; {new Date().getFullYear()} DEVision. All rights reserved.
             </p>
             <nav className="flex gap-6 text-sm">
+              <Link
+                href="/about"
+                className="text-muted-foreground transition-colors hover:text-foreground"
+              >
+                About
+              </Link>
               <Link
                 href="/terms"
                 className="text-muted-foreground transition-colors hover:text-foreground"

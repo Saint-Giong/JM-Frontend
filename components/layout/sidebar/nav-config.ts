@@ -6,6 +6,7 @@ import {
   CreditCard,
   Github,
   Home,
+  Info,
   Palette,
   Search,
   Settings,
@@ -43,6 +44,7 @@ export const accountItems: NavItem[] = [
 
 // Resources - external links and documentation
 export const resourceItems: NavItem[] = [
+  { title: 'About', icon: Info, href: '/about' },
   {
     title: 'Documentation',
     icon: BookOpen,
