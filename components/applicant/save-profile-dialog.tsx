@@ -1,6 +1,5 @@
 'use client';
 
-import type { ApplicantSearchFilters, ApplicantSearchProfile } from './types';
 import {
   Button,
   Dialog,
@@ -13,6 +12,7 @@ import {
   Label,
 } from '@saint-giong/bamboo-ui';
 import { useState } from 'react';
+import type { ApplicantSearchFilters, ApplicantSearchProfile } from './types';
 
 interface SaveProfileDialogProps {
   open: boolean;

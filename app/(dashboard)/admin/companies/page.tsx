@@ -1,10 +1,10 @@
 'use client';
 
-import type { CompanyProfile } from '@/lib/api/profile';
-import { profileApi } from '@/lib/api/profile';
 import { Badge } from '@saint-giong/bamboo-ui';
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { CompanyProfile } from '@/lib/api/profile';
+import { profileApi } from '@/lib/api/profile';
 import {
   AdminToolbar,
   type ColumnDef,

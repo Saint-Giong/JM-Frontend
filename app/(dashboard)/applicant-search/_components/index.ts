@@ -1,5 +1,5 @@
-export { SearchHeader } from './search-header';
+export { Pagination } from './pagination';
+export { ResultsSection } from './results-section';
 export { SearchBar } from './search-bar';
 export { SearchFilters } from './search-filters';
-export { ResultsSection } from './results-section';
-export { Pagination } from './pagination';
+export { SearchHeader } from './search-header';

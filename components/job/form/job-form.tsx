@@ -1,6 +1,5 @@
 'use client';
 
-import { SkillCombobox } from '@/components/ui/skill-combobox';
 import {
   Badge,
   Button,
@@ -10,6 +9,7 @@ import {
   Textarea,
 } from '@saint-giong/bamboo-ui';
 import { CalendarIcon, Loader2, X } from 'lucide-react';
+import { SkillCombobox } from '@/components/ui/skill-combobox';
 import type { JobFormData } from '../types';
 import { EmploymentTypeSelector } from './employment-type-selector';
 import { SalaryFormatSelector } from './salary-format-selector';

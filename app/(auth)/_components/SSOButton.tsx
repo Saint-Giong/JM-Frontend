@@ -1,9 +1,9 @@
 'use client';
 
-import GoogleIcon from '@/assets/google.svg';
-import { Button } from '@/components/headless/button';
 import Image from 'next/image';
 import type { ReactNode } from 'react';
+import GoogleIcon from '@/assets/google.svg';
+import { Button } from '@/components/headless/button';
 
 interface SSOButtonProps {
   icon: ReactNode;

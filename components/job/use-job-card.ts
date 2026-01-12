@@ -1,14 +1,14 @@
-import { useMemo, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
+import { type JobMetaState, useJobMeta } from './use-job-meta';
 import {
-  useJobStatus,
   type JobStatus,
   type JobStatusState,
+  useJobStatus,
 } from './use-job-status';
-import { useJobMeta, type JobMetaState } from './use-job-meta';
 
+export type { JobMetaState, JobSalary } from './use-job-meta';
 // Re-export types
 export type { JobStatus, JobStatusState } from './use-job-status';
-export type { JobMetaState, JobSalary } from './use-job-meta';
 
 export interface Job {
   id: string;

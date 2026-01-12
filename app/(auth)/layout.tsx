@@ -1,10 +1,10 @@
 'use client';
 
-import { useAuthStore } from '@/stores';
 import { Button } from '@saint-giong/bamboo-ui';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useAuthStore } from '@/stores';
 import { TermsPrivacy } from './_components/TermsPrivacy';
 
 export default function AuthLayout({

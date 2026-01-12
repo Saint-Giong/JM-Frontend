@@ -1,11 +1,6 @@
 'use client';
 
 import {
-  type UseCountryPhoneOptions,
-  useCountryPhone,
-} from '@/components/headless/country-phone';
-import type { Country } from '@/mocks/countries';
-import {
   Combobox,
   ComboboxContent,
   ComboboxEmpty,
@@ -17,6 +12,11 @@ import {
   Label,
 } from '@saint-giong/bamboo-ui';
 import { forwardRef, useRef } from 'react';
+import {
+  type UseCountryPhoneOptions,
+  useCountryPhone,
+} from '@/components/headless/country-phone';
+import type { Country } from '@/mocks/countries';
 
 const MAX_PHONE_LENGTH = 12;
 

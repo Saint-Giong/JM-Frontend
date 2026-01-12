@@ -1,9 +1,9 @@
 'use client';
 
-import type { Applicant, ApplicantMark } from '@/components/applicant';
-import { ApplicantCard } from '@/components/applicant';
 import { Button, Skeleton } from '@saint-giong/bamboo-ui';
 import { Users } from 'lucide-react';
+import type { Applicant, ApplicantMark } from '@/components/applicant';
+import { ApplicantCard } from '@/components/applicant';
 
 interface ResultsSectionProps {
   applicants: Applicant[];

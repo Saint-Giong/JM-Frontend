@@ -1,6 +1,5 @@
 'use client';
 
-import type { FieldErrors } from '@/hooks';
 import {
   Button,
   Card,
@@ -14,6 +13,7 @@ import {
   Textarea,
 } from '@saint-giong/bamboo-ui';
 import { Building2, Plus } from 'lucide-react';
+import type { FieldErrors } from '@/hooks';
 import type { ProfileFormData } from './types';
 
 interface CreateProfilePromptProps {

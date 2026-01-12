@@ -1,6 +1,5 @@
 'use client';
 
-import { DEGREE_LABELS } from '@/lib/constants/education';
 import {
   Avatar,
   AvatarFallback,
@@ -11,6 +10,7 @@ import {
   Separator,
 } from '@saint-giong/bamboo-ui';
 import { Clock, X } from 'lucide-react';
+import { DEGREE_LABELS } from '@/lib/constants/education';
 import { FavoriteButton } from './favorite-button';
 import type { Applicant, ApplicantMark } from './types';
 import { WarningButton } from './warning-button';

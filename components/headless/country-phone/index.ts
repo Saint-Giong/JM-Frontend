@@ -1,9 +1,8 @@
-export { useCountryPhone } from './hooks';
 export type { UseCountryPhoneOptions, UseCountryPhoneReturn } from './hooks';
-
-export { createCountryPhoneStore } from './stores';
+export { useCountryPhone } from './hooks';
 export type {
   CountryPhoneState,
   CountryPhoneStore,
   CountryPhoneStoreOptions,
 } from './stores';
+export { createCountryPhoneStore } from './stores';

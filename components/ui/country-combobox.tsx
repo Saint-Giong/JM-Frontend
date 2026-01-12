@@ -1,6 +1,5 @@
 'use client';
 
-import { countries } from '@/mocks/countries';
 import {
   Combobox,
   ComboboxContent,
@@ -11,6 +10,7 @@ import {
   ComboboxList,
   ComboboxTrigger,
 } from '@saint-giong/bamboo-ui';
+import { countries } from '@/mocks/countries';
 
 interface CountryComboboxProps {
   value?: string;

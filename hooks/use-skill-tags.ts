@@ -1,18 +1,18 @@
 'use client';
 
 import {
-  type SkillTag,
-  type SkillTagListParams,
-  type SkillTagPage,
-  skillTagApi,
-} from '@/lib/api/tag';
-import {
   type UseMutationOptions,
   type UseQueryOptions,
   useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
+import {
+  type SkillTag,
+  type SkillTagListParams,
+  type SkillTagPage,
+  skillTagApi,
+} from '@/lib/api/tag';
 
 // Query keys factory
 export const skillTagKeys = {

@@ -1,8 +1,5 @@
 'use client';
 
-import { SkillTagList } from '@/components/ui/skill-tag';
-import { educationLevels, employmentTypes } from '@/mocks/subscription';
-import type { SkillTag } from '@/lib/api/tag/tag.types';
 import {
   Button,
   Card,
@@ -23,6 +20,9 @@ import {
   Tag,
   Wallet,
 } from 'lucide-react';
+import { SkillTagList } from '@/components/ui/skill-tag';
+import type { SkillTag } from '@/lib/api/tag/tag.types';
+import { educationLevels, employmentTypes } from '@/mocks/subscription';
 import type { SearchProfileFormData } from './use-subscription';
 
 interface SearchProfileFormProps {

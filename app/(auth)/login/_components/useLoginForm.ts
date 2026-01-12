@@ -1,8 +1,8 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useFormValidation } from '@/components/headless/form';
 import { useAuthStore } from '@/stores';
-import { useRouter } from 'next/navigation';
 import { loginSchema } from '../api/schema';
 
 /**

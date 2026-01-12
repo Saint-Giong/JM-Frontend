@@ -1,10 +1,5 @@
 'use client';
 
-import { type Job, JobCard } from '@/components/job/job-card';
-import { useJobList } from '@/hooks/use-job-list';
-import { useJobPost } from '@/hooks/use-jobpost';
-import { toJob } from '@/lib/api/jobpost';
-import { useAuthStore } from '@/stores/auth';
 import {
   Button,
   Input,
@@ -20,6 +15,11 @@ import { Grid, List, Loader2, Plus, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo } from 'react';
+import { type Job, JobCard } from '@/components/job/job-card';
+import { useJobList } from '@/hooks/use-job-list';
+import { useJobPost } from '@/hooks/use-jobpost';
+import { toJob } from '@/lib/api/jobpost';
+import { useAuthStore } from '@/stores/auth';
 
 export default function JobsPage() {
   const router = useRouter();

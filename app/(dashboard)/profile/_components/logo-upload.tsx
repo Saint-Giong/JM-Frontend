@@ -1,6 +1,5 @@
 'use client';
 
-import { useLogoUpload } from '@/hooks';
 import {
   Avatar,
   AvatarFallback,
@@ -9,6 +8,7 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { ImageIcon, Loader2, Upload, X } from 'lucide-react';
 import { useCallback, useRef } from 'react';
+import { useLogoUpload } from '@/hooks';
 
 interface LogoUploadProps {
   /**

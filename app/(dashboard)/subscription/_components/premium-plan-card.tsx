@@ -1,6 +1,5 @@
 'use client';
 
-import { type PlanFeature, premiumFeaturesList } from '@/mocks/subscription';
 import {
   Badge,
   Button,
@@ -11,6 +10,7 @@ import {
   CardTitle,
 } from '@saint-giong/bamboo-ui';
 import { ArrowRight, Check, Crown, Sparkles } from 'lucide-react';
+import { type PlanFeature, premiumFeaturesList } from '@/mocks/subscription';
 
 interface PremiumPlanCardProps {
   features?: PlanFeature[];

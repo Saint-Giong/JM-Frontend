@@ -1,6 +1,5 @@
 'use client';
 
-import { DEGREE_LABELS } from '@/lib/constants/education';
 import {
   Avatar,
   AvatarFallback,
@@ -23,6 +22,7 @@ import {
   MoreVertical,
   Star,
 } from 'lucide-react';
+import { DEGREE_LABELS } from '@/lib/constants/education';
 import type { Applicant, ApplicantMark } from './types';
 
 interface ApplicantCardProps {

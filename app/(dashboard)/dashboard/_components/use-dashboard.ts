@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { getGreeting } from '@/lib';
 import { jobPostApi } from '@/lib/api/jobpost/jobpost.service';
 import { profileApi } from '@/lib/api/profile/profile.service';
@@ -8,7 +9,6 @@ import {
   dashboardStats,
   type RecentApplication,
 } from '@/mocks/dashboard';
-import { useEffect, useState } from 'react';
 
 export function useDashboard() {
   const [stats, setStats] = useState(() => {

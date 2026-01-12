@@ -1,12 +1,12 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { jobPostApi } from '@/lib/api/jobpost';
 import type {
   CreateJobPostRequest,
   JobPostResponse,
   UpdateJobPostRequest,
 } from '@/lib/api/jobpost';
+import { jobPostApi } from '@/lib/api/jobpost';
 import { HttpError } from '@/lib/http';
 
 // Field-level error mapping

@@ -1,12 +1,12 @@
 'use client';
 
+import { Card } from '@saint-giong/bamboo-ui';
+import { Clock } from 'lucide-react';
+import Image from 'next/image';
 import {
   type Activity,
   useActivityPost,
 } from '@/components/headless/activity-post';
-import { Card } from '@saint-giong/bamboo-ui';
-import { Clock } from 'lucide-react';
-import Image from 'next/image';
 
 interface ActivityCardProps {
   activity: Activity;

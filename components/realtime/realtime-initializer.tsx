@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
+import type { Notification, NotificationType } from '@/lib/api/notifications';
 import { notificationChannel } from '@/lib/realtime/notification-channel';
 import { wsClient } from '@/lib/realtime/ws-client';
-import type { Notification, NotificationType } from '@/lib/api/notifications';
-import { useNotificationStore } from '@/stores/notification-store';
 import { useAuthStore } from '@/stores/auth';
+import { useNotificationStore } from '@/stores/notification-store';
 
 /**
  * Create a notification from WebSocket data

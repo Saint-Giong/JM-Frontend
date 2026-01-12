@@ -1,8 +1,8 @@
 'use client';
 
-import type { Notification, NotificationType } from '@/lib/api/notifications';
 import { Button } from '@saint-giong/bamboo-ui';
 import { Bell, Check, Clock, Trash2, User, Users } from 'lucide-react';
+import type { Notification, NotificationType } from '@/lib/api/notifications';
 
 // Map notification types to their corresponding icons
 const iconMap: Record<

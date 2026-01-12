@@ -3,6 +3,12 @@ export {
   API_VERSION,
   apiConfig,
   buildEndpoint,
+  type Company,
+  type CompanyData,
+  type CompanyDeleteResponse,
+  type CompanyListResponse,
+  type CompanyResponse,
+  type CompanyUpdate,
   // Services
   companyApi,
   companyDataSchema,
@@ -17,12 +23,6 @@ export {
   getApiUrl,
   getCompany,
   updateCompany,
-  type Company,
-  type CompanyData,
-  type CompanyDeleteResponse,
-  type CompanyListResponse,
-  type CompanyResponse,
-  type CompanyUpdate,
 } from './api';
 export { COMMON_SKILLS, DEGREE_LABELS, EDUCATION_OPTIONS } from './constants';
 export {
@@ -35,5 +35,5 @@ export {
   createPutFn,
   createQueryFn,
 } from './fetcher';
-export { createHttpClient, http, HttpClient, HttpError } from './http';
+export { createHttpClient, HttpClient, HttpError, http } from './http';
 export { formatDate, getDateFromNow, getGreeting } from './utils';

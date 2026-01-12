@@ -1,11 +1,11 @@
 'use client';
 
+import { useCallback, useMemo, useState } from 'react';
 import type {
   ApplicationFilterTab,
   ApplicationStatus,
   JobApplication,
 } from '@/components/job/types';
-import { useState, useMemo, useCallback } from 'react';
 
 interface UseJobApplicationsOptions {
   pageSize?: number;

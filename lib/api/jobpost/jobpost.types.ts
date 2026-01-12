@@ -111,11 +111,11 @@ export interface JobPostApiResponse<T> {
 
 import type { EmploymentType } from '@/components/applicant/types';
 import type {
+  Job,
   JobFormData,
   JobPost,
   JobSalary,
   JobStatus,
-  Job,
 } from '@/components/job/types';
 
 /**
