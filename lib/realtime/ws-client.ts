@@ -4,12 +4,18 @@ import { DEFAULT_API_BASE_URL } from '../api/config';
 /**
  * Low-level WebSocket client using socket.io-client.
  * Handles connection, reconnection, and basic event management.
+ * Connection is optional - gracefully handles cases where WS server is unavailable.
  */
 class WSClient {
   private socket: Socket | null = null;
   private baseUrl: string;
+  private isEnabled: boolean;
+  private connectionAttempted: boolean = false;
 
   constructor() {
+    // Check if WebSocket is enabled (opt-in via environment variable)
+    this.isEnabled = process.env.NEXT_PUBLIC_ENABLE_WS === 'true';
+
     // Use the same base URL as the API, but socket.io handles the protocol
     // Support local mock server for testing
     const useMock = process.env.NEXT_PUBLIC_USE_MOCK_WS === 'true';
@@ -20,34 +26,54 @@ class WSClient {
 
   /**
    * Initialize and connect the WebSocket.
+   * Returns null if WebSocket is disabled or unavailable.
    */
-  connect(): Socket {
+  connect(): Socket | null {
+    // Skip connection if WS is disabled
+    if (!this.isEnabled) {
+      if (!this.connectionAttempted) {
+        console.log('[WS] WebSocket is disabled. Set NEXT_PUBLIC_ENABLE_WS=true to enable.');
+        this.connectionAttempted = true;
+      }
+      return null;
+    }
+
     if (this.socket?.connected) {
       return this.socket;
     }
 
-    this.socket = io(this.baseUrl, {
-      withCredentials: true,
-      transports: ['websocket'],
-      autoConnect: true,
-      reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000,
-    });
+    try {
+      this.socket = io(this.baseUrl, {
+        withCredentials: true,
+        transports: ['websocket'],
+        autoConnect: true,
+        reconnection: true,
+        reconnectionAttempts: 3,
+        reconnectionDelay: 2000,
+        timeout: 5000,
+      });
 
-    this.socket.on('connect', () => {
-      console.log('[WS] Connected to', this.baseUrl);
-    });
+      this.socket.on('connect', () => {
+        console.log('[WS] Connected to', this.baseUrl);
+      });
 
-    this.socket.on('disconnect', (reason) => {
-      console.log('[WS] Disconnected:', reason);
-    });
+      this.socket.on('disconnect', (reason) => {
+        console.log('[WS] Disconnected:', reason);
+      });
 
-    this.socket.on('connect_error', (error) => {
-      console.error('[WS] Connection error:', error);
-    });
+      this.socket.on('connect_error', (error) => {
+        // Only log once to avoid console spam
+        if (!this.connectionAttempted) {
+          console.warn('[WS] Connection failed (server may be unavailable):', error.message);
+          this.connectionAttempted = true;
+        }
+      });
 
-    return this.socket;
+      return this.socket;
+    } catch (error) {
+      console.warn('[WS] Failed to initialize WebSocket:', error);
+      return null;
+    }
   }
 
   /**
@@ -72,6 +98,13 @@ class WSClient {
    */
   isConnected(): boolean {
     return this.socket?.connected || false;
+  }
+
+  /**
+   * Check if WebSocket is enabled.
+   */
+  isWebSocketEnabled(): boolean {
+    return this.isEnabled;
   }
 }
 

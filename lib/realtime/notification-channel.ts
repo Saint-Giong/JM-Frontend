@@ -4,26 +4,42 @@ import { wsClient } from './ws-client';
 /**
  * Topic and handler registry for notification-related events.
  * Decouples the WebSocket transport from the business logic.
+ * Gracefully handles cases where WebSocket is unavailable.
  */
 export class NotificationChannel {
   private socket: Socket | null = null;
 
   /**
    * Initialize the channel with a socket instance.
+   * Returns false if WebSocket is unavailable.
    */
-  initialize(): void {
+  initialize(): boolean {
     this.socket = wsClient.connect();
+    return this.socket !== null;
+  }
+
+  /**
+   * Check if the channel is connected.
+   */
+  isConnected(): boolean {
+    return wsClient.isConnected();
   }
 
   /**
    * Subscribe to new notification events.
+   * Returns a no-op unsubscribe if WebSocket is unavailable.
    */
-  onNotification(handler: (data: any) => void): () => void {
+  onNotification(handler: (data: Record<string, unknown>) => void): () => void {
     if (!this.socket) {
       this.initialize();
     }
 
-    this.socket?.on('notification', handler);
+    if (!this.socket) {
+      // WebSocket unavailable, return no-op unsubscribe
+      return () => {};
+    }
+
+    this.socket.on('notification', handler);
 
     // Return unsubscribe function
     return () => {
@@ -33,13 +49,21 @@ export class NotificationChannel {
 
   /**
    * Subscribe to matching applicant events (Premium feature).
+   * Returns a no-op unsubscribe if WebSocket is unavailable.
    */
-  onMatchingApplicant(handler: (data: any) => void): () => void {
+  onMatchingApplicant(
+    handler: (data: Record<string, unknown>) => void
+  ): () => void {
     if (!this.socket) {
       this.initialize();
     }
 
-    this.socket?.on('matching_applicant', handler);
+    if (!this.socket) {
+      // WebSocket unavailable, return no-op unsubscribe
+      return () => {};
+    }
+
+    this.socket.on('matching_applicant', handler);
 
     return () => {
       this.socket?.off('matching_applicant', handler);
@@ -48,6 +72,7 @@ export class NotificationChannel {
 
   /**
    * Emit an event to mark a notification as read.
+   * No-op if WebSocket is unavailable.
    */
   markAsRead(notificationId: string): void {
     this.socket?.emit('notification:read', { id: notificationId });

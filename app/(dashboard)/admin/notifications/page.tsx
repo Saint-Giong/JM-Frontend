@@ -264,24 +264,7 @@ export default function NotificationsAdminPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="h-4 w-4" />
-                  WebSocket Testing
-                </CardTitle>
-                <CardDescription>
-                  Test real-time notification delivery
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Link href="/test-ws">
-                  <Button variant="outline" className="w-full">
-                    Open WebSocket Test Page
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+
           </div>
         </div>
       </div>
