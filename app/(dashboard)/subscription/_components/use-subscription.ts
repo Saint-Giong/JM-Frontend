@@ -1,7 +1,12 @@
 'use client';
 
 import { getSubscriptionStatus, createSubscriptionProfile } from '@/lib/api';
-import { type SearchProfile, mockSearchProfiles } from '@/mocks/subscription';
+import {
+  getSearchProfilesByCompany,
+  createSearchProfile,
+  deleteSearchProfile,
+} from '@/lib/api/discovery/discovery.service';
+import type { SearchProfile } from '@/lib/api/discovery/discovery.types';
 import { useAuthStore, useSubscriptionStore } from '@/stores';
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -40,7 +45,7 @@ export function useSubscription() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchProfiles, setSearchProfiles] =
-    useState<SearchProfile[]>(mockSearchProfiles);
+    useState<SearchProfile[]>([]);
   const [isCreating, setIsCreating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] =
@@ -77,6 +82,24 @@ export function useSubscription() {
 
     fetchSubscriptionStatus();
   }, [companyId, setIsPremium, hasHydrated]);
+
+  // Fetch search profiles for the company (only when premium)
+  useEffect(() => {
+    async function fetchSearchProfiles() {
+      if (!hasHydrated || !companyId || !isPremium) {
+        return;
+      }
+
+      try {
+        const profiles = await getSearchProfilesByCompany(companyId);
+        setSearchProfiles(profiles);
+      } catch (error) {
+        console.error('[SearchProfiles] Failed to fetch profiles:', error);
+      }
+    }
+
+    fetchSearchProfiles();
+  }, [companyId, isPremium, hasHydrated]);
 
   // Handle Stripe checkout success/cancel
   useEffect(() => {
@@ -217,34 +240,66 @@ export function useSubscription() {
   }, []);
 
   const handleSaveProfile = useCallback(async () => {
-    if (!formData.name.trim()) return;
+    if (!formData.name.trim() || !companyId) return;
 
     setIsSaving(true);
-    await new Promise((resolve) => setTimeout(resolve, 500));
 
-    const newProfile: SearchProfile = {
-      id: crypto.randomUUID(),
-      name: formData.name,
-      skills: formData.skills,
-      employmentStatus: formData.employmentTypes,
-      country: formData.country,
-      salaryRange: {
-        min: formData.minSalary ? Number(formData.minSalary) : 0,
-        max: formData.maxSalary ? Number(formData.maxSalary) : null,
-      },
-      education: formData.education,
-      isActive: true,
-      matchCount: 0,
-    };
+    try {
+      // Map employment types to BitSet indices
+      const employmentTypeMap: Record<string, number> = {
+        'Full-time': 0,
+        'Part-time': 1,
+        'Fresher': 2,
+        'Internship': 3,
+        'Contract': 4,
+      };
 
-    setSearchProfiles((prev) => [...prev, newProfile]);
-    setIsCreating(false);
-    resetForm();
-    setIsSaving(false);
-  }, [formData, resetForm]);
+      // Map education levels to degree type
+      const degreeMap: Record<string, 'BACHELOR' | 'MASTER' | 'DOCTORATE'> = {
+        Bachelor: 'BACHELOR',
+        Master: 'MASTER',
+        Doctorate: 'DOCTORATE',
+      };
 
-  const handleDeleteProfile = useCallback((id: string) => {
-    setSearchProfiles((prev) => prev.filter((p) => p.id !== id));
+      // Get highest degree from selected education
+      const highestDegree =
+        formData.education.includes('Doctorate')
+          ? 'DOCTORATE'
+          : formData.education.includes('Master')
+            ? 'MASTER'
+            : formData.education.includes('Bachelor')
+              ? 'BACHELOR'
+              : null;
+
+      const newProfile = await createSearchProfile({
+        companyId,
+        salaryMin: formData.minSalary ? Number(formData.minSalary) : null,
+        salaryMax: formData.maxSalary ? Number(formData.maxSalary) : null,
+        highestDegree,
+        employmentType: formData.employmentTypes
+          .map((type) => employmentTypeMap[type])
+          .filter((idx) => idx !== undefined),
+        country: formData.country || null,
+        skillTags: [], // TODO: Map skill names to skill IDs when available
+      });
+
+      setSearchProfiles((prev) => [...prev, newProfile]);
+      setIsCreating(false);
+      resetForm();
+    } catch (error) {
+      console.error('[SearchProfiles] Failed to create profile:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  }, [formData, resetForm, companyId]);
+
+  const handleDeleteProfile = useCallback(async (profileId: string) => {
+    try {
+      await deleteSearchProfile(profileId);
+      setSearchProfiles((prev) => prev.filter((p) => p.profileId !== profileId));
+    } catch (error) {
+      console.error('[SearchProfiles] Failed to delete profile:', error);
+    }
   }, []);
 
   const startCreating = useCallback(() => {
