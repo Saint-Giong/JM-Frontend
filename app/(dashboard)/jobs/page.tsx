@@ -14,7 +14,8 @@ import {
 import { Grid, List, Loader2, Plus, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { resolveSkillNames } from '@/lib/api/tag/tag.utils'; // Added import
+import { useEffect, useMemo, useState } from 'react';
 import { type Job, JobCard } from '@/components/job/job-card';
 import { useJobList } from '@/hooks/use-job-list';
 import { useJobPost } from '@/hooks/use-jobpost';
@@ -32,9 +33,44 @@ export default function JobsPage() {
   } = useJobPost();
 
   // Transform API responses to frontend Job type
-  const transformedJobs = useMemo(() => {
+  const initialTransformedJobs = useMemo(() => {
     return jobResponses.map(toJob);
   }, [jobResponses]);
+
+  const [resolvedJobSkills, setResolvedJobSkills] = useState<
+    Record<string, string[]>
+  >({});
+
+  // Resolve skills for all jobs separately to avoid N+1 issue
+  useEffect(() => {
+    const allSkillIds = new Set<number>();
+    jobResponses.forEach((job) => {
+      job.skillTagIds?.forEach((id) => allSkillIds.add(id));
+    });
+
+    if (allSkillIds.size > 0) {
+      resolveSkillNames(Array.from(allSkillIds)).then(() => {
+        // After names are cached/fetched, we need a way to map them back.
+        const skillMap: Record<string, string[]> = {};
+
+        const promises = jobResponses.map(async (job) => {
+          if (job.skillTagIds?.length) {
+            const names = await resolveSkillNames(job.skillTagIds);
+            skillMap[job.id] = names;
+          }
+        });
+
+        Promise.all(promises).then(() => setResolvedJobSkills(skillMap));
+      });
+    }
+  }, [jobResponses]);
+
+  const transformedJobs = useMemo(() => {
+    return initialTransformedJobs.map((job) => ({
+      ...job,
+      skills: resolvedJobSkills[job.id] || job.skills,
+    }));
+  }, [initialTransformedJobs, resolvedJobSkills]);
 
   const {
     jobs,

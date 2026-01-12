@@ -48,6 +48,7 @@ export interface Job {
   salaryMin: number;
   salaryMax: number;
   skills: string[];
+  skillTagIds?: number[];
 }
 
 // Extended job interface with new salary format
@@ -62,6 +63,7 @@ export interface JobPost {
   salary: JobSalary;
   location: string;
   skills: string[];
+  skillTagIds?: number[];
   applicantCount: number;
   hasNewApplicants?: boolean;
 }

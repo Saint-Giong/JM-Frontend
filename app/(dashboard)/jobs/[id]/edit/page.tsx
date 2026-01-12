@@ -10,7 +10,8 @@ import {
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { resolveSkillNames } from '@/lib/api/tag/tag.utils';
+import { useEffect, useMemo, useState } from 'react';
 import { JobForm, type JobFormData } from '@/components/job';
 import { useJobPost } from '@/hooks/use-jobpost';
 import { toFormData, toUpdateRequest } from '@/lib/api/jobpost';
@@ -31,6 +32,8 @@ export default function EditJobPage() {
     clearError,
   } = useJobPost();
 
+  const [resolvedSkills, setResolvedSkills] = useState<string[]>([]);
+
   // Fetch job data from API
   useEffect(() => {
     if (jobId) {
@@ -38,10 +41,23 @@ export default function EditJobPage() {
     }
   }, [jobId, fetchJob]);
 
+  // Resolve skill names when job data is loaded
+  useEffect(() => {
+    if (currentJob?.skillTagIds?.length) {
+      resolveSkillNames(currentJob.skillTagIds).then(setResolvedSkills);
+    }
+  }, [currentJob]);
+
   // Transform API response to form data
   const initialData = useMemo(() => {
-    return currentJob ? toFormData(currentJob) : undefined;
-  }, [currentJob]);
+    if (!currentJob) return undefined;
+    const data = toFormData(currentJob);
+    // Override skills with resolved names if available
+    if (resolvedSkills.length > 0) {
+      data.skills = resolvedSkills;
+    }
+    return data;
+  }, [currentJob, resolvedSkills]);
 
   const handleSubmit = async (data: JobFormData) => {
     if (!companyId) {

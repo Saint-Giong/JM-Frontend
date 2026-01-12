@@ -10,6 +10,7 @@ import {
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { resolveSkillTags } from '@/lib/api/tag/tag.utils';
 import { useState } from 'react';
 import { JobForm, type JobFormData } from '@/components/job';
 import { useJobPost } from '@/hooks/use-jobpost';
@@ -30,14 +31,22 @@ export default function CreateJobPage() {
 
     clearError();
 
-    // Transform form data to API request format
-    const request = toCreateRequest(data, companyId, true);
+    try {
+      // Resolve skill names to IDs
+      const skillTagIds = await resolveSkillTags(data.skills);
 
-    const job = await createJob(request);
+      // Transform form data to API request format (isPublished = true)
+      const request = toCreateRequest(data, companyId, true);
+      request.skillTagIds = skillTagIds;
 
-    if (job) {
-      // Redirect to jobs list after successful creation
-      router.push('/jobs');
+      const job = await createJob(request);
+
+      if (job) {
+        // Redirect to jobs list after successful creation
+        router.push('/jobs');
+      }
+    } catch (err) {
+      console.error('Failed to create job:', err);
     }
   };
 
@@ -50,16 +59,24 @@ export default function CreateJobPage() {
     clearError();
     setIsSavingDraft(true);
 
-    // Transform form data to API request format (isPublished = false for draft)
-    const request = toCreateRequest(data, companyId, false);
+    try {
+      // Resolve skill names to IDs
+      const skillTagIds = await resolveSkillTags(data.skills);
 
-    const job = await createJob(request);
+      // Transform form data to API request format (isPublished = false for draft)
+      const request = toCreateRequest(data, companyId, false);
+      request.skillTagIds = skillTagIds;
 
-    setIsSavingDraft(false);
+      const job = await createJob(request);
 
-    if (job) {
-      // Redirect to jobs list after successful save
-      router.push('/jobs');
+      if (job) {
+        // Redirect to jobs list after successful save
+        router.push('/jobs');
+      }
+    } catch (err) {
+      console.error('Failed to save draft:', err);
+    } finally {
+      setIsSavingDraft(false);
     }
   };
 
