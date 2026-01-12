@@ -2,7 +2,6 @@
 
 import {
   Button,
-  ScrollArea,
   Sheet,
   SheetContent,
   SheetDescription,
@@ -32,13 +31,15 @@ export function EntityDetailSheet({
 }: EntityDetailSheetProps) {
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent className="flex w-full flex-col sm:max-w-lg">
-        <SheetHeader className="flex-shrink-0">
+      <SheetContent className="flex w-full flex-col overflow-hidden p-0 sm:max-w-lg">
+        <SheetHeader className="flex-shrink-0 border-b p-6 pb-4">
           <div className="flex items-start justify-between">
             <div>
               <SheetTitle>{title}</SheetTitle>
               {description && (
-                <SheetDescription>{description}</SheetDescription>
+                <SheetDescription className="mt-1">
+                  {description}
+                </SheetDescription>
               )}
             </div>
             <Button
@@ -52,14 +53,12 @@ export function EntityDetailSheet({
           </div>
         </SheetHeader>
 
-        <ScrollArea className="flex-1 pr-4">
-          <div className="space-y-4 py-4">
-            <JsonViewer data={entity} maxHeight="none" />
-          </div>
-        </ScrollArea>
+        <div className="flex-1 overflow-y-auto p-6">
+          <JsonViewer data={entity} maxHeight="none" />
+        </div>
 
         {actions && (
-          <div className="flex flex-shrink-0 justify-end gap-2 border-t pt-4">
+          <div className="flex flex-shrink-0 justify-end gap-2 border-t p-6 pt-4">
             {actions}
           </div>
         )}

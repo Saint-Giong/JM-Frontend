@@ -33,6 +33,7 @@ import {
 export default function SkillTagsAdminPage() {
   const [tagsPage, setTagsPage] = useState<SkillTagPage | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
@@ -47,11 +48,31 @@ export default function SkillTagsAdminPage() {
 
   const fetchTags = useCallback(async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const data = await skillTagApi.getAll({ page, size: pageSize });
-      setTagsPage(data);
-    } catch (error) {
-      console.error('Failed to fetch skill tags:', error);
+      // Ensure content is always an array
+      if (data && Array.isArray(data.content)) {
+        setTagsPage(data);
+      } else {
+        // Handle unexpected response format
+        setTagsPage({
+          content: [],
+          totalElements: 0,
+          totalPages: 0,
+          size: pageSize,
+          number: page,
+          first: true,
+          last: true,
+          empty: true,
+        });
+      }
+    } catch (err) {
+      console.error('Failed to fetch skill tags:', err);
+      setError(
+        err instanceof Error ? err.message : 'Failed to load skill tags'
+      );
+      setTagsPage(null);
     } finally {
       setIsLoading(false);
     }
@@ -63,10 +84,10 @@ export default function SkillTagsAdminPage() {
 
   // Filter tags by search query (client-side for current page)
   const filteredTags =
-    tagsPage?.content.filter((tag) => {
+    tagsPage?.content?.filter((tag) => {
       if (!searchQuery) return true;
       return tag.name.toLowerCase().includes(searchQuery.toLowerCase());
-    }) || [];
+    }) ?? [];
 
   const handleCreate = async () => {
     if (!tagName.trim()) return;
@@ -212,19 +233,28 @@ export default function SkillTagsAdminPage() {
       />
 
       <div className="flex-1 overflow-auto p-4">
-        <DataTable
-          columns={columns}
-          data={filteredTags}
-          isLoading={isLoading}
-          pagination={pagination}
-          onPageChange={setPage}
-          onPageSizeChange={(size) => {
-            setPageSize(size);
-            setPage(0);
-          }}
-          rowKey="id"
-          emptyMessage="No skill tags found"
-        />
+        {error ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <p className="text-destructive">{error}</p>
+            <Button variant="outline" className="mt-4" onClick={fetchTags}>
+              Try Again
+            </Button>
+          </div>
+        ) : (
+          <DataTable
+            columns={columns}
+            data={filteredTags}
+            isLoading={isLoading}
+            pagination={pagination}
+            onPageChange={setPage}
+            onPageSizeChange={(size) => {
+              setPageSize(size);
+              setPage(0);
+            }}
+            rowKey="id"
+            emptyMessage="No skill tags found"
+          />
+        )}
       </div>
 
       {/* Create Dialog */}
