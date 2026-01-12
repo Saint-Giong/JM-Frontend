@@ -1,4 +1,4 @@
-import { AuthProvider } from '@/providers';
+import { AuthProvider, QueryProvider } from '@/providers';
 import { ThemeProvider } from '@saint-giong/bamboo-ui/client';
 import '@saint-giong/bamboo-ui/globals.css';
 import { Analytics } from '@vercel/analytics/next';
@@ -39,9 +39,11 @@ export default function RootLayout({
         style={{ fontFamily: 'var(--font-familjen)' }}
       >
         <Analytics />
-        <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );
