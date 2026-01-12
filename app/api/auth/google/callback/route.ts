@@ -1,5 +1,5 @@
-import { buildEndpoint } from '@/lib/api/config';
 import { type NextRequest, NextResponse } from 'next/server';
+import { buildEndpoint } from '@/lib/api/config';
 import { forwardCookies } from '../../_utils/cookies';
 
 export async function GET(request: NextRequest) {
