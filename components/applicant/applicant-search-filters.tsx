@@ -2,6 +2,7 @@
 
 import { CountryCombobox } from '@/components/ui/country-combobox';
 import { SkillCombobox } from '@/components/ui/skill-combobox';
+import { useSkillTagsQuery } from '@/hooks/use-skill-tags';
 import {
   Badge,
   Button,
@@ -12,9 +13,9 @@ import {
   RadioGroupItem,
 } from '@saint-giong/bamboo-ui';
 import { RotateCcw, Search, X } from 'lucide-react';
+import { useMemo } from 'react';
 import {
   type ApplicantSearchFilters,
-  COMMON_SKILLS,
   EDUCATION_OPTIONS,
   type EducationDegree,
   EMPLOYMENT_TYPE_OPTIONS,
@@ -47,6 +48,17 @@ export function ApplicantSearchFiltersPanel({
   onSalaryRangeChange,
   onReset,
 }: ApplicantSearchFiltersProps) {
+  // Fetch popular skills from the backend API
+  const { data: skillTagPage } = useSkillTagsQuery(
+    { page: 0, size: 12 },
+    { staleTime: 5 * 60 * 1000 } // Cache for 5 minutes
+  );
+
+  // Extract skill names for popular skills display
+  const popularSkills = useMemo(() => {
+    return skillTagPage?.content.map((tag) => tag.name) ?? [];
+  }, [skillTagPage]);
+
   const handleEducationToggle = (degree: EducationDegree) => {
     const newEducation = filters.education.includes(degree)
       ? filters.education.filter((d) => d !== degree)
@@ -245,7 +257,7 @@ export function ApplicantSearchFiltersPanel({
         <div className="space-y-2">
           <span className="text-muted-foreground text-xs">Popular skills:</span>
           <div className="flex flex-wrap gap-1.5">
-            {COMMON_SKILLS.slice(0, 12).map((skill) => (
+            {popularSkills.map((skill) => (
               <Badge
                 key={skill}
                 variant={filters.skills.includes(skill) ? 'default' : 'outline'}

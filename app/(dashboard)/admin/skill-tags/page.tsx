@@ -62,9 +62,6 @@ export default function SkillTagsAdminPage() {
           totalPages: 0,
           size: pageSize,
           number: page,
-          first: true,
-          last: true,
-          empty: true,
         });
       }
     } catch (err) {

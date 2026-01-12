@@ -13,6 +13,7 @@ import type {
   SkillTag,
   SkillTagListParams,
   SkillTagPage,
+  SkillTagPageResponse,
   SkillTagResponse,
   SkillTagSearchParams,
   UpdateSkillTagRequest,
@@ -23,6 +24,9 @@ const TAG_ENDPOINT = 'tag';
 /**
  * Get all skill tags (paginated)
  * Endpoint: GET /v1/tag/
+ *
+ * Backend returns: { success, message, data: { content, page: { size, number, totalElements, totalPages } }, timestamp }
+ * We normalize to: { content, size, number, totalElements, totalPages }
  */
 export async function getAllSkillTags(
   params?: SkillTagListParams
@@ -52,7 +56,16 @@ export async function getAllSkillTags(
     throw new HttpError(response.status, response.statusText, errorData);
   }
 
-  return response.json();
+  const result: SkillTagPageResponse = await response.json();
+
+  // Normalize backend response to frontend-friendly format
+  return {
+    content: result.data.content,
+    size: result.data.page.size,
+    number: result.data.page.number,
+    totalElements: result.data.page.totalElements,
+    totalPages: result.data.page.totalPages,
+  };
 }
 
 /**

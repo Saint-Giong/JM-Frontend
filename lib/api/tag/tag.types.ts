@@ -13,7 +13,35 @@ export interface SkillTag {
 }
 
 /**
- * Paginated response for skill tags
+ * Page metadata from backend
+ */
+export interface PageMeta {
+  size: number;
+  number: number; // current page (0-indexed)
+  totalElements: number;
+  totalPages: number;
+}
+
+/**
+ * Paginated response data for skill tags
+ */
+export interface SkillTagPageData {
+  content: SkillTag[];
+  page: PageMeta;
+}
+
+/**
+ * Full paginated response from backend (wrapped in ApiResponse)
+ */
+export interface SkillTagPageResponse {
+  success: boolean;
+  message: string;
+  data: SkillTagPageData;
+  timestamp: string;
+}
+
+/**
+ * Normalized paginated response for skill tags (frontend-friendly)
  */
 export interface SkillTagPage {
   content: SkillTag[];
@@ -21,9 +49,6 @@ export interface SkillTagPage {
   totalPages: number;
   size: number;
   number: number; // current page (0-indexed)
-  first: boolean;
-  last: boolean;
-  empty: boolean;
 }
 
 /**

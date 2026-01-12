@@ -18,6 +18,7 @@ import {
   type DegreeType,
   discoveryApi,
 } from '@/lib/api/discovery';
+import { skillTagApi } from '@/lib/api/tag';
 
 // ============================================
 // Type transformation utilities
@@ -224,9 +225,46 @@ export function useApplicantSearch(
     null
   );
 
-  // Skill name to ID mapping (populated from API or props)
-  const [skillNameToId] = useState<Map<string, number>>(new Map());
-  const [skillIdToName] = useState<Map<number, string>>(new Map());
+  // Skill name to ID mapping (populated from API)
+  const [skillNameToId, setSkillNameToId] = useState<Map<string, number>>(
+    new Map()
+  );
+  const [skillIdToName, setSkillIdToName] = useState<Map<number, string>>(
+    new Map()
+  );
+  const [skillsLoaded, setSkillsLoaded] = useState(false);
+
+  // Load skill tags on mount for server-side mode
+  useEffect(() => {
+    if (!serverSide || skillsLoaded) return;
+
+    async function loadSkillTags() {
+      try {
+        // Fetch all skill tags (assuming reasonable total count)
+        const result = await skillTagApi.getAll({ page: 0, size: 200 });
+
+        const nameToId = new Map<string, number>();
+        const idToName = new Map<number, string>();
+
+        for (const tag of result.content) {
+          // Store both original case and lowercase for flexible matching
+          nameToId.set(tag.name.toLowerCase(), tag.id);
+          nameToId.set(tag.name, tag.id);
+          idToName.set(tag.id, tag.name);
+        }
+
+        setSkillNameToId(nameToId);
+        setSkillIdToName(idToName);
+        setSkillsLoaded(true);
+      } catch (err) {
+        console.error('Failed to load skill tags:', err);
+        // Set loaded to true to prevent infinite retry
+        setSkillsLoaded(true);
+      }
+    }
+
+    loadSkillTags();
+  }, [serverSide, skillsLoaded]);
 
   // Client-side filtering for legacy mode
   const clientFilteredApplicants = useMemo(() => {
@@ -335,12 +373,13 @@ export function useApplicantSearch(
   }, [filters, page, pageSize, serverSide, skillNameToId, skillIdToName]);
 
   // Auto-fetch on mount and when filters/page change for server-side mode
+  // Wait for skills to be loaded before searching to ensure proper ID mapping
   // biome-ignore lint/correctness/useExhaustiveDependencies: searchServer is stable
   useEffect(() => {
-    if (serverSide) {
+    if (serverSide && skillsLoaded) {
       searchServer();
     }
-  }, [serverSide, filters, page, pageSize]);
+  }, [serverSide, filters, page, pageSize, skillsLoaded]);
 
   const applicants = serverSide
     ? serverApplicants
