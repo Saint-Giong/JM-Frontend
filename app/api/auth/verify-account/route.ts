@@ -13,9 +13,9 @@ export async function POST(request: NextRequest) {
       'Content-Type': 'application/json',
     };
 
-    // Forward the access token as Authorization header (matching Gateway behavior)
+    // Forward the access token as Cookie header (Gateway expects cookies)
     if (accessToken) {
-      headers.Authorization = `Bearer ${accessToken}`;
+      headers.Cookie = `ACCESS_TOKEN=${accessToken}`;
     }
 
     const backendResponse = await fetch(buildEndpoint('auth/verify-account'), {
