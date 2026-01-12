@@ -44,9 +44,11 @@ export default function JobsPage() {
   // Resolve skills for all jobs separately to avoid N+1 issue
   useEffect(() => {
     const allSkillIds = new Set<number>();
-    jobResponses.forEach((job) => {
-      job.skillTagIds?.forEach((id) => allSkillIds.add(id));
-    });
+    for (const job of jobResponses) {
+      for (const id of job.skillTagIds ?? []) {
+        allSkillIds.add(id);
+      }
+    }
 
     if (allSkillIds.size > 0) {
       resolveSkillNames(Array.from(allSkillIds)).then(() => {

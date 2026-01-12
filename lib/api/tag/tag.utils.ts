@@ -44,7 +44,6 @@ export async function resolveSkillNames(ids: number[]): Promise<string[]> {
   if (!ids || ids.length === 0) return [];
 
   const uniqueIds = [...new Set(ids)];
-  const names: string[] = [];
 
   // Parallel fetch optimized
   // In a real app we might want to use a dataloader or cache mechanism

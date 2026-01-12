@@ -10,22 +10,22 @@ The frontend application for the **Job Manager Subsystem** of the DEVision platf
 
 ### Job Manager Team
 
-| Name | Email |
-|------|-------|
-| Tung Nguyen Son | S3979348@rmit.edu.vn |
-| Viet Nguyen Dinh | S3927291@rmit.edu.vn |
-| Ngoc Nguyen The Bao | S3924436@rmit.edu.vn |
-| Phuc Vo Hoang | S3926761@rmit.edu.vn |
-| Quynh Nguyen Le Thuc | S3924993@rmit.edu.vn |
+| Name | Role | Email |
+|------|------|-------|
+| Phuc Vo Hoang | Project Manager, Frontend Engineer | S3926761@rmit.edu.vn |
+| Quynh Nguyen Le Thuc | Frontend Engineer | S3924993@rmit.edu.vn |
+| Tung Nguyen Son | Backend Engineer | S3979348@rmit.edu.vn |
+| Viet Nguyen Dinh | Backend Engineer | S3927291@rmit.edu.vn |
+| Ngoc Nguyen The Bao | Backend Engineer | S3924436@rmit.edu.vn |
 
 ### Job Applicant Team
 
-| Name | Email |
-|------|-------|
-| Huan Nguyen Dang | S3927467@rmit.edu.vn |
-| Quoc Doan Huu | S3927776@student.rmit.edu.au |
-| Tai Ngo Van | S3974892@rmit.edu.vn |
-| Nhan Truong Vo Thien | S3929215@rmit.edu.vn |
+| Name | Role | Email |
+|------|------|-------|
+| Quoc Doan Huu | Project Manager, Backend Engineer | S3927776@student.rmit.edu.au |
+| Tai Ngo Van | Frontend Engineer | S3974892@rmit.edu.vn |
+| Huan Nguyen Dang | Backend Engineer | S3927467@rmit.edu.vn |
+| Nhan Truong Vo Thien | Backend Engineer | S3929215@rmit.edu.vn |
 
 ## Links
 

@@ -7,30 +7,80 @@ export const metadata: Metadata = {
   description: 'Meet the Saint Giong team behind DEVision Job Manager',
 };
 
+type Role = 'Project Manager' | 'Frontend Engineer' | 'Backend Engineer';
+
 interface TeamMember {
   name: string;
+  roles: Role[];
   email: string;
 }
 
 const jobManagerTeam: TeamMember[] = [
-  { name: 'Tung Nguyen Son', email: 'S3979348@rmit.edu.vn' },
-  { name: 'Viet Nguyen Dinh', email: 'S3927291@rmit.edu.vn' },
-  { name: 'Ngoc Nguyen The Bao', email: 'S3924436@rmit.edu.vn' },
-  { name: 'Phuc Vo Hoang', email: 'S3926761@rmit.edu.vn' },
-  { name: 'Quynh Nguyen Le Thuc', email: 'S3924993@rmit.edu.vn' },
+  {
+    name: 'Phuc Vo Hoang',
+    roles: ['Project Manager', 'Frontend Engineer'],
+    email: 'S3926761@rmit.edu.vn',
+  },
+  {
+    name: 'Quynh Nguyen Le Thuc',
+    roles: ['Frontend Engineer'],
+    email: 'S3924993@rmit.edu.vn',
+  },
+  {
+    name: 'Tung Nguyen Son',
+    roles: ['Backend Engineer'],
+    email: 'S3979348@rmit.edu.vn',
+  },
+  {
+    name: 'Viet Nguyen Dinh',
+    roles: ['Backend Engineer'],
+    email: 'S3927291@rmit.edu.vn',
+  },
+  {
+    name: 'Ngoc Nguyen The Bao',
+    roles: ['Backend Engineer'],
+    email: 'S3924436@rmit.edu.vn',
+  },
 ];
 
 const jobApplicantTeam: TeamMember[] = [
-  { name: 'Huan Nguyen Dang', email: 'S3927467@rmit.edu.vn' },
-  { name: 'Quoc Doan Huu', email: 'S3927776@student.rmit.edu.au' },
-  { name: 'Tai Ngo Van', email: 'S3974892@rmit.edu.vn' },
-  { name: 'Nhan Truong Vo Thien', email: 'S3929215@rmit.edu.vn' },
+  {
+    name: 'Quoc Doan Huu',
+    roles: ['Project Manager', 'Backend Engineer'],
+    email: 'S3927776@student.rmit.edu.au',
+  },
+  {
+    name: 'Tai Ngo Van',
+    roles: ['Frontend Engineer'],
+    email: 'S3974892@rmit.edu.vn',
+  },
+  {
+    name: 'Huan Nguyen Dang',
+    roles: ['Backend Engineer'],
+    email: 'S3927467@rmit.edu.vn',
+  },
+  {
+    name: 'Nhan Truong Vo Thien',
+    roles: ['Backend Engineer'],
+    email: 'S3929215@rmit.edu.vn',
+  },
 ];
 
 function TeamMemberCard({ member }: { member: TeamMember }) {
+  const isManager = member.roles.includes('Project Manager');
+
   return (
-    <div className="flex items-center justify-between rounded-lg border bg-card p-4 transition-colors hover:bg-muted/50">
-      <span className="font-medium">{member.name}</span>
+    <div
+      className={`flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50 ${isManager ? 'border-primary/50 bg-primary/5' : 'bg-card'}`}
+    >
+      <div className="flex flex-col">
+        <span className="font-medium">{member.name}</span>
+        <span
+          className={`text-xs ${isManager ? 'text-primary' : 'text-muted-foreground'}`}
+        >
+          {member.roles.join(', ')}
+        </span>
+      </div>
       <a
         href={`mailto:${member.email}`}
         className="flex items-center gap-1.5 text-muted-foreground text-sm transition-colors hover:text-primary"
