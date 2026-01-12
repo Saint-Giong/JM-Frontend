@@ -66,7 +66,7 @@ export function usePayment(): UsePaymentReturn {
     ): Promise<CreatePaymentResponse | null> => {
       setLoading(true);
       try {
-        const response = await paymentService.createPayment(data);
+        const response = await paymentService.create(data);
 
         // Optionally redirect to Stripe checkout
         if (options?.redirectToCheckout && response.checkoutUrl) {
@@ -89,7 +89,7 @@ export function usePayment(): UsePaymentReturn {
     async (id: string): Promise<PaymentDetails | null> => {
       setLoading(true);
       try {
-        const payment = await paymentService.getPayment(id);
+        const payment = await paymentService.get(id);
         setState((prev) => ({
           ...prev,
           isLoading: false,
@@ -109,7 +109,7 @@ export function usePayment(): UsePaymentReturn {
   const listPayments = useCallback(async (): Promise<PaymentDetails[]> => {
     setLoading(true);
     try {
-      const payments = await paymentService.listPayments();
+      const payments = await paymentService.list();
       setState((prev) => ({
         ...prev,
         isLoading: false,
@@ -128,7 +128,7 @@ export function usePayment(): UsePaymentReturn {
     async (id: string): Promise<boolean> => {
       setLoading(true);
       try {
-        await paymentService.deletePayment(id);
+        await paymentService.delete(id);
         setState((prev) => ({
           ...prev,
           isLoading: false,
