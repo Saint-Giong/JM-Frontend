@@ -2,10 +2,10 @@
 
 import { SkillTagList } from '@/components/ui/skill-tag';
 import {
-  availableSkills,
   educationLevels,
   employmentTypes,
 } from '@/mocks/subscription';
+import type { SkillTag } from '@/lib/api/tag/tag.types';
 import {
   Button,
   Card,
@@ -31,7 +31,8 @@ import type { SearchProfileFormData } from './use-subscription';
 interface SearchProfileFormProps {
   formData: SearchProfileFormData;
   isSaving: boolean;
-  onToggleSkill: (skill: string) => void;
+  availableSkillTags: SkillTag[];
+  onToggleSkill: (skillId: number) => void;
   onToggleEmployment: (type: string) => void;
   onToggleEducation: (level: string) => void;
   onFieldChange: <K extends keyof SearchProfileFormData>(
@@ -45,6 +46,7 @@ interface SearchProfileFormProps {
 export function SearchProfileForm({
   formData,
   isSaving,
+  availableSkillTags,
   onToggleSkill,
   onToggleEmployment,
   onToggleEducation,
@@ -84,9 +86,14 @@ export function SearchProfileForm({
               Technical Skills
             </Label>
             <SkillTagList
-              skills={availableSkills}
-              selectedSkills={formData.skills}
-              onToggle={onToggleSkill}
+              skills={availableSkillTags.map(tag => tag.name)}
+              selectedSkills={availableSkillTags
+                .filter(tag => formData.skillIds.includes(tag.id))
+                .map(tag => tag.name)}
+              onToggle={(skillName) => {
+                const tag = availableSkillTags.find(t => t.name === skillName);
+                if (tag) onToggleSkill(tag.id);
+              }}
             />
           </div>
 

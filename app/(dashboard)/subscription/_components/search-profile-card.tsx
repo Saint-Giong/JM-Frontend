@@ -10,7 +10,6 @@ import {
   CardTitle,
   Separator,
 } from '@saint-giong/bamboo-ui';
-import { cn } from '@saint-giong/bamboo-ui/utils';
 import {
   ArrowRight,
   Bell,
@@ -20,47 +19,69 @@ import {
   Trash2,
   Wallet,
 } from 'lucide-react';
-import type { SearchProfile } from '@/mocks/subscription';
+import type { SearchProfile } from '@/lib/api/discovery/discovery.types';
 import Link from 'next/link';
+
+// Employment type index to label mapping
+const EMPLOYMENT_TYPE_LABELS: Record<number, string> = {
+  0: 'Full-time',
+  1: 'Part-time',
+  2: 'Fresher',
+  3: 'Internship',
+  4: 'Contract',
+};
+
+// Degree type to label mapping
+const DEGREE_LABELS: Record<string, string> = {
+  BACHELOR: 'Bachelor',
+  MASTER: 'Master',
+  DOCTORATE: 'Doctorate',
+};
 
 interface SearchProfileCardProps {
   profile: SearchProfile;
-  onDelete: (id: string) => void;
+  onDelete: (profileId: string) => void;
 }
 
 export function SearchProfileCard({
   profile,
   onDelete,
 }: SearchProfileCardProps) {
+  // Convert employment type indices to labels
+  const employmentLabels = profile.employmentType
+    .map((idx) => EMPLOYMENT_TYPE_LABELS[idx])
+    .filter(Boolean);
+
+  // Get degree label
+  const degreeLabel = profile.highestDegree
+    ? DEGREE_LABELS[profile.highestDegree]
+    : null;
+
   return (
     <Card className="group transition-all hover:shadow-md">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
-            <CardTitle className="truncate text-base">{profile.name}</CardTitle>
+            <CardTitle className="truncate text-base">
+              {profile.name || 'Untitled Profile'}
+            </CardTitle>
             <CardDescription className="mt-1 flex items-center gap-1.5">
               <Bell className="h-3.5 w-3.5" />
               <span className="font-medium text-primary">
-                {profile.matchCount}
+                {profile.skillTags.length}
               </span>{' '}
-              matches found
+              skill filters configured
             </CardDescription>
           </div>
           <div className="flex items-center gap-1">
-            <Badge
-              variant={profile.isActive ? 'default' : 'secondary'}
-              className={cn(
-                'text-xs',
-                profile.isActive && 'bg-green-500 hover:bg-green-600'
-              )}
-            >
-              {profile.isActive ? 'Active' : 'Paused'}
+            <Badge variant="default" className="bg-green-500 text-xs hover:bg-green-600">
+              Active
             </Badge>
             <Button
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-              onClick={() => onDelete(profile.id)}
+              onClick={() => onDelete(profile.profileId)}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -68,14 +89,12 @@ export function SearchProfileCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        {/* Skills */}
-        {profile.skills.length > 0 && (
+        {/* Skill Tags Count */}
+        {profile.skillTags.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {profile.skills.map((skill) => (
-              <Badge key={skill} variant="secondary" className="text-xs">
-                {skill}
-              </Badge>
-            ))}
+            <Badge variant="secondary" className="text-xs">
+              {profile.skillTags.length} skill{profile.skillTags.length !== 1 ? 's' : ''} selected
+            </Badge>
           </div>
         )}
 
@@ -87,26 +106,25 @@ export function SearchProfileCard({
               {profile.country}
             </p>
           )}
-          {profile.employmentStatus.length > 0 && (
+          {employmentLabels.length > 0 && (
             <p className="flex items-center gap-1.5">
               <Filter className="h-3.5 w-3.5" />
-              {profile.employmentStatus.length > 2
-                ? `${profile.employmentStatus.length} types`
-                : profile.employmentStatus.join(', ')}
+              {employmentLabels.length > 2
+                ? `${employmentLabels.length} types`
+                : employmentLabels.join(', ')}
             </p>
           )}
-          {(profile.salaryRange.min > 0 || profile.salaryRange.max) && (
+          {(profile.salaryMin || profile.salaryMax) && (
             <p className="flex items-center gap-1.5">
-              <Wallet className="h-3.5 w-3.5" />${profile.salaryRange.min}
-              {profile.salaryRange.max ? `-$${profile.salaryRange.max}` : '+'}
+              <Wallet className="h-3.5 w-3.5" />
+              {profile.salaryMin ? `$${profile.salaryMin}` : '$0'}
+              {profile.salaryMax ? `-$${profile.salaryMax}` : '+'}
             </p>
           )}
-          {profile.education.length > 0 && (
+          {degreeLabel && (
             <p className="flex items-center gap-1.5">
               <GraduationCap className="h-3.5 w-3.5" />
-              {profile.education.length > 2
-                ? `${profile.education.length} levels`
-                : profile.education.join(', ')}
+              {degreeLabel}
             </p>
           )}
         </div>
@@ -123,3 +141,4 @@ export function SearchProfileCard({
     </Card>
   );
 }
+

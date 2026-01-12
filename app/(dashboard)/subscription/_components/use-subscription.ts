@@ -6,14 +6,16 @@ import {
   createSearchProfile,
   deleteSearchProfile,
 } from '@/lib/api/discovery/discovery.service';
+import { getAllSkillTags } from '@/lib/api/tag/tag.service';
 import type { SearchProfile } from '@/lib/api/discovery/discovery.types';
+import type { SkillTag } from '@/lib/api/tag/tag.types';
 import { useAuthStore, useSubscriptionStore } from '@/stores';
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 export interface SearchProfileFormData {
   name: string;
-  skills: string[];
+  skillIds: number[];
   employmentTypes: string[];
   country: string;
   minSalary: string;
@@ -23,7 +25,7 @@ export interface SearchProfileFormData {
 
 const initialFormData: SearchProfileFormData = {
   name: '',
-  skills: [],
+  skillIds: [],
   employmentTypes: [],
   country: '',
   minSalary: '',
@@ -50,6 +52,7 @@ export function useSubscription() {
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] =
     useState<SearchProfileFormData>(initialFormData);
+  const [availableSkillTags, setAvailableSkillTags] = useState<SkillTag[]>([]);
 
   // Fetch subscription status on mount (only after hydration)
   useEffect(() => {
@@ -100,6 +103,20 @@ export function useSubscription() {
 
     fetchSearchProfiles();
   }, [companyId, isPremium, hasHydrated]);
+
+  // Fetch available skill tags for the form
+  useEffect(() => {
+    async function fetchSkillTags() {
+      try {
+        const result = await getAllSkillTags({ size: 100 });
+        setAvailableSkillTags(result.content);
+      } catch (error) {
+        console.error('[SkillTags] Failed to fetch skill tags:', error);
+      }
+    }
+
+    fetchSkillTags();
+  }, []);
 
   // Handle Stripe checkout success/cancel
   useEffect(() => {
@@ -280,7 +297,7 @@ export function useSubscription() {
           .map((type) => employmentTypeMap[type])
           .filter((idx) => idx !== undefined),
         country: formData.country || null,
-        skillTags: [], // TODO: Map skill names to skill IDs when available
+        skillTags: formData.skillIds,
       });
 
       setSearchProfiles((prev) => [...prev, newProfile]);
@@ -320,6 +337,7 @@ export function useSubscription() {
     isCreating,
     isSaving,
     formData,
+    availableSkillTags,
 
     // Actions
     handleUpgrade,

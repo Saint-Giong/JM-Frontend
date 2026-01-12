@@ -31,6 +31,7 @@ function SubscriptionContent() {
     isCreating,
     isSaving,
     formData,
+    availableSkillTags,
     handleUpgrade,
     handleManageBilling,
     toggleArrayItem,
@@ -86,7 +87,14 @@ function SubscriptionContent() {
                   <SearchProfileForm
                     formData={formData}
                     isSaving={isSaving}
-                    onToggleSkill={(skill) => toggleArrayItem('skills', skill)}
+                    availableSkillTags={availableSkillTags}
+                    onToggleSkill={(skillId) => {
+                      const currentIds = formData.skillIds;
+                      const newIds = currentIds.includes(skillId)
+                        ? currentIds.filter(id => id !== skillId)
+                        : [...currentIds, skillId];
+                      setFormField('skillIds', newIds);
+                    }}
                     onToggleEmployment={(type) =>
                       toggleArrayItem('employmentTypes', type)
                     }
@@ -105,7 +113,7 @@ function SubscriptionContent() {
                   <div className="grid gap-4 md:grid-cols-2">
                     {searchProfiles.map((profile) => (
                       <SearchProfileCard
-                        key={profile.id}
+                        key={profile.profileId}
                         profile={profile}
                         onDelete={handleDeleteProfile}
                       />
