@@ -9,12 +9,13 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { usePathname } from 'next/navigation';
 import {
-  externalLinks,
+  accountItems,
+  devItems,
+  hiringItems,
   mainNavItems,
   NavGroup,
-  recruitmentItems,
+  resourceItems,
   SidebarHeader,
-  systemItems,
   ThemeToggle,
   UserDropdown,
   useSidebarState,
@@ -49,13 +50,10 @@ export function AppSidebar() {
 
       <SidebarContent>
         <NavGroup items={dynamicMainNavItems} pathname={pathname} />
-        <NavGroup
-          label="Recruitment"
-          items={recruitmentItems}
-          pathname={pathname}
-        />
-        <NavGroup label="System" items={systemItems} pathname={pathname} />
-        <NavGroup label="Links" items={externalLinks} pathname={pathname} />
+        <NavGroup label="Hiring" items={hiringItems} pathname={pathname} />
+        <NavGroup label="Account" items={accountItems} pathname={pathname} />
+        <NavGroup label="Resources" items={resourceItems} pathname={pathname} />
+        <NavGroup label="Developer" items={devItems} pathname={pathname} />
       </SidebarContent>
 
       <SidebarFooter>

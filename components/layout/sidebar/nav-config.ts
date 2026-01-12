@@ -4,8 +4,8 @@ import {
   Briefcase,
   Building2,
   CreditCard,
-  ExternalLink,
   Home,
+  Palette,
   Search,
   Settings,
   Terminal,
@@ -21,44 +21,27 @@ export interface NavItem {
   external?: boolean;
 }
 
+// Main navigation - core app pages
 export const mainNavItems: NavItem[] = [
-  { title: 'Dashboard', icon: Home, href: '/dashboard', disabled: false },
-  {
-    title: 'Notifications',
-    icon: Bell,
-    href: '/notifications',
-    disabled: false,
-  },
-  {
-    title: 'Companies',
-    icon: Building2,
-    href: '/companies',
-    disabled: false,
-  },
+  { title: 'Dashboard', icon: Home, href: '/dashboard' },
+  { title: 'Notifications', icon: Bell, href: '/notifications' },
 ];
 
-export const recruitmentItems: NavItem[] = [
-  { title: 'Jobs', icon: Briefcase, href: '/jobs', disabled: false },
-  {
-    title: 'Applicant Search',
-    icon: Search,
-    href: '/applicant-search',
-    disabled: false,
-  },
+// Hiring - recruitment-related features
+export const hiringItems: NavItem[] = [
+  { title: 'Jobs', icon: Briefcase, href: '/jobs' },
+  { title: 'Applicants', icon: Search, href: '/applicant-search' },
+  { title: 'Companies', icon: Building2, href: '/companies' },
 ];
 
-export const systemItems: NavItem[] = [
-  {
-    title: 'Subscription',
-    icon: CreditCard,
-    href: '/subscription',
-    disabled: false,
-  },
-  { title: 'Settings', icon: Settings, href: '/settings', disabled: false },
-  { title: 'Dev Tools', icon: Terminal, href: '/admin', disabled: false },
+// Account - user account management
+export const accountItems: NavItem[] = [
+  { title: 'Subscription', icon: CreditCard, href: '/subscription' },
+  { title: 'Settings', icon: Settings, href: '/settings' },
 ];
 
-export const externalLinks: NavItem[] = [
+// Resources - external links and documentation
+export const resourceItems: NavItem[] = [
   {
     title: 'Documentation',
     icon: BookOpen,
@@ -67,7 +50,7 @@ export const externalLinks: NavItem[] = [
   },
   {
     title: 'Storybook',
-    icon: ExternalLink,
+    icon: Palette,
     href: 'https://storybook.saintgiong.ttr.gg',
     external: true,
   },
@@ -77,4 +60,9 @@ export const externalLinks: NavItem[] = [
     href: 'https://ja.saintgiong.ttr.gg',
     external: true,
   },
+];
+
+// Developer tools - admin/dev features
+export const devItems: NavItem[] = [
+  { title: 'Dev Tools', icon: Terminal, href: '/admin' },
 ];
