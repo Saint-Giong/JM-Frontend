@@ -1,5 +1,6 @@
 import { buildEndpoint } from '@/lib/api/config';
 import { type NextRequest, NextResponse } from 'next/server';
+import { forwardCookies } from '../_utils/cookies';
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,11 +31,8 @@ export async function POST(request: NextRequest) {
       status: backendResponse.status,
     });
 
-    // Forward Set-Cookie headers from backend to browser
-    const setCookieHeaders = backendResponse.headers.getSetCookie();
-    for (const cookie of setCookieHeaders) {
-      response.headers.append('Set-Cookie', cookie);
-    }
+    // Forward cookies from backend
+    forwardCookies(backendResponse, response);
 
     return response;
   } catch (error) {
