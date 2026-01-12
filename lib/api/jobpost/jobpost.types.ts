@@ -246,7 +246,8 @@ export function toJobPost(response: JobPostResponse): JobPost {
       response.salaryMax
     ),
     location: `${response.city}${response.country ? `, ${response.country}` : ''}`,
-    skills: response.skillTagIds.map((id) => `Skill ${id}`), // TODO: Resolve skill names from skill service
+    skills: response.skillTagIds.map((id) => `Skill ${id}`), // Placeholder until resolved
+    skillTagIds: response.skillTagIds,
     applicantCount: 0, // TODO: Get from applications service
     hasNewApplicants: false,
   };
@@ -276,6 +277,7 @@ export function toJob(response: JobPostResponse): Job {
     salaryMin: salary.type === 'range' ? salary.min : 0,
     salaryMax: salary.type === 'range' ? salary.max : 0,
     skills: response.skillTagIds.map((id) => `Skill ${id}`),
+    skillTagIds: response.skillTagIds,
   };
 }
 

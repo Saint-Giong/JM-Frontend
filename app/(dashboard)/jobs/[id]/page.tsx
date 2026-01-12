@@ -11,6 +11,7 @@ import {
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { resolveSkillNames } from '@/lib/api/tag/tag.utils';
 import { useEffect, useMemo, useState } from 'react';
 import { useJobPost } from '@/hooks/use-jobpost';
 import { toJobPost } from '@/lib/api/jobpost';
@@ -24,6 +25,8 @@ export default function JobDetailsPage() {
   const [activeTab, setActiveTab] = useState('job-post');
   const { currentJob, isLoading, error, fetchJob } = useJobPost();
 
+  const [resolvedSkills, setResolvedSkills] = useState<string[]>([]);
+
   // Fetch job data from API
   useEffect(() => {
     if (jobId) {
@@ -31,10 +34,23 @@ export default function JobDetailsPage() {
     }
   }, [jobId, fetchJob]);
 
+  // Resolve skill names when job data is loaded
+  useEffect(() => {
+    if (currentJob?.skillTagIds?.length) {
+      resolveSkillNames(currentJob.skillTagIds).then(setResolvedSkills);
+    }
+  }, [currentJob]);
+
   // Transform API response to frontend JobPost type
   const jobPost = useMemo(() => {
-    return currentJob ? toJobPost(currentJob) : null;
-  }, [currentJob]);
+    if (!currentJob) return null;
+    const post = toJobPost(currentJob);
+    // Override skills with resolved names if available
+    if (resolvedSkills.length > 0) {
+      post.skills = resolvedSkills;
+    }
+    return post;
+  }, [currentJob, resolvedSkills]);
 
   // Get applications (still using mock for now - applications service integration would be separate)
   const applications = useMemo(() => getApplicationsForJob(jobId), [jobId]);
