@@ -60,19 +60,19 @@ export const systemItems: NavItem[] = [
 
 export const externalLinks: NavItem[] = [
   {
-    title: 'JM Docs',
+    title: 'Documentation',
     icon: BookOpen,
     href: 'https://docs.jm.saintgiong.ttr.gg',
     external: true,
   },
   {
-    title: 'JM Storybook',
+    title: 'Storybook',
     icon: ExternalLink,
     href: 'https://storybook.saintgiong.ttr.gg',
     external: true,
   },
   {
-    title: 'JA Frontend',
+    title: 'Job Applicants',
     icon: Users,
     href: 'https://ja.saintgiong.ttr.gg',
     external: true,
