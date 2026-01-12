@@ -2,7 +2,7 @@
 
 import type { Applicant, ApplicantMark } from '@/components/applicant';
 import { ApplicantCard } from '@/components/applicant';
-import { Button } from '@saint-giong/bamboo-ui';
+import { Button, Skeleton } from '@saint-giong/bamboo-ui';
 import { Users } from 'lucide-react';
 
 interface ResultsSectionProps {
@@ -14,6 +14,26 @@ interface ResultsSectionProps {
   onResetFilters: () => void;
   children?: React.ReactNode; // For pagination
   disableScroll?: boolean; // For mobile where parent scrolls
+  isLoading?: boolean;
+}
+
+function ApplicantCardSkeleton() {
+  return (
+    <div className="rounded-lg border bg-card p-4">
+      <div className="flex items-start gap-3">
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-5 w-32" />
+          <Skeleton className="h-4 w-48" />
+          <div className="flex gap-2 pt-1">
+            <Skeleton className="h-5 w-16 rounded-full" />
+            <Skeleton className="h-5 w-20 rounded-full" />
+            <Skeleton className="h-5 w-14 rounded-full" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export function ResultsSection({
@@ -25,6 +45,7 @@ export function ResultsSection({
   onResetFilters,
   children,
   disableScroll,
+  isLoading,
 }: ResultsSectionProps) {
   return (
     <main
@@ -38,12 +59,25 @@ export function ResultsSection({
           <div className="mb-4 flex items-center justify-between">
             <h2 className="font-semibold text-lg">Best match</h2>
             <span className="text-muted-foreground text-sm">
-              {totalCount} result{totalCount !== 1 ? 's' : ''}
+              {isLoading ? (
+                <Skeleton className="inline-block h-4 w-16" />
+              ) : (
+                <>
+                  {totalCount} result{totalCount !== 1 ? 's' : ''}
+                </>
+              )}
             </span>
           </div>
 
-          {/* Results List */}
-          {applicants.length === 0 ? (
+          {/* Loading State */}
+          {isLoading && applicants.length === 0 ? (
+            <div className="space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <ApplicantCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : applicants.length === 0 ? (
+            /* Empty State */
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <Users className="mb-4 h-12 w-12 text-muted-foreground/50" />
               <h3 className="mb-2 font-semibold text-lg">
@@ -61,6 +95,7 @@ export function ResultsSection({
               </Button>
             </div>
           ) : (
+            /* Results List */
             <div className="space-y-3">
               {applicants.map((applicant) => (
                 <ApplicantCard
@@ -71,6 +106,13 @@ export function ResultsSection({
                   isSelected={selectedApplicant?.id === applicant.id}
                 />
               ))}
+              {/* Loading more indicator */}
+              {isLoading && applicants.length > 0 && (
+                <div className="space-y-3 pt-2">
+                  <ApplicantCardSkeleton />
+                  <ApplicantCardSkeleton />
+                </div>
+              )}
             </div>
           )}
         </div>

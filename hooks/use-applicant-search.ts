@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type {
   Applicant,
   ApplicantMark,
@@ -334,7 +334,14 @@ export function useApplicantSearch(
     }
   }, [filters, page, pageSize, serverSide, skillNameToId, skillIdToName]);
 
-  // Trigger search on filter/page change for server-side mode
+  // Auto-fetch on mount and when filters/page change for server-side mode
+  // biome-ignore lint/correctness/useExhaustiveDependencies: searchServer is stable
+  useEffect(() => {
+    if (serverSide) {
+      searchServer();
+    }
+  }, [serverSide, filters, page, pageSize]);
+
   const applicants = serverSide
     ? serverApplicants
     : clientFilteredApplicants.slice(0, (page + 1) * pageSize);
@@ -418,6 +425,11 @@ export function useApplicantSearch(
     setPage(0);
   }, []);
 
+  // Go to specific page (0-indexed internally)
+  const goToPage = useCallback((pageNumber: number) => {
+    setPage(Math.max(0, pageNumber));
+  }, []);
+
   // Mark applicant (favorite/warning)
   const markApplicant = useCallback((id: string, mark: ApplicantMark) => {
     // In production, this would call an API
@@ -451,6 +463,7 @@ export function useApplicantSearch(
       ? totalPages
       : Math.ceil(clientFilteredApplicants.length / pageSize),
     loadMore,
+    goToPage,
 
     // Selection
     selectedApplicant,

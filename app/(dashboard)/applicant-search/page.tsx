@@ -3,13 +3,13 @@
 import { ApplicantDetailPanel } from '@/components/applicant';
 import { useApplicantSearch } from '@/hooks/use-applicant-search';
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { mockApplicants } from '@/mocks';
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
 } from '@saint-giong/bamboo-ui';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import {
   Pagination,
@@ -20,14 +20,16 @@ import {
 
 export default function ApplicantSearchPage() {
   const [fullTextSearch, setFullTextSearch] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
   const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   const {
     applicants,
     totalCount,
     filters,
+    isLoading,
+    error,
+    page,
+    totalPages,
     setLocation,
     setEducation,
     setWorkExperience,
@@ -38,19 +40,76 @@ export default function ApplicantSearchPage() {
     selectedApplicant,
     setSelectedApplicant,
     markApplicant,
-  } = useApplicantSearch(mockApplicants, { pageSize: 100 });
-
-  // Pagination
-  const totalPages = Math.ceil(applicants.length / pageSize);
-  const paginatedApplicants = applicants.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+    goToPage,
+  } = useApplicantSearch(null, { pageSize: 20, serverSide: true });
 
   const handleSearch = () => {
     applyFullTextSearch(fullTextSearch);
-    setCurrentPage(1);
   };
+
+  const handlePageChange = (newPage: number) => {
+    // UI uses 1-indexed pages, hook uses 0-indexed
+    goToPage(newPage - 1);
+  };
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex h-screen flex-col">
+        <SearchHeader />
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+            <AlertCircle className="h-8 w-8 text-destructive" />
+          </div>
+          <div className="text-center">
+            <h2 className="font-semibold text-lg">Failed to load applicants</h2>
+            <p className="mt-1 max-w-md text-muted-foreground text-sm">
+              {error.message || 'An error occurred while fetching applicants.'}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="mt-2 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground text-sm hover:bg-primary/90"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Loading state (initial load)
+  if (isLoading && applicants.length === 0) {
+    return (
+      <div className="flex h-screen flex-col">
+        <SearchHeader />
+        <SearchFilters
+          fullTextSearch={fullTextSearch}
+          onFullTextSearchChange={setFullTextSearch}
+          location={filters.location}
+          onLocationChange={setLocation}
+          education={filters.education}
+          onEducationChange={setEducation}
+          workExperience={filters.workExperience}
+          onWorkExperienceChange={setWorkExperience}
+          employmentTypes={filters.employmentTypes}
+          onEmploymentTypesChange={setEmploymentTypes}
+          skills={filters.skills}
+          onSkillsChange={setSkills}
+          onSearch={handleSearch}
+        />
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <p className="text-muted-foreground text-sm">
+              Loading applicants...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -73,18 +132,19 @@ export default function ApplicantSearchPage() {
           onSearch={handleSearch}
         />
         <ResultsSection
-          applicants={paginatedApplicants}
+          applicants={applicants}
           totalCount={totalCount}
           selectedApplicant={selectedApplicant}
           onSelectApplicant={setSelectedApplicant}
           onMarkApplicant={markApplicant}
           onResetFilters={resetFilters}
+          isLoading={isLoading}
           disableScroll
         >
           <Pagination
-            currentPage={currentPage}
+            currentPage={page + 1}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
+            onPageChange={handlePageChange}
           />
         </ResultsSection>
       </div>
@@ -111,17 +171,18 @@ export default function ApplicantSearchPage() {
         {/* Split view content */}
         <div className="flex min-h-0 flex-1 overflow-hidden">
           <ResultsSection
-            applicants={paginatedApplicants}
+            applicants={applicants}
             totalCount={totalCount}
             selectedApplicant={selectedApplicant}
             onSelectApplicant={setSelectedApplicant}
             onMarkApplicant={markApplicant}
             onResetFilters={resetFilters}
+            isLoading={isLoading}
           >
             <Pagination
-              currentPage={currentPage}
+              currentPage={page + 1}
               totalPages={totalPages}
-              onPageChange={setCurrentPage}
+              onPageChange={handlePageChange}
             />
           </ResultsSection>
 
