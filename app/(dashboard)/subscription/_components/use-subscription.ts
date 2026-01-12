@@ -46,8 +46,7 @@ export function useSubscription() {
   const searchParams = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchProfiles, setSearchProfiles] =
-    useState<SearchProfile[]>([]);
+  const [searchProfiles, setSearchProfiles] = useState<SearchProfile[]>([]);
   const [isCreating, setIsCreating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] =
@@ -266,9 +265,9 @@ export function useSubscription() {
       const employmentTypeMap: Record<string, number> = {
         'Full-time': 0,
         'Part-time': 1,
-        'Fresher': 2,
-        'Internship': 3,
-        'Contract': 4,
+        Fresher: 2,
+        Internship: 3,
+        Contract: 4,
       };
 
       // Map education levels to degree type
@@ -279,14 +278,13 @@ export function useSubscription() {
       };
 
       // Get highest degree from selected education
-      const highestDegree =
-        formData.education.includes('Doctorate')
-          ? 'DOCTORATE'
-          : formData.education.includes('Master')
-            ? 'MASTER'
-            : formData.education.includes('Bachelor')
-              ? 'BACHELOR'
-              : null;
+      const highestDegree = formData.education.includes('Doctorate')
+        ? 'DOCTORATE'
+        : formData.education.includes('Master')
+          ? 'MASTER'
+          : formData.education.includes('Bachelor')
+            ? 'BACHELOR'
+            : null;
 
       const newProfile = await createSearchProfile({
         companyId,
@@ -313,7 +311,9 @@ export function useSubscription() {
   const handleDeleteProfile = useCallback(async (profileId: string) => {
     try {
       await deleteSearchProfile(profileId);
-      setSearchProfiles((prev) => prev.filter((p) => p.profileId !== profileId));
+      setSearchProfiles((prev) =>
+        prev.filter((p) => p.profileId !== profileId)
+      );
     } catch (error) {
       console.error('[SearchProfiles] Failed to delete profile:', error);
     }

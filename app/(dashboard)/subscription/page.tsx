@@ -91,7 +91,7 @@ function SubscriptionContent() {
                     onToggleSkill={(skillId) => {
                       const currentIds = formData.skillIds;
                       const newIds = currentIds.includes(skillId)
-                        ? currentIds.filter(id => id !== skillId)
+                        ? currentIds.filter((id) => id !== skillId)
                         : [...currentIds, skillId];
                       setFormField('skillIds', newIds);
                     }}

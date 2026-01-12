@@ -263,8 +263,6 @@ export default function NotificationsAdminPage() {
                 )}
               </CardContent>
             </Card>
-
-
           </div>
         </div>
       </div>

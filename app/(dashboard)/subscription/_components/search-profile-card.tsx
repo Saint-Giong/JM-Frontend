@@ -74,7 +74,10 @@ export function SearchProfileCard({
             </CardDescription>
           </div>
           <div className="flex items-center gap-1">
-            <Badge variant="default" className="bg-green-500 text-xs hover:bg-green-600">
+            <Badge
+              variant="default"
+              className="bg-green-500 text-xs hover:bg-green-600"
+            >
               Active
             </Badge>
             <Button
@@ -93,7 +96,8 @@ export function SearchProfileCard({
         {profile.skillTags.length > 0 && (
           <div className="flex flex-wrap gap-1">
             <Badge variant="secondary" className="text-xs">
-              {profile.skillTags.length} skill{profile.skillTags.length !== 1 ? 's' : ''} selected
+              {profile.skillTags.length} skill
+              {profile.skillTags.length !== 1 ? 's' : ''} selected
             </Badge>
           </div>
         )}
@@ -141,4 +145,3 @@ export function SearchProfileCard({
     </Card>
   );
 }
-

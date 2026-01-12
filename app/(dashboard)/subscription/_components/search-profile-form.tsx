@@ -1,10 +1,7 @@
 'use client';
 
 import { SkillTagList } from '@/components/ui/skill-tag';
-import {
-  educationLevels,
-  employmentTypes,
-} from '@/mocks/subscription';
+import { educationLevels, employmentTypes } from '@/mocks/subscription';
 import type { SkillTag } from '@/lib/api/tag/tag.types';
 import {
   Button,
@@ -86,12 +83,14 @@ export function SearchProfileForm({
               Technical Skills
             </Label>
             <SkillTagList
-              skills={availableSkillTags.map(tag => tag.name)}
+              skills={availableSkillTags.map((tag) => tag.name)}
               selectedSkills={availableSkillTags
-                .filter(tag => formData.skillIds.includes(tag.id))
-                .map(tag => tag.name)}
+                .filter((tag) => formData.skillIds.includes(tag.id))
+                .map((tag) => tag.name)}
               onToggle={(skillName) => {
-                const tag = availableSkillTags.find(t => t.name === skillName);
+                const tag = availableSkillTags.find(
+                  (t) => t.name === skillName
+                );
                 if (tag) onToggleSkill(tag.id);
               }}
             />

@@ -32,7 +32,9 @@ class WSClient {
     // Skip connection if WS is disabled
     if (!this.isEnabled) {
       if (!this.connectionAttempted) {
-        console.log('[WS] WebSocket is disabled. Set NEXT_PUBLIC_ENABLE_WS=true to enable.');
+        console.log(
+          '[WS] WebSocket is disabled. Set NEXT_PUBLIC_ENABLE_WS=true to enable.'
+        );
         this.connectionAttempted = true;
       }
       return null;
@@ -64,7 +66,10 @@ class WSClient {
       this.socket.on('connect_error', (error) => {
         // Only log once to avoid console spam
         if (!this.connectionAttempted) {
-          console.warn('[WS] Connection failed (server may be unavailable):', error.message);
+          console.warn(
+            '[WS] Connection failed (server may be unavailable):',
+            error.message
+          );
           this.connectionAttempted = true;
         }
       });
