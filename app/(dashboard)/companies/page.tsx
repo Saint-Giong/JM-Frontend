@@ -1,6 +1,5 @@
 'use client';
 
-import { type Company, companyApi } from '@/lib/api';
 import {
   Avatar,
   AvatarFallback,
@@ -24,6 +23,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { type Company, companyApi } from '@/lib/api';
 
 function getInitials(name: string): string {
   if (!name) return 'CO';

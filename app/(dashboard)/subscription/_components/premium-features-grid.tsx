@@ -1,7 +1,7 @@
 'use client';
 
-import { premiumFeatures } from '@/mocks/subscription';
 import { Card, CardContent } from '@saint-giong/bamboo-ui';
+import { premiumFeatures } from '@/mocks/subscription';
 
 export function PremiumFeaturesGrid() {
   return (

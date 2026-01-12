@@ -1,9 +1,9 @@
 'use client';
 
-import { onSessionExpired, onTokenRefreshed } from '@/lib/api';
-import { useAuthStore } from '@/stores';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { onSessionExpired, onTokenRefreshed } from '@/lib/api';
+import { useAuthStore } from '@/stores';
 
 /**
  * AuthProvider component that sets up global auth event listeners.

@@ -1,22 +1,22 @@
 'use client';
 
 import {
-  type ApplicantDocument,
-  type ApplicantListParams,
-  type ApplicantPage,
-  type ApplicantSearchParams,
-  type CreateSearchProfileRequest,
-  type SearchProfile,
-  type UpdateSearchProfileRequest,
-  discoveryApi,
-} from '@/lib/api/discovery';
-import {
   type UseMutationOptions,
   type UseQueryOptions,
   useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
+import {
+  type ApplicantDocument,
+  type ApplicantListParams,
+  type ApplicantPage,
+  type ApplicantSearchParams,
+  type CreateSearchProfileRequest,
+  discoveryApi,
+  type SearchProfile,
+  type UpdateSearchProfileRequest,
+} from '@/lib/api/discovery';
 
 // Query keys factory
 export const discoveryKeys = {

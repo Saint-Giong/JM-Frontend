@@ -1,6 +1,5 @@
 'use client';
 
-import { buildEndpoint } from '@/lib/api';
 import {
   Badge,
   Button,
@@ -19,6 +18,7 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { Clock, Play, Send } from 'lucide-react';
 import { useState } from 'react';
+import { buildEndpoint } from '@/lib/api';
 import { JsonViewer } from '../_components';
 import type { ApiEndpoint, ApiService } from '../_components/types';
 

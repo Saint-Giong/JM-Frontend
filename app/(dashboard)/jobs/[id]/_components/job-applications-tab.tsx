@@ -1,12 +1,5 @@
 'use client';
 
-import type {
-  ApplicationFilterTab,
-  ApplicationStatus,
-  JobApplication,
-} from '@/components/job/types';
-import { useJobApplications } from '@/hooks/use-job-applications';
-import { useMediaQuery } from '@/hooks/use-media-query';
 import {
   Badge,
   Button,
@@ -31,6 +24,13 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { Search, SlidersHorizontal, Users, X } from 'lucide-react';
 import { useState } from 'react';
+import type {
+  ApplicationFilterTab,
+  ApplicationStatus,
+  JobApplication,
+} from '@/components/job/types';
+import { useJobApplications } from '@/hooks/use-job-applications';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import { ApplicationCard } from './application-card';
 import { ApplicationDetailPanel } from './application-detail-panel';
 

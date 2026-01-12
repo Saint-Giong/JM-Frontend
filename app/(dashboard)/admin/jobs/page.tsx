@@ -1,10 +1,10 @@
 'use client';
 
-import type { JobPostResponse } from '@/lib/api/jobpost';
-import { jobPostApi } from '@/lib/api/jobpost';
 import { Badge } from '@saint-giong/bamboo-ui';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { JobPostResponse } from '@/lib/api/jobpost';
+import { jobPostApi } from '@/lib/api/jobpost';
 import {
   AdminToolbar,
   type ColumnDef,

@@ -1,8 +1,5 @@
 'use client';
 
-import { CountryCombobox } from '@/components/ui/country-combobox';
-import { SkillCombobox } from '@/components/ui/skill-combobox';
-import { useSkillTagsQuery } from '@/hooks/use-skill-tags';
 import {
   Badge,
   Button,
@@ -14,6 +11,9 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { RotateCcw, Search, X } from 'lucide-react';
 import { useMemo } from 'react';
+import { CountryCombobox } from '@/components/ui/country-combobox';
+import { SkillCombobox } from '@/components/ui/skill-combobox';
+import { useSkillTagsQuery } from '@/hooks/use-skill-tags';
 import {
   type ApplicantSearchFilters,
   EDUCATION_OPTIONS,

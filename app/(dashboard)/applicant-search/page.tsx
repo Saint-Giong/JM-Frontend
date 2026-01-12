@@ -1,8 +1,5 @@
 'use client';
 
-import { ApplicantDetailPanel } from '@/components/applicant';
-import { useApplicantSearch } from '@/hooks/use-applicant-search';
-import { useMediaQuery } from '@/hooks/use-media-query';
 import {
   Sheet,
   SheetContent,
@@ -11,6 +8,9 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { ApplicantDetailPanel } from '@/components/applicant';
+import { useApplicantSearch } from '@/hooks/use-applicant-search';
+import { useMediaQuery } from '@/hooks/use-media-query';
 import {
   Pagination,
   ResultsSection,

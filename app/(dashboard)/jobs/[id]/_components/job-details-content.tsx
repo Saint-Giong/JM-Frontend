@@ -1,9 +1,9 @@
 'use client';
 
-import type { JobPost } from '@/components/job/types';
-import { formatEmploymentTypes, formatJobSalary } from '@/components/job/types';
 import { Badge, Separator } from '@saint-giong/bamboo-ui';
 import { Briefcase, Calendar, Clock, MapPin, Wallet } from 'lucide-react';
+import type { JobPost } from '@/components/job/types';
+import { formatEmploymentTypes, formatJobSalary } from '@/components/job/types';
 
 interface JobDetailsContentProps {
   job: JobPost;

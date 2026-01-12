@@ -1,6 +1,5 @@
 'use client';
 
-import { useSubscriptionStore } from '@/stores';
 import {
   Avatar,
   AvatarFallback,
@@ -9,6 +8,7 @@ import {
   Separator,
 } from '@saint-giong/bamboo-ui';
 import { Crown, ExternalLink } from 'lucide-react';
+import { useSubscriptionStore } from '@/stores';
 import { ActivitiesSection, type Activity } from './activities-section';
 import { JobPostsSection } from './job-posts-section';
 import { ProfileSidebar } from './profile-sidebar';

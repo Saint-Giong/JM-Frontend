@@ -1,6 +1,5 @@
 'use client';
 
-import { DEGREE_LABELS } from '@/lib/constants/education';
 import {
   Avatar,
   AvatarFallback,
@@ -22,6 +21,7 @@ import {
   MapPin,
   Star,
 } from 'lucide-react';
+import { DEGREE_LABELS } from '@/lib/constants/education';
 import type { Applicant } from './types';
 
 interface ApplicantDetailSheetProps {

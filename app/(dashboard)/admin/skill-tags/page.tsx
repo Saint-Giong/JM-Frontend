@@ -1,7 +1,5 @@
 'use client';
 
-import type { SkillTag, SkillTagPage } from '@/lib/api/tag';
-import { skillTagApi } from '@/lib/api/tag';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +21,8 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import type { SkillTag, SkillTagPage } from '@/lib/api/tag';
+import { skillTagApi } from '@/lib/api/tag';
 import {
   AdminToolbar,
   type ColumnDef,

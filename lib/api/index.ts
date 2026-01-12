@@ -2,6 +2,12 @@
 
 // Re-export company API from its dedicated location
 export {
+  type Company,
+  type CompanyData,
+  type CompanyDeleteResponse,
+  type CompanyListResponse,
+  type CompanyResponse,
+  type CompanyUpdate,
   companyApi,
   companyDataSchema,
   companySchema,
@@ -10,26 +16,19 @@ export {
   deleteCompany,
   getCompany,
   updateCompany,
-  type Company,
-  type CompanyData,
-  type CompanyDeleteResponse,
-  type CompanyListResponse,
-  type CompanyResponse,
-  type CompanyUpdate,
 } from '@/app/(dashboard)/profile/api';
 // Re-export auth API
 export * from './auth';
 export {
   API_VERSION,
-  DEFAULT_API_BASE_URL,
   apiConfig,
   buildEndpoint,
+  DEFAULT_API_BASE_URL,
   getApiBaseUrl,
   getApiUrl,
 } from './config';
 // Re-export discovery API (Applicant Search) - explicitly to avoid conflicts
 export {
-  discoveryApi,
   type ApplicantDocument,
   type ApplicantListParams,
   type ApplicantPage,
@@ -37,14 +36,15 @@ export {
   type CreateSearchProfileRequest,
   type DegreeType,
   type DiscoveryResponse,
+  discoveryApi,
   type Education,
-  type SearchProfile,
-  type UpdateSearchProfileRequest,
-  type WorkExperience,
   fromEmploymentTypeIndices,
   getApplicantFullName,
   getHighestDegree,
+  type SearchProfile,
   toEmploymentTypeIndices,
+  type UpdateSearchProfileRequest,
+  type WorkExperience,
 } from './discovery';
 // Re-export fetch with auth
 export {

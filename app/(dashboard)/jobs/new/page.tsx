@@ -14,7 +14,6 @@ import {
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 export default function CreateJobPage() {
   const router = useRouter();
@@ -30,7 +29,7 @@ export default function CreateJobPage() {
 
     clearError();
 
-    // Transform form data to API request format (isPublished = true)
+    // Transform form data to API request format
     const request = toCreateRequest(data, companyId, true);
 
     const job = await createJob(request);

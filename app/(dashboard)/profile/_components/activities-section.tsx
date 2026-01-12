@@ -1,12 +1,12 @@
 'use client';
 
+import { Button, Card } from '@saint-giong/bamboo-ui';
+import { Plus } from 'lucide-react';
 import {
   type Activity,
   useActivityList,
 } from '@/components/headless/activity-post';
 import { ActivityCard } from '@/components/profile';
-import { Button, Card } from '@saint-giong/bamboo-ui';
-import { Plus } from 'lucide-react';
 
 export type { Activity } from '@/components/headless/activity-post';
 

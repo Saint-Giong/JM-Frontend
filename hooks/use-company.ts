@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback, useState } from 'react';
 import {
   type Company,
   type CompanyData,
@@ -7,7 +8,6 @@ import {
   companyApi,
 } from '@/lib/api';
 import { HttpError } from '@/lib/http';
-import { useCallback, useState } from 'react';
 
 // Field-level error mapping
 export type FieldErrors = Record<string, string>;

@@ -1,17 +1,17 @@
 'use client';
 
-import { getSubscriptionStatus, createSubscriptionProfile } from '@/lib/api';
+import { useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { createSubscriptionProfile, getSubscriptionStatus } from '@/lib/api';
 import {
-  getSearchProfilesByCompany,
   createSearchProfile,
   deleteSearchProfile,
+  getSearchProfilesByCompany,
 } from '@/lib/api/discovery/discovery.service';
-import { getAllSkillTags } from '@/lib/api/tag/tag.service';
 import type { SearchProfile } from '@/lib/api/discovery/discovery.types';
+import { getAllSkillTags } from '@/lib/api/tag/tag.service';
 import type { SkillTag } from '@/lib/api/tag/tag.types';
 import { useAuthStore, useSubscriptionStore } from '@/stores';
-import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 export interface SearchProfileFormData {
   name: string;
@@ -271,7 +271,7 @@ export function useSubscription() {
       };
 
       // Map education levels to degree type
-      const degreeMap: Record<string, 'BACHELOR' | 'MASTER' | 'DOCTORATE'> = {
+      const _degreeMap: Record<string, 'BACHELOR' | 'MASTER' | 'DOCTORATE'> = {
         Bachelor: 'BACHELOR',
         Master: 'MASTER',
         Doctorate: 'DOCTORATE',

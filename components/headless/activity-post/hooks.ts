@@ -1,7 +1,7 @@
 'use client';
 
-import { formatTimeAgo, toLocalDateTime } from '@/lib/utils';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { formatTimeAgo, toLocalDateTime } from '@/lib/utils';
 import type { Activity, ActivityFormData } from './stores';
 
 export interface UseActivityPostOptions {

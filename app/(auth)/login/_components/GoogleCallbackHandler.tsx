@@ -1,8 +1,8 @@
 'use client';
 
-import { useAuthStore } from '@/stores/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { useAuthStore } from '@/stores/auth';
 
 interface GoogleCallbackHandlerProps {
   onLoading?: (loading: boolean) => void;

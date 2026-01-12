@@ -1,19 +1,19 @@
 'use client';
 
 import {
-  type Company,
-  type CompanyData,
-  type CompanyDeleteResponse,
-  type CompanyUpdate,
-  companyApi,
-} from '@/lib/api';
-import {
   type UseMutationOptions,
   type UseQueryOptions,
   useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
+import {
+  type Company,
+  type CompanyData,
+  type CompanyDeleteResponse,
+  type CompanyUpdate,
+  companyApi,
+} from '@/lib/api';
 
 // Query keys
 export const companyKeys = {
