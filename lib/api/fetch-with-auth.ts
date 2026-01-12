@@ -127,20 +127,15 @@ export async function fetchWithAuth(
     response = await fetch(url, fetchOptions);
   } catch (error) {
     console.error('[Auth] Network error during request:', error);
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('auth:session-expired'));
-    }
+    // Network errors should NOT trigger session expiry - could be temporary connectivity issues
     throw error;
   }
 
-  // Handle server errors (5xx)
+  // Handle server errors (5xx) - log but don't trigger session expiry
+  // Server errors are temporary issues, not authentication failures
   if (response.status >= 500) {
     console.error('[Auth] Server error:', response.status);
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('auth:session-expired'));
-    }
-    // We still return the response so the caller can handle the error state if needed
-    // (though the app should redirect to login shortly)
+    // Return response to let caller handle the error appropriately
     return response;
   }
 
