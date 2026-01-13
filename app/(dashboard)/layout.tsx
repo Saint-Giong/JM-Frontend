@@ -45,7 +45,9 @@ export default function DashboardLayout({
       </div>
       <SidebarInset>
         {/* Main content with bottom padding for mobile nav */}
-        <div className="pb-16 md:pb-0">{children}</div>
+        <div className="relative flex h-full w-full flex-col overflow-hidden pb-16 md:pb-0">
+          {children}
+        </div>
       </SidebarInset>
       {/* Mobile Bottom Navigation */}
       <MobileNav />

@@ -122,50 +122,59 @@ export default function CompanyDetailsPage() {
   }, [fetchCompany, fetchJobs]);
 
   if (isLoading) {
-    return <CompanyDetailsSkeleton />;
+    return (
+      <div className="h-full overflow-auto">
+        <CompanyDetailsSkeleton />
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Button variant="ghost" asChild className="mb-6">
-          <Link href="/companies">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Companies
-          </Link>
-        </Button>
-        <Card className="border-destructive/50 bg-destructive/5">
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Building2 className="mb-4 h-12 w-12 text-destructive/50" />
-            <h3 className="mb-2 font-semibold text-lg">
-              Error Loading Company
-            </h3>
-            <p className="mb-4 text-muted-foreground">{error}</p>
-            <Button onClick={fetchCompany}>Retry</Button>
-          </CardContent>
-        </Card>
+      <div className="h-full overflow-auto">
+        <div className="container mx-auto px-4 py-8">
+          <Button variant="ghost" asChild className="mb-6">
+            <Link href="/companies">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Companies
+            </Link>
+          </Button>
+          <Card className="border-destructive/50 bg-destructive/5">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <Building2 className="mb-4 h-12 w-12 text-destructive/50" />
+              <h3 className="mb-2 font-semibold text-lg">
+                Error Loading Company
+              </h3>
+              <p className="mb-4 text-muted-foreground">{error}</p>
+              <Button onClick={fetchCompany}>Retry</Button>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
 
   if (!company) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Button variant="ghost" asChild className="mb-6">
-          <Link href="/companies">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Companies
-          </Link>
-        </Button>
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Users className="mb-4 h-12 w-12 text-muted-foreground/50" />
-            <h3 className="mb-2 font-semibold text-lg">Company Not Found</h3>
-            <p className="text-muted-foreground">
-              The company you're looking for doesn't exist or has been removed.
-            </p>
-          </CardContent>
-        </Card>
+      <div className="h-full overflow-auto">
+        <div className="container mx-auto px-4 py-8">
+          <Button variant="ghost" asChild className="mb-6">
+            <Link href="/companies">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Companies
+            </Link>
+          </Button>
+          <Card>
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <Users className="mb-4 h-12 w-12 text-muted-foreground/50" />
+              <h3 className="mb-2 font-semibold text-lg">Company Not Found</h3>
+              <p className="text-muted-foreground">
+                The company you're looking for doesn't exist or has been
+                removed.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
