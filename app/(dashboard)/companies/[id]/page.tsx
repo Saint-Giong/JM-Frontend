@@ -176,161 +176,167 @@ export default function CompanyDetailsPage() {
     .join(', ');
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Back Button */}
-      <Button variant="ghost" asChild className="mb-6">
-        <Link href="/companies">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Companies
-        </Link>
-      </Button>
+    <div className="h-full overflow-auto">
+      <div className="container mx-auto px-4 py-8">
+        {/* Back Button */}
+        <Button variant="ghost" asChild className="mb-6">
+          <Link href="/companies">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Companies
+          </Link>
+        </Button>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Company Profile Card */}
-        <div className="lg:col-span-1">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex flex-col items-center text-center">
-                <Avatar className="mb-4 h-24 w-24 border-4 border-primary/10">
-                  {company.logoUrl && (
-                    <AvatarImage src={company.logoUrl} alt={company.name} />
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Company Profile Card */}
+          <div className="lg:col-span-1">
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex flex-col items-center text-center">
+                  <Avatar className="mb-4 h-24 w-24 border-4 border-primary/10">
+                    {company.logoUrl && (
+                      <AvatarImage src={company.logoUrl} alt={company.name} />
+                    )}
+                    <AvatarFallback className="bg-primary/5 font-bold text-2xl text-primary">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <h2 className="mb-1 font-bold text-xl">{company.name}</h2>
+                  {location && (
+                    <p className="flex items-center gap-1.5 text-muted-foreground text-sm">
+                      <MapPin className="h-4 w-4" />
+                      {location}
+                    </p>
                   )}
-                  <AvatarFallback className="bg-primary/5 font-bold text-2xl text-primary">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-                <h2 className="mb-1 font-bold text-xl">{company.name}</h2>
-                {location && (
-                  <p className="flex items-center gap-1.5 text-muted-foreground text-sm">
-                    <MapPin className="h-4 w-4" />
-                    {location}
-                  </p>
-                )}
-              </div>
+                </div>
 
-              {/* Contact Info */}
-              <div className="mt-6 space-y-3">
-                {company.phone && (
-                  <div className="flex items-center gap-3 text-sm">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <span>{company.phone}</span>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Company Details */}
-        <div className="space-y-6 lg:col-span-2">
-          {/* About Section */}
-          {company.aboutUs && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">About Us</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="whitespace-pre-wrap text-muted-foreground">
-                  {company.aboutUs}
-                </p>
+                {/* Contact Info */}
+                <div className="mt-6 space-y-3">
+                  {company.phone && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <Phone className="h-4 w-4 text-muted-foreground" />
+                      <span>{company.phone}</span>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
-          )}
+          </div>
 
-          {/* Who We're Looking For */}
-          {company.admissionDescription && (
+          {/* Company Details */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* About Section */}
+            {company.aboutUs && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">About Us</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="whitespace-pre-wrap text-muted-foreground">
+                    {company.aboutUs}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Who We're Looking For */}
+            {company.admissionDescription && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">
+                    Who We're Looking For
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="whitespace-pre-wrap text-muted-foreground">
+                    {company.admissionDescription}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Quick Stats */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Who We're Looking For</CardTitle>
+                <CardTitle className="text-lg">Company Info</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="whitespace-pre-wrap text-muted-foreground">
-                  {company.admissionDescription}
-                </p>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {company.city && (
+                    <div>
+                      <p className="text-muted-foreground text-sm">City</p>
+                      <p className="font-medium">{company.city}</p>
+                    </div>
+                  )}
+                  {company.country && (
+                    <div>
+                      <p className="text-muted-foreground text-sm">Country</p>
+                      <p className="font-medium">{company.country}</p>
+                    </div>
+                  )}
+                  {company.address && (
+                    <div className="sm:col-span-2">
+                      <p className="text-muted-foreground text-sm">Address</p>
+                      <p className="font-medium">{company.address}</p>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
-          )}
 
-          {/* Quick Stats */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Company Info</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {company.city && (
-                  <div>
-                    <p className="text-muted-foreground text-sm">City</p>
-                    <p className="font-medium">{company.city}</p>
+            {/* Job Posts Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Briefcase className="h-5 w-5" />
+                  Open Positions
+                  {!isLoadingJobs && (
+                    <Badge variant="secondary" className="ml-2">
+                      {jobs.length}
+                    </Badge>
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoadingJobs ? (
+                  <div className="space-y-3">
+                    <Skeleton className="h-16 w-full" />
+                    <Skeleton className="h-16 w-full" />
                   </div>
-                )}
-                {company.country && (
-                  <div>
-                    <p className="text-muted-foreground text-sm">Country</p>
-                    <p className="font-medium">{company.country}</p>
+                ) : jobs.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <Briefcase className="mb-3 h-10 w-10 text-muted-foreground/50" />
+                    <p className="text-muted-foreground">
+                      No open positions at this time
+                    </p>
                   </div>
-                )}
-                {company.address && (
-                  <div className="sm:col-span-2">
-                    <p className="text-muted-foreground text-sm">Address</p>
-                    <p className="font-medium">{company.address}</p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Job Posts Section */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Briefcase className="h-5 w-5" />
-                Open Positions
-                {!isLoadingJobs && (
-                  <Badge variant="secondary" className="ml-2">
-                    {jobs.length}
-                  </Badge>
-                )}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isLoadingJobs ? (
-                <div className="space-y-3">
-                  <Skeleton className="h-16 w-full" />
-                  <Skeleton className="h-16 w-full" />
-                </div>
-              ) : jobs.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <Briefcase className="mb-3 h-10 w-10 text-muted-foreground/50" />
-                  <p className="text-muted-foreground">
-                    No open positions at this time
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {jobs.map((job) => (
-                    <Link
-                      key={job.id}
-                      href={`/jobs/${job.id}`}
-                      className="block rounded-lg border p-4 transition-colors hover:bg-muted/50"
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="min-w-0 flex-1">
-                          <h4 className="truncate font-medium">{job.title}</h4>
-                          <p className="mt-1 text-muted-foreground text-sm">
-                            {job.location} · {job.jobType}
-                          </p>
+                ) : (
+                  <div className="space-y-3">
+                    {jobs.map((job) => (
+                      <Link
+                        key={job.id}
+                        href={`/jobs/${job.id}`}
+                        className="block rounded-lg border p-4 transition-colors hover:bg-muted/50"
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="min-w-0 flex-1">
+                            <h4 className="truncate font-medium">
+                              {job.title}
+                            </h4>
+                            <p className="mt-1 text-muted-foreground text-sm">
+                              {job.location} · {job.jobType}
+                            </p>
+                          </div>
+                          <Badge variant="outline" className="flex-shrink-0">
+                            {job.postedAt}
+                          </Badge>
                         </div>
-                        <Badge variant="outline" className="flex-shrink-0">
-                          {job.postedAt}
-                        </Badge>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>

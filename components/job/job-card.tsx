@@ -13,7 +13,6 @@ import {
   Briefcase,
   Calendar,
   Clock,
-  Eye,
   MapPin,
   MoreVertical,
   Pencil,
