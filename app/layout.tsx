@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${familjenGrotesk.variable} h-screen overflow-hidden font-sans antialiased`}
+        className={`${familjenGrotesk.variable} h-screen overflow-y-auto overflow-x-hidden font-sans antialiased`}
         style={{ fontFamily: 'var(--font-familjen)' }}
       >
         <Analytics />

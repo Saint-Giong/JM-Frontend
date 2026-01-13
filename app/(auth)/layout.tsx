@@ -33,7 +33,7 @@ export default function AuthLayout({
   }
 
   return (
-    <div className="flex h-screen overflow-hidden p-5">
+    <div className="flex h-screen overflow-y-auto overflow-x-hidden p-5">
       {/* image section */}
       <div className="hidden items-center justify-center overflow-hidden rounded-2xl bg-muted lg:flex lg:w-1/2">
         <Image
