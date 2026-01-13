@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { createSubscriptionProfile, getSubscriptionStatus } from '@/lib/api';
+import { createPayment } from '@/lib/api/payment/payment-service';
 import {
   createSearchProfile,
   deleteSearchProfile,
@@ -125,7 +126,19 @@ export function useSubscription() {
       const sessionId = searchParams.get('session_id');
 
       if (success === 'true' && sessionId && companyId) {
-        // Payment successful - create subscription profile in backend
+        // Payment successful - record payment transaction in backend
+        try {
+          await createPayment({
+            companyId,
+            amount: 29, // Premium plan price $29/month
+            currency: 'USD',
+            method: 'VISA',
+          });
+        } catch (error) {
+          console.error('[Payment] Failed to record payment:', error);
+        }
+
+        // Create subscription profile in backend
         try {
           const profile = await createSubscriptionProfile({ companyId });
           // Handle both wrapped and unwrapped responses
