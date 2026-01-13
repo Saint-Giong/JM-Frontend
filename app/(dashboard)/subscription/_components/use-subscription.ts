@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { createSubscriptionProfile, getSubscriptionStatus } from '@/lib/api';
+import { getSubscriptionStatus } from '@/lib/api';
 import {
   createSearchProfile,
   deleteSearchProfile,
@@ -35,15 +35,9 @@ const initialFormData: SearchProfileFormData = {
 };
 
 export function useSubscription() {
-  const {
-    isPremium,
-    setIsPremium,
-    customerId,
-    setCustomerId,
-    setSubscriptionProfileId,
-    hasHydrated,
-  } = useSubscriptionStore();
-  const { companyId, userEmail } = useAuthStore();
+  const { isPremium, setIsPremium, customerId, hasHydrated } =
+    useSubscriptionStore();
+  const { companyId } = useAuthStore();
   const searchParams = useSearchParams();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -123,87 +117,80 @@ export function useSubscription() {
     async function handleCheckoutResult() {
       const success = searchParams.get('success');
       const canceled = searchParams.get('canceled');
-      const sessionId = searchParams.get('session_id');
 
-      if (success === 'true' && sessionId && companyId) {
-        // Payment successful - record payment transaction in backend
-        try {
-          await createPayment({
-            companyId,
-            amount: 29, // Premium plan price $29/month
-            currency: 'USD',
-            method: 'VISA',
-          });
-        } catch (error) {
-          console.error('[Payment] Failed to record payment:', error);
-        }
+      if (success === 'true' && companyId) {
+        // Payment was successful - the backend webhook has already:
+        // 1. Updated the payment status to SUCCESSFUL
+        // 2. Sent Kafka message to subscription service
+        // 3. Subscription service activated the subscription
+        // We just need to refresh the subscription status
+        console.log('[Subscription] Payment successful, refreshing status...');
 
-        // Create subscription profile in backend
         try {
-          const profile = await createSubscriptionProfile({ companyId });
-          // Handle both wrapped and unwrapped responses
-          const subscriptionId =
-            profile.data?.subscriptionId ??
-            (profile as unknown as { id: string }).id;
-          setSubscriptionProfileId(subscriptionId);
-          setIsPremium(true);
+          const response = await getSubscriptionStatus(companyId);
+          const status =
+            response.data?.status ??
+            (response as unknown as { status: string }).status;
+
+          if (status === 'ACTIVE') {
+            setIsPremium(true);
+            console.log('[Subscription] Subscription is now ACTIVE');
+          } else {
+            // Subscription might not be activated yet (webhook delay)
+            // Set optimistically and it will be verified on next page load
+            console.log(
+              '[Subscription] Status is',
+              status,
+              '- setting optimistically'
+            );
+            setIsPremium(true);
+          }
         } catch (error) {
-          console.error('[Subscription] Failed to create profile:', error);
-          // Optimistically set premium anyway as Stripe payment succeeded
+          console.error('[Subscription] Failed to fetch status:', error);
+          // Set optimistically since Stripe payment succeeded
           setIsPremium(true);
         }
       } else if (canceled === 'true') {
         // User canceled checkout
-        console.log('Checkout canceled');
+        console.log('[Subscription] Checkout canceled');
       }
     }
 
     handleCheckoutResult();
-  }, [searchParams, companyId, setIsPremium, setSubscriptionProfileId]);
+  }, [searchParams, companyId, setIsPremium]);
 
   const handleUpgrade = useCallback(async () => {
-    if (!companyId || !userEmail) {
-      console.error('Company ID or email not available');
+    if (!companyId) {
+      console.error('Company ID not available');
       return;
     }
 
     setIsProcessing(true);
 
     try {
-      const response = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          companyId,
-          email: userEmail,
-        }),
+      // Create payment via backend - this creates both the payment record
+      // AND the Stripe checkout session, so the webhook can find the payment
+      const paymentResponse = await createPayment({
+        companyId,
+        amount: 29, // Premium plan price $29/month
+        currency: 'USD',
+        method: 'CREDIT_CARD',
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to create checkout session');
-      }
+      console.log('[Payment] Created payment:', paymentResponse);
 
-      const { url, customerId: newCustomerId } = await response.json();
-
-      if (url) {
-        // Store customer ID if provided
-        if (newCustomerId) {
-          setCustomerId(newCustomerId);
-        }
+      if (paymentResponse.checkoutUrl) {
         // Redirect to Stripe Checkout
-        window.location.href = url;
+        window.location.href = paymentResponse.checkoutUrl;
       } else {
-        throw new Error('No checkout URL received');
+        throw new Error('No checkout URL received from payment service');
       }
     } catch (error) {
-      console.error('Checkout error:', error);
+      console.error('[Payment] Checkout error:', error);
       setIsProcessing(false);
       // You might want to show an error toast here
     }
-  }, [companyId, userEmail, setCustomerId]);
+  }, [companyId]);
 
   const handleManageBilling = useCallback(async () => {
     if (!customerId) {
