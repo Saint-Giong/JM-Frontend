@@ -71,6 +71,7 @@ export interface ApplicantDocument {
   educations: Education[];
   workExperiences: WorkExperience[];
   skillIds: number[];
+  skillNames?: string[];
   createdAt: string;
   updatedAt: string;
 }

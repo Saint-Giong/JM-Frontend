@@ -13,6 +13,7 @@ import type {
 } from '@/components/applicant/types';
 import {
   type ApplicantDocument,
+  type ApplicantPage,
   type ApplicantSearchParams,
   type BackendEmploymentType,
   type DegreeType,
@@ -66,7 +67,7 @@ function toBackendEmploymentType(type: EmploymentType): BackendEmploymentType {
  */
 function toFrontendApplicant(
   doc: ApplicantDocument,
-  skillNames: Map<number, string>
+  skillIdToName: Map<number, string>
 ): Applicant {
   // Get highest degree from education list
   let highestDegree: EducationDegree = 'bachelor';
@@ -83,11 +84,13 @@ function toFrontendApplicant(
     }
   }
 
-  // Convert skills
-  const skillIds = doc.skillIds ?? [];
-  const skills = skillIds
-    .map((id) => skillNames.get(id))
-    .filter((name): name is string => !!name);
+  // Convert skills - use skillNames from API if available, otherwise fallback to mapping skillIds
+  const skills =
+    doc.skillNames ??
+    doc.skillIds
+      ?.map((id) => skillIdToName.get(id))
+      .filter((name): name is string => !!name) ??
+    [];
 
   // Convert education
   const education = educationList.map((edu) => ({
@@ -191,7 +194,7 @@ function toApiSearchParams(
 // ============================================
 
 const DEFAULT_FILTERS: ApplicantSearchFilters = {
-  location: { type: 'country', value: 'Vietnam' },
+  location: undefined,
   education: [],
   workExperience: { type: 'any' },
   employmentTypes: [],
@@ -357,8 +360,31 @@ export function useApplicantSearch(
     setError(null);
 
     try {
-      const params = toApiSearchParams(filters, page, pageSize, skillNameToId);
-      const result = await discoveryApi.searchApplicants(params);
+      // Determine if any filters are active (excluding page/size)
+      const hasActiveFilters = !!(
+        filters.location?.value ||
+        filters.education.length > 0 ||
+        filters.employmentTypes.length > 0 ||
+        filters.skills.length > 0 ||
+        filters.fullTextSearch.trim() ||
+        filters.salaryRange?.min !== undefined ||
+        filters.salaryRange?.max !== undefined
+      );
+
+      let result: ApplicantPage;
+      if (!hasActiveFilters) {
+        // Use the "all" endpoint when no filters are selected
+        result = await discoveryApi.getAllApplicants({ page, size: pageSize });
+      } else {
+        // Use the search endpoint when filters are present
+        const params = toApiSearchParams(
+          filters,
+          page,
+          pageSize,
+          skillNameToId
+        );
+        result = await discoveryApi.searchApplicants(params);
+      }
 
       const frontendApplicants = result.content.map((doc) =>
         toFrontendApplicant(doc, skillIdToName)
@@ -397,12 +423,8 @@ export function useApplicantSearch(
 
   // Load more for lazy loading
   const loadMore = useCallback(() => {
-    if (serverSide) {
-      setPage((prev) => prev + 1);
-    } else {
-      setPage((prev) => prev + 1);
-    }
-  }, [serverSide]);
+    setPage((prev) => prev + 1);
+  }, []);
 
   // Update filters and reset pagination
   const updateFilters = useCallback(
