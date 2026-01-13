@@ -17,9 +17,10 @@ import { useRouter } from 'next/navigation';
 import { resolveSkillNames } from '@/lib/api/tag/tag.utils'; // Added import
 import { useEffect, useMemo, useState } from 'react';
 import { type Job, JobCard } from '@/components/job/job-card';
+import type { JobFormData } from '@/components/job';
 import { useJobList } from '@/hooks/use-job-list';
 import { useJobPost } from '@/hooks/use-jobpost';
-import { toJob } from '@/lib/api/jobpost';
+import { toFormData, toJob, toUpdateRequest } from '@/lib/api/jobpost';
 import { useAuthStore } from '@/stores/auth';
 
 export default function JobsPage() {
@@ -30,6 +31,8 @@ export default function JobsPage() {
     isLoading,
     error,
     fetchJobsByCompany,
+    updateJob,
+    deleteJob,
   } = useJobPost();
 
   // Transform API responses to frontend Job type
@@ -98,8 +101,33 @@ export default function JobsPage() {
     router.push(`/jobs/${job.id}/edit`);
   };
 
-  const handleMenuAction = (action: string, job: Job) => {
+  const handleMenuAction = async (action: string, job: Job) => {
     console.log('Menu action:', action, 'for job:', job.id);
+
+    if (action === 'delete') {
+      if (confirm('Are you sure you want to delete this job post?')) {
+        await deleteJob(job.id);
+      }
+      return;
+    }
+
+    if (action === 'publish') {
+      const jobResponse = jobResponses.find((j) => j.id === job.id);
+      if (!jobResponse || !companyId) return;
+
+      try {
+        const formData = toFormData(jobResponse);
+        const request = toUpdateRequest(
+          formData as JobFormData,
+          companyId,
+          true,
+          jobResponse.skillTagIds
+        );
+        await updateJob(job.id, request);
+      } catch (err) {
+        console.error('Failed to publish job:', err);
+      }
+    }
   };
 
   const handleJobClick = (job: Job) => {

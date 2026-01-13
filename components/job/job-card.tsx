@@ -60,11 +60,6 @@ export function JobCard({
     onClick?.();
   };
 
-  const handleButtonClick = (e: React.MouseEvent, callback: () => void) => {
-    e.stopPropagation();
-    callback();
-  };
-
   const handleDropdownAction = (action: string) => {
     actions.menuAction(action);
   };
@@ -87,10 +82,12 @@ export function JobCard({
             )}
           </div>
         </div>
-        <div className="flex items-center gap-1">
+        <div
+          className="flex items-center gap-1"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             {...getEditButtonProps()}
-            onClick={(e) => handleButtonClick(e, getEditButtonProps().onClick)}
             className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
           >
             <Pencil className="h-4 w-4" />
@@ -100,7 +97,6 @@ export function JobCard({
               <button
                 type="button"
                 aria-label={`More options for ${job.title}`}
-                onClick={(e) => e.stopPropagation()}
                 className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
               >
                 <MoreVertical className="h-4 w-4" />
@@ -110,10 +106,10 @@ export function JobCard({
               align="end"
               onClick={(e) => e.stopPropagation()}
             >
-              <DropdownMenuItem onClick={() => handleDropdownAction('view')}>
+              {/* <DropdownMenuItem onClick={() => handleDropdownAction('view')}>
                 <Eye className="mr-2 h-4 w-4" />
                 View Details
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               {status.value === 'draft' && (
                 <DropdownMenuItem
                   onClick={() => handleDropdownAction('publish')}
