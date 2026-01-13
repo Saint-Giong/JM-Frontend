@@ -1,11 +1,13 @@
 import type { NextResponse } from 'next/server';
 
 // Cookie configuration for the frontend domain
+// Uses SameSite=None to match backend cookie settings (required for cross-origin OAuth flows)
+// Secure=true is required when SameSite=None
 export const COOKIE_OPTIONS = {
   path: '/',
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
+  secure: true,
+  sameSite: 'none' as const,
 };
 
 // Token TTLs (should match backend configuration)
