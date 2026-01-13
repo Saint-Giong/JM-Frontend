@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Form } from '@/components/common/Form';
+import { clearAuthStorage } from '@/stores';
 import { SignupFormActions } from './signup-form-actions';
 import { StepIndicator } from './step-indicator';
 import { StepTitle } from './step-title';
@@ -8,6 +10,11 @@ import { AccountStep, CompanyStep, LocationStep, VerifyStep } from './steps';
 import { useSignupForm } from './useSignupForm';
 
 export default function SignupForm() {
+  // Clear cached auth storage on mount to ensure clean signup state
+  useEffect(() => {
+    clearAuthStorage();
+  }, []);
+
   const {
     form,
     handleSubmit,
