@@ -87,6 +87,7 @@ export interface JobApplication {
   coverLetter?: string;
   submittedAt: string;
   status: ApplicationStatus;
+  isMock?: boolean;
 }
 
 // Form input types

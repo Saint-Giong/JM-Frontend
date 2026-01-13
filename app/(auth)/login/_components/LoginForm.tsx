@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { GoogleSSOButton } from '@/app/(auth)/_components/SSOButton';
 import {
   Form,
@@ -10,6 +10,7 @@ import {
   FormLink,
   FormSubmitButton,
 } from '@/components/common/Form';
+import { clearAuthStorage } from '@/stores';
 import { GoogleCallbackHandler } from './GoogleCallbackHandler';
 import { useLoginForm } from './useLoginForm';
 
@@ -17,6 +18,11 @@ export default function LoginForm() {
   const { form, handleSubmit, isSubmitting, handleGoogleLogin, loginError } =
     useLoginForm();
   const [googleError, setGoogleError] = useState<string | null>(null);
+
+  // Clear cached auth storage on mount to ensure clean login state
+  useEffect(() => {
+    clearAuthStorage();
+  }, []);
 
   const displayError = googleError || loginError;
 

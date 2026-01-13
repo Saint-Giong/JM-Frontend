@@ -1,6 +1,9 @@
 'use client';
 
 import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
   Button,
   Separator,
   Tabs,
@@ -8,14 +11,15 @@ import {
   TabsList,
   TabsTrigger,
 } from '@saint-giong/bamboo-ui';
-import { Loader2 } from 'lucide-react';
+import { Info, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { resolveSkillNames } from '@/lib/api/tag/tag.utils';
 import { useEffect, useMemo, useState } from 'react';
+import type { JobApplication } from '@/components/job/types';
 import { useJobPost } from '@/hooks/use-jobpost';
 import { toJobPost } from '@/lib/api/jobpost';
-import { getApplicationCountsByStatus, getApplicationsForJob } from '@/mocks';
+import { resolveSkillNames } from '@/lib/api/tag/tag.utils';
+import { getApplicationsForJob } from '@/mocks';
 import { JobDetailsContent, JobDetailsHeader } from './_components';
 import { JobApplicationsTab } from './_components/job-applications-tab';
 
@@ -52,12 +56,25 @@ export default function JobDetailsPage() {
     return post;
   }, [currentJob, resolvedSkills]);
 
-  // Get applications (still using mock for now - applications service integration would be separate)
-  const applications = useMemo(() => getApplicationsForJob(jobId), [jobId]);
-  const applicationCounts = useMemo(
-    () => getApplicationCountsByStatus(jobId),
-    [jobId]
-  );
+  // Get applications
+  const mockApplications = useMemo(() => getApplicationsForJob(jobId), [jobId]);
+
+  // TODO: Fetch real applications from API
+  // Currently simulating empty real applications until API is ready
+  const realApplications = useMemo<JobApplication[]>(() => [], []);
+
+  const applications = useMemo(() => {
+    return [...realApplications, ...mockApplications];
+  }, [realApplications, mockApplications]);
+
+  const applicationCounts = useMemo(() => {
+    const all = applications.length;
+    const pending = applications.filter((a) => a.status === 'pending').length;
+    const favorite = applications.filter((a) => a.status === 'favorite').length;
+    const archived = applications.filter((a) => a.status === 'archived').length;
+    const hiring = applications.filter((a) => a.status === 'hiring').length;
+    return { all, pending, favorite, archived, hiring };
+  }, [applications]);
 
   // Loading state
   if (isLoading) {
@@ -140,13 +157,26 @@ export default function JobDetailsPage() {
 
         <TabsContent
           value="applicants"
-          className="flex-1 overflow-hidden data-[state=inactive]:hidden"
+          className="flex-1 flex-col overflow-hidden data-[state=active]:flex data-[state=inactive]:hidden"
         >
-          <JobApplicationsTab
-            jobId={jobId}
-            applications={applications}
-            counts={applicationCounts}
-          />
+          <div className="p-4 pb-0">
+            <Alert className="border-blue-200 bg-blue-50 text-blue-900">
+              <Info className="h-4 w-4 text-blue-900" />
+              <AlertTitle>Demo Data</AlertTitle>
+              <AlertDescription>
+                The job post details above are real, but the applicants listed
+                below are <strong>mock data</strong> generated for demonstration
+                purposes.
+              </AlertDescription>
+            </Alert>
+          </div>
+          <div className="flex-1 overflow-hidden">
+            <JobApplicationsTab
+              jobId={jobId}
+              applications={applications}
+              counts={applicationCounts}
+            />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

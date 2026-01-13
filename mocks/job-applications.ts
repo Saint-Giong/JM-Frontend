@@ -198,6 +198,7 @@ function generateApplications(): JobApplication[] {
         coverLetter,
         submittedAt: `${daysAgo} ${daysAgo === 1 ? 'day' : 'days'} ago`,
         status,
+        isMock: true,
       });
 
       applicationId++;
@@ -209,9 +210,60 @@ function generateApplications(): JobApplication[] {
 
 export const mockJobApplications: JobApplication[] = generateApplications();
 
+// Helper to generate consistent mock applications for any job ID
+function generateMockApplicationsForJob(jobId: string): JobApplication[] {
+  // Simple hash function for consistent random generation
+  const hash = jobId.split('').reduce((acc, char) => {
+    return char.charCodeAt(0) + ((acc << 5) - acc);
+  }, 0);
+
+  // Deterministic count between 5 and 25
+  const count = 5 + (Math.abs(hash) % 21);
+
+  const applications: JobApplication[] = [];
+
+  for (let i = 0; i < count; i++) {
+    // Pick an applicant deterministically based on job hash and index
+    const applicantIndex = (Math.abs(hash) + i * 7) % mockApplicants.length;
+    const applicant = mockApplicants[applicantIndex];
+
+    // Pick status deterministically
+    const statusIndex = (Math.abs(hash) + i) % applicationStatuses.length;
+    const status = applicationStatuses[statusIndex];
+
+    // Pick cover letter deterministically
+    const letterIndex = (Math.abs(hash) + i) % coverLetterTemplates.length;
+    const coverLetter = coverLetterTemplates[letterIndex];
+
+    // Generate submitted date (1-30 days ago)
+    const daysAgo = 1 + ((Math.abs(hash) + i * 3) % 30);
+
+    applications.push({
+      id: `mock-app-${jobId}-${i}`,
+      jobId: jobId,
+      applicant,
+      coverLetter,
+      submittedAt: `${daysAgo} ${daysAgo === 1 ? 'day' : 'days'} ago`,
+      status,
+      isMock: true,
+    });
+  }
+
+  return applications;
+}
+
 // Helper to get applications for a specific job
 export function getApplicationsForJob(jobId: string): JobApplication[] {
-  return mockJobApplications.filter((app) => app.jobId === jobId);
+  // First check if we have static mock applications for this job
+  const staticApps = mockJobApplications.filter((app) => app.jobId === jobId);
+
+  // If we have static apps (for static mock jobs), return them
+  if (staticApps.length > 0) {
+    return staticApps;
+  }
+
+  // Otherwise, generate mock applications for this job ID (for real jobs)
+  return generateMockApplicationsForJob(jobId);
 }
 
 // Helper to get job post by ID
