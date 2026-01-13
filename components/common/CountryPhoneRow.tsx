@@ -4,12 +4,12 @@ import {
   Combobox,
   ComboboxContent,
   ComboboxEmpty,
-  ComboboxGroup,
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
   ComboboxTrigger,
   Label,
+  ScrollArea,
 } from '@saint-giong/bamboo-ui';
 import { forwardRef, useRef } from 'react';
 import {
@@ -97,11 +97,11 @@ export function CountryPhoneRow({
               displayValue={getCountryDisplayValue}
               className="w-full rounded-md border border-muted-foreground/30 bg-transparent px-3 py-2 text-foreground hover:border-foreground focus:border-foreground"
             />
-            <ComboboxContent>
+            <ComboboxContent className="w-[--radix-popover-trigger-width] p-0">
               <ComboboxInput placeholder="Search countries..." />
-              <ComboboxList className="max-h-[300px] overflow-y-auto">
-                <ComboboxEmpty>No country found.</ComboboxEmpty>
-                <ComboboxGroup>
+              <ScrollArea className="h-[300px]">
+                <ComboboxList className="p-0">
+                  <ComboboxEmpty>No country found.</ComboboxEmpty>
                   {countries.map((country) => (
                     <ComboboxItem key={country.name} value={country.name}>
                       <span className="flex w-full items-center gap-2">
@@ -112,8 +112,8 @@ export function CountryPhoneRow({
                       </span>
                     </ComboboxItem>
                   ))}
-                </ComboboxGroup>
-              </ComboboxList>
+                </ComboboxList>
+              </ScrollArea>
             </ComboboxContent>
           </Combobox>
         ) : (
@@ -131,11 +131,11 @@ export function CountryPhoneRow({
                 displayValue={getDialCodeDisplayValue}
                 className="w-[5.5rem] rounded-md border border-muted-foreground/30 bg-transparent px-3 py-2 text-foreground hover:border-foreground focus:border-foreground"
               />
-              <ComboboxContent>
+              <ComboboxContent className="p-0">
                 <ComboboxInput placeholder="Search..." />
-                <ComboboxList className="max-h-[300px] overflow-y-auto">
-                  <ComboboxEmpty>No code found.</ComboboxEmpty>
-                  <ComboboxGroup>
+                <ScrollArea className="h-[300px]">
+                  <ComboboxList className="p-0">
+                    <ComboboxEmpty>No code found.</ComboboxEmpty>
                     {countries.map((country) => (
                       <ComboboxItem key={country.name} value={country.dialCode}>
                         <span className="flex w-full items-center gap-2">
@@ -146,8 +146,8 @@ export function CountryPhoneRow({
                         </span>
                       </ComboboxItem>
                     ))}
-                  </ComboboxGroup>
-                </ComboboxList>
+                  </ComboboxList>
+                </ScrollArea>
               </ComboboxContent>
             </Combobox>
           ) : (

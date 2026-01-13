@@ -4,11 +4,11 @@ import {
   Combobox,
   ComboboxContent,
   ComboboxEmpty,
-  ComboboxGroup,
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
   ComboboxTrigger,
+  ScrollArea,
 } from '@saint-giong/bamboo-ui';
 import { countries } from '@/lib/constants/countries';
 
@@ -30,18 +30,18 @@ export function CountryCombobox({
         placeholder={placeholder}
         displayValue={(v) => v}
       />
-      <ComboboxContent className="w-[--radix-popover-trigger-width]">
+      <ComboboxContent className="w-[--radix-popover-trigger-width] p-0">
         <ComboboxInput placeholder="Search country..." />
-        <ComboboxList className="max-h-[300px] overflow-y-auto">
-          <ComboboxEmpty>No country found.</ComboboxEmpty>
-          <ComboboxGroup>
+        <ScrollArea className="h-[300px]">
+          <ComboboxList className="p-0">
+            <ComboboxEmpty>No country found.</ComboboxEmpty>
             {countries.map((country) => (
               <ComboboxItem key={country.name} value={country.name}>
                 {country.name}
               </ComboboxItem>
             ))}
-          </ComboboxGroup>
-        </ComboboxList>
+          </ComboboxList>
+        </ScrollArea>
       </ComboboxContent>
     </Combobox>
   );
