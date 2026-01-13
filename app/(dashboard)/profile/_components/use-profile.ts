@@ -8,6 +8,9 @@ import { mockActivities } from '@/mocks/activities';
 import { useAuthStore, useProfileStore } from '@/stores';
 import { fromCompany, type ProfileFormData, toCompanyUpdate } from './types';
 
+// Get the fetchCompanyProfile action from auth store (outside of component to avoid subscription)
+const getRefreshAuthProfile = () => useAuthStore.getState().fetchCompanyProfile;
+
 function getInitials(name: string): string {
   if (!name) return 'CO';
   return name
@@ -176,6 +179,11 @@ export function useProfile() {
         setUserEdits({});
         setSaveSuccess(true);
         setEditMode(false);
+
+        // Refresh the auth store's company profile so sidebar updates
+        const refreshAuthProfile = getRefreshAuthProfile();
+        refreshAuthProfile();
+
         setTimeout(() => setSaveSuccess(false), 2000);
       }
     },
