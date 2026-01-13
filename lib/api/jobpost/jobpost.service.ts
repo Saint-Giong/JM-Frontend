@@ -36,7 +36,13 @@ export async function getJobPost(id: string): Promise<JobPostResponse> {
     throw new HttpError(response.status, response.statusText, errorData);
   }
 
-  return response.json();
+  const result = await response.json();
+  console.log('getJobPost API response:', result);
+  // Handle wrapped response (result.data) or direct response
+  const jobData = result.data ?? result;
+  console.log('Extracted job data:', jobData);
+  console.log('skillTagIds in response:', jobData.skillTagIds);
+  return jobData;
 }
 
 /**
@@ -61,7 +67,13 @@ export async function getJobPostsByCompany(
   }
 
   const result = await response.json();
-  return Array.isArray(result) ? result : (result.data ?? []);
+  console.log('getJobPostsByCompany API response:', result);
+  const jobs = Array.isArray(result) ? result : (result.data ?? []);
+  console.log('Extracted jobs array:', jobs);
+  if (jobs.length > 0) {
+    console.log('First job skillTagIds:', jobs[0].skillTagIds);
+  }
+  return jobs;
 }
 
 /**

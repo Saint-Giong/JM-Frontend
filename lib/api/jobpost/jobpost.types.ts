@@ -232,6 +232,8 @@ export function toFrontendSalary(
  * Convert backend response to frontend JobPost type
  */
 export function toJobPost(response: JobPostResponse): JobPost {
+  const skillTagIds = response.skillTagIds ?? [];
+  console.log('toJobPost - skillTagIds:', skillTagIds);
   return {
     id: response.id,
     title: response.title,
@@ -246,8 +248,8 @@ export function toJobPost(response: JobPostResponse): JobPost {
       response.salaryMax
     ),
     location: `${response.city}${response.country ? `, ${response.country}` : ''}`,
-    skills: response.skillTagIds.map((id) => `Skill ${id}`), // Placeholder until resolved
-    skillTagIds: response.skillTagIds,
+    skills: skillTagIds.map((id) => `Skill ${id}`), // Placeholder until resolved
+    skillTagIds: skillTagIds,
     applicantCount: 0, // TODO: Get from applications service
     hasNewApplicants: false,
   };
@@ -262,6 +264,8 @@ export function toJob(response: JobPostResponse): Job {
     response.salaryMin,
     response.salaryMax
   );
+  const skillTagIds = response.skillTagIds ?? [];
+  console.log('toJob - skillTagIds:', skillTagIds);
 
   return {
     id: response.id,
@@ -276,8 +280,8 @@ export function toJob(response: JobPostResponse): Job {
     jobType: response.employmentTypes.map(toFrontendEmploymentType).join(', '),
     salaryMin: salary.type === 'range' ? salary.min : 0,
     salaryMax: salary.type === 'range' ? salary.max : 0,
-    skills: response.skillTagIds.map((id) => `Skill ${id}`),
-    skillTagIds: response.skillTagIds,
+    skills: skillTagIds.map((id) => `Skill ${id}`),
+    skillTagIds: skillTagIds,
   };
 }
 
