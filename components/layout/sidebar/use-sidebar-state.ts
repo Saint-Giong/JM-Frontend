@@ -29,6 +29,8 @@ export function useSidebarState() {
 
   // Get display name from company profile, fallback to "Company"
   const displayName = companyProfile?.name || 'Company';
+  // Get logo URL from company profile
+  const logoUrl = companyProfile?.logoUrl;
   // Get email from auth state
   const displayEmail =
     userEmail || (isAuthenticated ? 'Authenticated' : 'Not signed in');
@@ -54,6 +56,7 @@ export function useSidebarState() {
     displayName,
     userEmail: displayEmail,
     initials,
+    logoUrl,
     handleLogout,
     router,
     unreadCount,

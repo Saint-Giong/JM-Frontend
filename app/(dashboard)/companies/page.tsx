@@ -3,6 +3,7 @@
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
   Badge,
   Button,
   Card,
@@ -48,6 +49,9 @@ function CompanyCard({ company }: CompanyCardProps) {
       <CardHeader className="pb-3">
         <div className="flex items-start gap-4">
           <Avatar className="h-14 w-14 border-2 border-primary/10">
+            {company.logoUrl && (
+              <AvatarImage src={company.logoUrl} alt={company.name} />
+            )}
             <AvatarFallback className="bg-primary/5 font-semibold text-lg text-primary">
               {initials}
             </AvatarFallback>

@@ -1,7 +1,6 @@
 'use client';
 
 import { Badge } from '@saint-giong/bamboo-ui';
-import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { CompanyProfile } from '@/lib/api/profile';
 import { profileApi } from '@/lib/api/profile';
@@ -67,11 +66,10 @@ export default function CompaniesAdminPage() {
       render: (value, row) => (
         <div className="flex items-center gap-2">
           {row.logoUrl && (
-            <Image
+            // biome-ignore lint/performance/noImgElement: Using native img for external URLs that may not be in next.config.ts remotePatterns
+            <img
               src={row.logoUrl}
               alt=""
-              width={24}
-              height={24}
               className="h-6 w-6 rounded object-cover"
             />
           )}

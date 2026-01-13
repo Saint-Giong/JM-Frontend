@@ -7,7 +7,6 @@ import {
   TabsList,
   TabsTrigger,
 } from '@saint-giong/bamboo-ui';
-import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import type { ApplicantDocument, ApplicantPage } from '@/lib/api/discovery';
 import { discoveryApi } from '@/lib/api/discovery';
@@ -77,11 +76,10 @@ export default function DiscoveryAdminPage() {
       render: (value, row) => (
         <div className="flex items-center gap-2">
           {row.avatarUrl && (
-            <Image
+            // biome-ignore lint/performance/noImgElement: Using native img for external URLs that may not be in next.config.ts remotePatterns
+            <img
               src={row.avatarUrl}
               alt=""
-              width={24}
-              height={24}
               className="h-6 w-6 rounded-full object-cover"
             />
           )}

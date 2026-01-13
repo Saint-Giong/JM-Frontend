@@ -32,6 +32,7 @@ export function AppSidebar() {
     displayName,
     userEmail,
     initials,
+    logoUrl,
     handleLogout,
     router,
     unreadCount,
@@ -71,6 +72,7 @@ export function AppSidebar() {
               displayName={displayName}
               userEmail={userEmail}
               initials={initials}
+              logoUrl={logoUrl}
               mounted={mounted}
               router={router}
               onLogout={handleLogout}

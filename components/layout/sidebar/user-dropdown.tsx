@@ -3,6 +3,7 @@
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -17,6 +18,7 @@ interface UserDropdownProps {
   displayName: string;
   userEmail: string;
   initials: string;
+  logoUrl?: string;
   mounted: boolean;
   router: AppRouterInstance;
   onLogout: () => void;
@@ -26,6 +28,7 @@ export function UserDropdown({
   displayName,
   userEmail,
   initials,
+  logoUrl,
   mounted,
   router,
   onLogout,
@@ -33,6 +36,7 @@ export function UserDropdown({
   const userButton = (
     <SidebarMenuButton size="lg" tooltip={displayName}>
       <Avatar className="h-8 w-8">
+        {logoUrl && <AvatarImage src={logoUrl} alt={displayName} />}
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
       <div className="grid flex-1 text-left text-sm leading-tight">
@@ -57,6 +61,7 @@ export function UserDropdown({
           className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
           <Avatar className="h-8 w-8">
+            {logoUrl && <AvatarImage src={logoUrl} alt={displayName} />}
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">

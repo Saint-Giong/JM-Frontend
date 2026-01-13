@@ -3,6 +3,7 @@
 import {
   Avatar,
   AvatarFallback,
+  AvatarImage,
   Button,
   Card,
   CardContent,
@@ -159,6 +160,9 @@ export default function CompanyDetailsPage() {
             <CardContent className="pt-6">
               <div className="flex flex-col items-center text-center">
                 <Avatar className="mb-4 h-24 w-24 border-4 border-primary/10">
+                  {company.logoUrl && (
+                    <AvatarImage src={company.logoUrl} alt={company.name} />
+                  )}
                   <AvatarFallback className="bg-primary/5 font-bold text-2xl text-primary">
                     {initials}
                   </AvatarFallback>
