@@ -10,7 +10,7 @@ import {
   ComboboxList,
   ComboboxTrigger,
 } from '@saint-giong/bamboo-ui';
-import { countries } from '@/mocks/countries';
+import { countries } from '@/lib/constants/countries';
 
 interface CountryComboboxProps {
   value?: string;
@@ -32,7 +32,7 @@ export function CountryCombobox({
       />
       <ComboboxContent className="w-[--radix-popover-trigger-width]">
         <ComboboxInput placeholder="Search country..." />
-        <ComboboxList>
+        <ComboboxList className="max-h-[300px] overflow-y-auto">
           <ComboboxEmpty>No country found.</ComboboxEmpty>
           <ComboboxGroup>
             {countries.map((country) => (

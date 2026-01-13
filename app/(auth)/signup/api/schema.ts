@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { countries } from '@/mocks/countries';
+import { countries } from '@/lib/constants/countries';
 
 const validDialCodes = countries.map((c) => c.dialCode);
 

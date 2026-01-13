@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useStore } from 'zustand';
-import { type Country, countries } from '@/mocks/countries';
+import { type Country, countries } from '@/lib/constants/countries';
 import { type CountryPhoneStore, createCountryPhoneStore } from './stores';
 
 // Types

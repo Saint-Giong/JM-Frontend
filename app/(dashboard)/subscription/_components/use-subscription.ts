@@ -3,13 +3,13 @@
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { createSubscriptionProfile, getSubscriptionStatus } from '@/lib/api';
-import { createPayment } from '@/lib/api/payment/payment-service';
 import {
   createSearchProfile,
   deleteSearchProfile,
   getSearchProfilesByCompany,
 } from '@/lib/api/discovery/discovery.service';
 import type { SearchProfile } from '@/lib/api/discovery/discovery.types';
+import { createPayment } from '@/lib/api/payment/payment-service';
 import { getAllSkillTags } from '@/lib/api/tag/tag.service';
 import type { SkillTag } from '@/lib/api/tag/tag.types';
 import { useAuthStore, useSubscriptionStore } from '@/stores';

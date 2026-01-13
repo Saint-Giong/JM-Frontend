@@ -1,6 +1,6 @@
 export { mockActivities } from './activities';
 export { mockApplicants } from './applicants';
-export { countries } from './countries';
+
 export {
   getApplicationCountsByStatus,
   getApplicationsForJob,

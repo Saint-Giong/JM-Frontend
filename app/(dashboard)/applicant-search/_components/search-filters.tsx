@@ -31,6 +31,7 @@ import {
   EDUCATION_OPTIONS,
   EMPLOYMENT_TYPE_OPTIONS,
 } from '@/components/applicant/types';
+import { CountryCombobox } from '@/components/ui/country-combobox';
 import { SkillCombobox } from '@/components/ui/skill-combobox';
 
 interface SearchFiltersProps {
@@ -48,14 +49,6 @@ interface SearchFiltersProps {
   onSkillsChange: (skills: string[]) => void;
   onSearch: () => void;
 }
-
-const LOCATION_OPTIONS = [
-  { value: 'Vietnam', label: 'Vietnam' },
-  { value: 'United States', label: 'United States' },
-  { value: 'Japan', label: 'Japan' },
-  { value: 'Singapore', label: 'Singapore' },
-  { value: 'Australia', label: 'Australia' },
-];
 
 const CITY_OPTIONS = [
   { value: 'Ho Chi Minh City', label: 'Ho Chi Minh City' },
@@ -276,30 +269,29 @@ export function SearchFilters({
                     </Label>
                   </div>
                 </RadioGroup>
-                <Select
-                  value={location?.value || ''}
-                  onValueChange={handleLocationValueChange}
-                >
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={
-                        location?.type === 'city'
-                          ? 'Select city...'
-                          : 'Select country...'
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(location?.type === 'city'
-                      ? CITY_OPTIONS
-                      : LOCATION_OPTIONS
-                    ).map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {location?.type === 'city' ? (
+                  <Select
+                    value={location?.value || ''}
+                    onValueChange={handleLocationValueChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select city..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CITY_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <CountryCombobox
+                    value={location?.value}
+                    onValueChange={handleLocationValueChange}
+                    placeholder="Select country..."
+                  />
+                )}
               </div>
 
               {/* Education */}

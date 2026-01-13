@@ -14,12 +14,12 @@ import {
 import { Grid, List, Loader2, Plus, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { resolveSkillNames } from '@/lib/api/tag/tag.utils'; // Added import
 import { useEffect, useMemo, useState } from 'react';
 import { type Job, JobCard } from '@/components/job/job-card';
 import { useJobList } from '@/hooks/use-job-list';
 import { useJobPost } from '@/hooks/use-jobpost';
 import { toJob } from '@/lib/api/jobpost';
+import { resolveSkillNames } from '@/lib/api/tag/tag.utils'; // Added import
 import { useAuthStore } from '@/stores/auth';
 
 export default function JobsPage() {

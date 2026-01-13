@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
 import { Github, Globe, Mail } from 'lucide-react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {

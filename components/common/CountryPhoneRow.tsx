@@ -16,7 +16,7 @@ import {
   type UseCountryPhoneOptions,
   useCountryPhone,
 } from '@/components/headless/country-phone';
-import type { Country } from '@/mocks/countries';
+import type { Country } from '@/lib/constants/countries';
 
 const MAX_PHONE_LENGTH = 12;
 
@@ -99,7 +99,7 @@ export function CountryPhoneRow({
             />
             <ComboboxContent>
               <ComboboxInput placeholder="Search countries..." />
-              <ComboboxList>
+              <ComboboxList className="max-h-[300px] overflow-y-auto">
                 <ComboboxEmpty>No country found.</ComboboxEmpty>
                 <ComboboxGroup>
                   {countries.map((country) => (
@@ -133,7 +133,7 @@ export function CountryPhoneRow({
               />
               <ComboboxContent>
                 <ComboboxInput placeholder="Search..." />
-                <ComboboxList>
+                <ComboboxList className="max-h-[300px] overflow-y-auto">
                   <ComboboxEmpty>No code found.</ComboboxEmpty>
                   <ComboboxGroup>
                     {countries.map((country) => (

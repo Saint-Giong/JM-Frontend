@@ -1,8 +1,8 @@
 'use client';
 
+import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { type ReactNode, useState } from 'react';
-import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/headless/button';
 
 interface SSOButtonProps {

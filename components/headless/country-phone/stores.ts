@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import type { Country } from '@/mocks/countries';
+import type { Country } from '@/lib/constants/countries';
 
 export interface CountryPhoneState {
   // State
