@@ -18,7 +18,10 @@ interface JobDetailsHeaderProps {
   isOwner?: boolean;
 }
 
-export function JobDetailsHeader({ job, isOwner = true }: JobDetailsHeaderProps) {
+export function JobDetailsHeader({
+  job,
+  isOwner = true,
+}: JobDetailsHeaderProps) {
   return (
     <header className="flex items-center justify-between border-b px-6 py-4">
       <Breadcrumb>
