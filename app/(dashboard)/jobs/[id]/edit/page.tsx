@@ -10,11 +10,11 @@ import {
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { resolveSkillNames, resolveSkillTags } from '@/lib/api/tag/tag.utils';
 import { useEffect, useMemo, useState } from 'react';
 import { JobForm, type JobFormData } from '@/components/job';
 import { useJobPost } from '@/hooks/use-jobpost';
 import { toFormData, toUpdateRequest } from '@/lib/api/jobpost';
+import { resolveSkillNames, resolveSkillTags } from '@/lib/api/tag/tag.utils';
 import { useAuthStore } from '@/stores/auth';
 
 export default function EditJobPage() {
@@ -33,6 +33,7 @@ export default function EditJobPage() {
   } = useJobPost();
 
   const [resolvedSkills, setResolvedSkills] = useState<string[]>([]);
+  const [areSkillsResolved, setAreSkillsResolved] = useState(false);
 
   // Fetch job data from API
   useEffect(() => {
@@ -43,8 +44,16 @@ export default function EditJobPage() {
 
   // Resolve skill names when job data is loaded
   useEffect(() => {
-    if (currentJob?.skillTagIds?.length) {
-      resolveSkillNames(currentJob.skillTagIds).then(setResolvedSkills);
+    if (!currentJob) return;
+
+    if (currentJob.skillTagIds?.length) {
+      setAreSkillsResolved(false);
+      resolveSkillNames(currentJob.skillTagIds).then((skills) => {
+        setResolvedSkills(skills);
+        setAreSkillsResolved(true);
+      });
+    } else {
+      setAreSkillsResolved(true);
     }
   }, [currentJob]);
 
@@ -98,7 +107,7 @@ export default function EditJobPage() {
   };
 
   // Loading state
-  if (isLoading) {
+  if (isLoading || (currentJob && !areSkillsResolved)) {
     return (
       <div className="flex h-screen flex-col items-center justify-center gap-4">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
