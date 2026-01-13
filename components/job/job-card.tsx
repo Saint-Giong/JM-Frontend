@@ -106,10 +106,10 @@ export function JobCard({
               align="end"
               onClick={(e) => e.stopPropagation()}
             >
-              <DropdownMenuItem onClick={() => handleDropdownAction('view')}>
+              {/* <DropdownMenuItem onClick={() => handleDropdownAction('view')}>
                 <Eye className="mr-2 h-4 w-4" />
                 View Details
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               {status.value === 'draft' && (
                 <DropdownMenuItem
                   onClick={() => handleDropdownAction('publish')}

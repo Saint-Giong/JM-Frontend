@@ -17,9 +17,10 @@ import { useRouter } from 'next/navigation';
 import { resolveSkillNames } from '@/lib/api/tag/tag.utils'; // Added import
 import { useEffect, useMemo, useState } from 'react';
 import { type Job, JobCard } from '@/components/job/job-card';
+import type { JobFormData } from '@/components/job';
 import { useJobList } from '@/hooks/use-job-list';
 import { useJobPost } from '@/hooks/use-jobpost';
-import { toJob } from '@/lib/api/jobpost';
+import { toFormData, toJob, toUpdateRequest } from '@/lib/api/jobpost';
 import { useAuthStore } from '@/stores/auth';
 
 export default function JobsPage() {
