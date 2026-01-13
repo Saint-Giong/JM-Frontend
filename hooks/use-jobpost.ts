@@ -30,6 +30,7 @@ interface UseJobPostReturn extends UseJobPostState {
   createJob: (data: CreateJobPostRequest) => Promise<JobPostResponse | null>;
   updateJob: (id: string, data: UpdateJobPostRequest) => Promise<boolean>;
   deleteJob: (id: string) => Promise<boolean>;
+  publishJob: (job: JobPostResponse) => Promise<boolean>;
 
   // State management
   setJobs: (jobs: JobPostResponse[]) => void;
@@ -309,6 +310,61 @@ export function useJobPost(): UseJobPostReturn {
     [handleError]
   );
 
+  const publishJob = useCallback(
+    async (job: JobPostResponse): Promise<boolean> => {
+      setState((prev) => ({
+        ...prev,
+        isUpdating: true,
+        error: null,
+        fieldErrors: {},
+      }));
+
+      try {
+        // Build update request with isPublished = true
+        const updateRequest: UpdateJobPostRequest = {
+          title: job.title,
+          description: job.description,
+          city: job.city,
+          country: job.country,
+          employmentTypes: job.employmentTypes,
+          skillTagIds: job.skillTagIds,
+          salaryTitle: job.salaryTitle,
+          salaryMin: job.salaryMin ?? undefined,
+          salaryMax: job.salaryMax ?? undefined,
+          expiryDate: job.expiryDate,
+          isPublished: true,
+          companyId: job.companyId,
+        };
+
+        await jobPostApi.update(job.id, updateRequest);
+
+        // Update local state to reflect published status
+        setState((prev) => ({
+          ...prev,
+          jobs: prev.jobs.map((j) =>
+            j.id === job.id ? { ...j, published: true } : j
+          ),
+          currentJob:
+            prev.currentJob?.id === job.id
+              ? { ...prev.currentJob, published: true }
+              : prev.currentJob,
+          isUpdating: false,
+        }));
+        return true;
+      } catch (err) {
+        const { message, fieldErrors } = handleError(err);
+        setState((prev) => ({
+          ...prev,
+          error: message,
+          fieldErrors,
+          isUpdating: false,
+        }));
+        return false;
+      }
+    },
+    [handleError]
+  );
+
   return {
     ...state,
     fetchJobsByCompany,
@@ -316,6 +372,7 @@ export function useJobPost(): UseJobPostReturn {
     createJob,
     updateJob,
     deleteJob,
+    publishJob,
     setJobs,
     setCurrentJob,
     clearError,

@@ -62,7 +62,7 @@ export function ProfileView({
               )}
             </div>
             <p className="text-muted-foreground">
-              {city}, {country}
+              {[city, country].filter(Boolean).join(', ') || 'Location not set'}
             </p>
             {companyId && (
               <p className="font-mono text-muted-foreground text-xs">

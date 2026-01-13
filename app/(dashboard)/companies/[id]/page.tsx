@@ -4,6 +4,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
+  Badge,
   Button,
   Card,
   CardContent,
@@ -11,11 +12,20 @@ import {
   CardTitle,
   Skeleton,
 } from '@saint-giong/bamboo-ui';
-import { ArrowLeft, Building2, MapPin, Phone, Users } from 'lucide-react';
+import {
+  ArrowLeft,
+  Briefcase,
+  Building2,
+  MapPin,
+  Phone,
+  Users,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import type { Job } from '@/components/job';
 import { type Company, companyApi } from '@/lib/api';
+import { jobPostApi, toJob } from '@/lib/api/jobpost';
 
 function getInitials(name: string): string {
   if (!name) return 'CO';
@@ -65,7 +75,9 @@ export default function CompanyDetailsPage() {
   const companyId = params.id as string;
 
   const [company, setCompany] = useState<Company | null>(null);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingJobs, setIsLoadingJobs] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchCompany = useCallback(async () => {
@@ -85,9 +97,29 @@ export default function CompanyDetailsPage() {
     }
   }, [companyId]);
 
+  const fetchJobs = useCallback(async () => {
+    if (!companyId) return;
+
+    setIsLoadingJobs(true);
+    try {
+      const jobResponses = await jobPostApi.getByCompany(companyId);
+      // Filter for published jobs only and transform to frontend Job type
+      const publishedJobs = jobResponses
+        .filter((job) => job.published)
+        .map(toJob);
+      setJobs(publishedJobs);
+    } catch (err) {
+      console.error('Failed to fetch jobs:', err);
+      // Don't set error for jobs - just show empty state
+    } finally {
+      setIsLoadingJobs(false);
+    }
+  }, [companyId]);
+
   useEffect(() => {
     fetchCompany();
-  }, [fetchCompany]);
+    fetchJobs();
+  }, [fetchCompany, fetchJobs]);
 
   if (isLoading) {
     return <CompanyDetailsSkeleton />;
@@ -245,6 +277,58 @@ export default function CompanyDetailsPage() {
                   </div>
                 )}
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Job Posts Section */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Briefcase className="h-5 w-5" />
+                Open Positions
+                {!isLoadingJobs && (
+                  <Badge variant="secondary" className="ml-2">
+                    {jobs.length}
+                  </Badge>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {isLoadingJobs ? (
+                <div className="space-y-3">
+                  <Skeleton className="h-16 w-full" />
+                  <Skeleton className="h-16 w-full" />
+                </div>
+              ) : jobs.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <Briefcase className="mb-3 h-10 w-10 text-muted-foreground/50" />
+                  <p className="text-muted-foreground">
+                    No open positions at this time
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {jobs.map((job) => (
+                    <Link
+                      key={job.id}
+                      href={`/jobs/${job.id}`}
+                      className="block rounded-lg border p-4 transition-colors hover:bg-muted/50"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0 flex-1">
+                          <h4 className="truncate font-medium">{job.title}</h4>
+                          <p className="mt-1 text-muted-foreground text-sm">
+                            {job.location} · {job.jobType}
+                          </p>
+                        </div>
+                        <Badge variant="outline" className="flex-shrink-0">
+                          {job.postedAt}
+                        </Badge>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

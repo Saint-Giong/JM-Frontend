@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useCompany } from '@/hooks';
+import { useJobPost } from '@/hooks/use-jobpost';
+import { toJob } from '@/lib/api/jobpost';
 import { mockActivities } from '@/mocks/activities';
-import { mockJobs } from '@/mocks/jobs';
 import { useAuthStore, useProfileStore } from '@/stores';
 import { fromCompany, type ProfileFormData, toCompanyUpdate } from './types';
 
@@ -43,6 +44,13 @@ export function useProfile() {
     updateCompany,
     clearError,
   } = useCompany();
+
+  // Fetch job posts for the company
+  const {
+    jobs: jobResponses,
+    isLoading: isLoadingJobs,
+    fetchJobsByCompany,
+  } = useJobPost();
 
   // Use Zustand store for shared edit mode state
   const isEditMode = useProfileStore((state) => state.isEditMode);
@@ -89,8 +97,9 @@ export function useProfile() {
   useEffect(() => {
     if (companyId) {
       fetchCompany(companyId);
+      fetchJobsByCompany(companyId);
     }
-  }, [companyId, fetchCompany]);
+  }, [companyId, fetchCompany, fetchJobsByCompany]);
 
   const city = formData.city || '';
   const country = formData.country || '';
@@ -199,6 +208,11 @@ export function useProfile() {
     }
   }, [company?.id, companyId, fetchCompany]);
 
+  // Transform job responses to frontend Job type and filter for published
+  const jobPosts = useMemo(() => {
+    return jobResponses.filter((job) => job.published).map(toJob);
+  }, [jobResponses]);
+
   const sortedActivities = [...mockActivities].sort((a, b) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
@@ -206,7 +220,7 @@ export function useProfile() {
   return {
     // View state
     isEditMode,
-    isLoading,
+    isLoading: isLoading || isLoadingJobs,
     isSaving,
     saveSuccess,
     error: apiError,
@@ -221,7 +235,7 @@ export function useProfile() {
     country,
     displayName,
     initials,
-    jobPosts: mockJobs.filter((job) => job.status === 'published'),
+    jobPosts,
     activities: sortedActivities,
 
     // Actions

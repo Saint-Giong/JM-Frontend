@@ -30,6 +30,7 @@ export default function JobsPage() {
     isLoading,
     error,
     fetchJobsByCompany,
+    publishJob,
   } = useJobPost();
 
   // Transform API responses to frontend Job type
@@ -98,8 +99,18 @@ export default function JobsPage() {
     router.push(`/jobs/${job.id}/edit`);
   };
 
-  const handleMenuAction = (action: string, job: Job) => {
-    console.log('Menu action:', action, 'for job:', job.id);
+  const handleMenuAction = async (action: string, job: Job) => {
+    if (action === 'publish') {
+      // Find the corresponding JobPostResponse
+      const jobResponse = jobResponses.find((j) => j.id === job.id);
+      if (jobResponse) {
+        const success = await publishJob(jobResponse);
+        if (success && companyId) {
+          // Refetch to get updated data
+          fetchJobsByCompany(companyId);
+        }
+      }
+    }
   };
 
   const handleJobClick = (job: Job) => {
