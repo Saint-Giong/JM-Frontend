@@ -1,4 +1,4 @@
-import { buildEndpoint } from '@/lib/api';
+import { buildEndpoint, fetchWithAuth } from '@/lib/api';
 import { HttpError } from '@/lib/http';
 import type {
   Company,
@@ -32,12 +32,11 @@ export async function createCompany(data: CompanyData): Promise<Company> {
 
   console.log('[Company API] Creating company:', { url, data: cleanedData });
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
     body: JSON.stringify(cleanedData),
   });
 
@@ -62,12 +61,11 @@ export async function createCompany(data: CompanyData): Promise<Company> {
 export async function getCompany(id: string): Promise<Company> {
   const url = buildEndpoint(`${COMPANY_ENDPOINT}/${id}`);
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -85,12 +83,11 @@ export async function getCompany(id: string): Promise<Company> {
 export async function getAllCompanies(): Promise<Company[]> {
   const url = buildEndpoint(`${COMPANY_ENDPOINT}/profiles`);
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
   });
 
   if (!response.ok) {
@@ -125,12 +122,11 @@ export async function updateCompany(
     data: cleanedData,
   });
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
     body: JSON.stringify(cleanedData),
   });
 
@@ -161,12 +157,11 @@ export async function deleteCompany(
 ): Promise<CompanyDeleteResponse> {
   const url = buildEndpoint(`${COMPANY_ENDPOINT}/${id}`);
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
-    credentials: 'include',
   });
 
   if (!response.ok) {
