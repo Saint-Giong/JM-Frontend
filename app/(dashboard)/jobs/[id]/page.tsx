@@ -165,8 +165,7 @@ export default function JobDetailsPage() {
               <AlertTitle>Demo Data</AlertTitle>
               <AlertDescription>
                 The job post details above are real, but the applicants listed
-                below are <strong>mock data</strong> generated for demonstration
-                purposes.
+                below are mock data generated for demonstration purposes.
               </AlertDescription>
             </Alert>
           </div>

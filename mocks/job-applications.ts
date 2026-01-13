@@ -189,7 +189,8 @@ function generateApplications(): JobApplication[] {
       const status =
         applicationStatuses[(applicationId + i) % applicationStatuses.length];
       const coverLetter = coverLetterTemplates[i % coverLetterTemplates.length];
-      const daysAgo = Math.floor(Math.random() * 14) + 1;
+      // Use deterministic math instead of random to prevent hydration mismatches
+      const daysAgo = (i % 14) + 1;
 
       applications.push({
         id: `app-${applicationId}`,
