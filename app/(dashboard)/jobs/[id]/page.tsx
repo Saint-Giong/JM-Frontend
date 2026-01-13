@@ -160,8 +160,8 @@ export default function JobDetailsPage() {
           className="flex-1 flex-col overflow-hidden data-[state=active]:flex data-[state=inactive]:hidden"
         >
           <div className="p-4 pb-0">
-            <Alert className="border-blue-200 bg-blue-50 text-blue-900">
-              <Info className="h-4 w-4 text-blue-900" />
+            <Alert className="border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-200">
+              <Info className="h-4 w-4 text-blue-900 dark:text-blue-200" />
               <AlertTitle>Demo Data</AlertTitle>
               <AlertDescription>
                 The job post details above are real, but the applicants listed
