@@ -2,6 +2,7 @@
 
 import { Button } from '@saint-giong/bamboo-ui';
 import { ChevronRight, Plus } from 'lucide-react';
+import Link from 'next/link';
 import { JobCard } from '@/components/job';
 import type { Job } from './types';
 
@@ -25,10 +26,12 @@ export function JobPostsSection({ jobPosts }: JobPostsSectionProps) {
           </h3>
           <ChevronRight className="h-5 w-5" />
         </button>
-        <Button size="sm" className="gap-2">
-          <Plus className="h-4 w-4" />
-          Add Job
-        </Button>
+        <Link href="/jobs/new">
+          <Button size="sm" className="gap-2">
+            <Plus className="h-4 w-4" />
+            Add Job
+          </Button>
+        </Link>
       </div>
       <div className="relative">
         <div className="scrollbar-hide grid grid-cols-1 gap-4 overflow-x-auto sm:grid-cols-2 lg:grid-cols-3">

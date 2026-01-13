@@ -83,6 +83,14 @@ export function ApplicationCard({
             <div className="mb-2 flex items-start justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="font-semibold text-base">{fullName}</h3>
+                {application.isMock && (
+                  <Badge
+                    variant="outline"
+                    className="border-blue-200 bg-blue-50 text-blue-700 text-xs"
+                  >
+                    Demo
+                  </Badge>
+                )}
                 <Badge
                   variant="outline"
                   className={`text-xs ${STATUS_BADGE_STYLES[status]}`}
