@@ -261,20 +261,16 @@ export function useSubscription() {
     setIsSaving(true);
 
     try {
-      // Map employment types to BitSet indices
-      const employmentTypeMap: Record<string, number> = {
-        'Full-time': 0,
-        'Part-time': 1,
-        Fresher: 2,
-        Internship: 3,
-        Contract: 4,
-      };
-
-      // Map education levels to degree type
-      const _degreeMap: Record<string, 'BACHELOR' | 'MASTER' | 'DOCTORATE'> = {
-        Bachelor: 'BACHELOR',
-        Master: 'MASTER',
-        Doctorate: 'DOCTORATE',
+      // Map to enum
+      const employmentTypeMap: Record<
+        string,
+        'FULL_TIME' | 'PART_TIME' | 'FRESHER' | 'INTERNSHIP' | 'CONTRACT'
+      > = {
+        'Full-time': 'FULL_TIME',
+        'Part-time': 'PART_TIME',
+        Fresher: 'FRESHER',
+        Internship: 'INTERNSHIP',
+        Contract: 'CONTRACT',
       };
 
       // Get highest degree from selected education
@@ -291,11 +287,11 @@ export function useSubscription() {
         salaryMin: formData.minSalary ? Number(formData.minSalary) : null,
         salaryMax: formData.maxSalary ? Number(formData.maxSalary) : null,
         highestDegree,
-        employmentType: formData.employmentTypes
+        employmentTypes: formData.employmentTypes
           .map((type) => employmentTypeMap[type])
-          .filter((idx) => idx !== undefined),
+          .filter((val) => val !== undefined),
         country: formData.country || null,
-        skillTags: formData.skillIds,
+        skillTagIds: formData.skillIds,
       });
 
       setSearchProfiles((prev) => [...prev, newProfile]);

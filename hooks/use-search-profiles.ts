@@ -12,9 +12,7 @@ import {
   type CreateSearchProfileRequest,
   type DegreeType,
   discoveryApi,
-  fromEmploymentTypeIndices,
   type SearchProfile,
-  toEmploymentTypeIndices,
   type UpdateSearchProfileRequest,
 } from '@/lib/api/discovery';
 
@@ -83,13 +81,14 @@ function toFrontendSearchProfile(
   skillTagNames: Map<number, string>
 ): ApplicantSearchProfile {
   // Convert skill IDs to names
-  const skills = profile.skillTags
+  const skills = (profile.skillTagIds ?? [])
     .map((id) => skillTagNames.get(id))
     .filter((name): name is string => !!name);
 
-  // Convert employment type indices to frontend types
-  const backendTypes = fromEmploymentTypeIndices(profile.employmentType);
-  const employmentTypes = backendTypes.map(fromBackendEmploymentType);
+  // Convert backend employment type strings to frontend types
+  const employmentTypes = (profile.employmentTypes ?? []).map(
+    fromBackendEmploymentType
+  );
 
   // Convert education
   const education: EducationDegree[] = profile.highestDegree
@@ -124,13 +123,14 @@ function toBackendCreateRequest(
   skillNameToId: Map<string, number>
 ): CreateSearchProfileRequest {
   // Convert skill names to IDs
-  const skillTags = profileData.skills
+  const skillTagIds = profileData.skills
     .map((name) => skillNameToId.get(name.toLowerCase()))
     .filter((id): id is number => id !== undefined);
 
-  // Convert employment types to indices
-  const backendTypes = profileData.employmentTypes.map(toBackendEmploymentType);
-  const employmentType = toEmploymentTypeIndices(backendTypes);
+  // Convert employment types to backend enum strings
+  const employmentTypes = profileData.employmentTypes.map(
+    toBackendEmploymentType
+  );
 
   // Get highest degree
   const highestDegree =
@@ -140,8 +140,8 @@ function toBackendCreateRequest(
 
   return {
     companyId,
-    skillTags,
-    employmentType,
+    skillTagIds,
+    employmentTypes,
     highestDegree,
     country: profileData.country ?? null,
     salaryMin: profileData.salaryRange?.min ?? null,
@@ -301,10 +301,10 @@ export function useSearchProfiles(
         }
 
         if (updates.employmentTypes !== undefined) {
-          const backendTypes = updates.employmentTypes.map(
+          // Convert to enum
+          updateRequest.employmentTypes = updates.employmentTypes.map(
             toBackendEmploymentType
           );
-          updateRequest.employmentType = toEmploymentTypeIndices(backendTypes);
         }
 
         if (updates.country !== undefined) {
@@ -312,9 +312,9 @@ export function useSearchProfiles(
         }
 
         if (updates.skills !== undefined) {
-          updateRequest.skillTags = updates.skills
+          updateRequest.skillTagIds = updates.skills
             .map((name) => skillNameToId.get(name.toLowerCase()))
-            .filter((id): id is number => id !== undefined);
+            .filter((skillId): skillId is number => skillId !== undefined);
         }
 
         const updated = await discoveryApi.updateSearchProfile(

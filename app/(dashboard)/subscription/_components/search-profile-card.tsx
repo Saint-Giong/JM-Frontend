@@ -23,12 +23,12 @@ import Link from 'next/link';
 import type { SearchProfile } from '@/lib/api/discovery/discovery.types';
 
 // Employment type index to label mapping
-const EMPLOYMENT_TYPE_LABELS: Record<number, string> = {
-  0: 'Full-time',
-  1: 'Part-time',
-  2: 'Fresher',
-  3: 'Internship',
-  4: 'Contract',
+const EMPLOYMENT_TYPE_LABELS: Record<string, string> = {
+  FULL_TIME: 'Full-time',
+  PART_TIME: 'Part-time',
+  FRESHER: 'Fresher',
+  INTERNSHIP: 'Internship',
+  CONTRACT: 'Contract',
 };
 
 // Degree type to label mapping
@@ -47,9 +47,8 @@ export function SearchProfileCard({
   profile,
   onDelete,
 }: SearchProfileCardProps) {
-  // Convert employment type indices to labels
-  const employmentLabels = profile.employmentType
-    .map((idx) => EMPLOYMENT_TYPE_LABELS[idx])
+  const employmentLabels = (profile.employmentTypes ?? [])
+    .map((type) => EMPLOYMENT_TYPE_LABELS[type])
     .filter(Boolean);
 
   // Get degree label
@@ -68,7 +67,7 @@ export function SearchProfileCard({
             <CardDescription className="mt-1 flex items-center gap-1.5">
               <Bell className="h-3.5 w-3.5" />
               <span className="font-medium text-primary">
-                {profile.skillTags.length}
+                {(profile.skillTagIds ?? []).length}
               </span>{' '}
               skill filters configured
             </CardDescription>
@@ -93,11 +92,11 @@ export function SearchProfileCard({
       </CardHeader>
       <CardContent className="space-y-3">
         {/* Skill Tags Count */}
-        {profile.skillTags.length > 0 && (
+        {(profile.skillTagIds ?? []).length > 0 && (
           <div className="flex flex-wrap gap-1">
             <Badge variant="secondary" className="text-xs">
-              {profile.skillTags.length} skill
-              {profile.skillTags.length !== 1 ? 's' : ''} selected
+              {profile.skillTagIds.length} skill
+              {profile.skillTagIds.length !== 1 ? 's' : ''} selected
             </Badge>
           </div>
         )}

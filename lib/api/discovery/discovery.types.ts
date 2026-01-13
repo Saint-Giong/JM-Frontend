@@ -123,10 +123,10 @@ export interface SearchProfile {
   salaryMin: number | null;
   salaryMax: number | null;
   highestDegree: DegreeType | null;
-  employmentType: number[]; // BitSet indices
+  employmentTypes: BackendEmploymentType[];
   country: string | null;
   companyId: string;
-  skillTags: number[]; // skill tag IDs
+  skillTagIds: number[];
   createdAt?: string;
   updatedAt?: string;
 }
@@ -138,10 +138,10 @@ export interface CreateSearchProfileRequest {
   salaryMin?: number | null;
   salaryMax?: number | null;
   highestDegree?: DegreeType | null;
-  employmentType?: number[];
+  employmentTypes?: BackendEmploymentType[];
   country?: string | null;
   companyId: string;
-  skillTags?: number[];
+  skillTagIds?: number[];
 }
 
 /**
@@ -151,9 +151,10 @@ export interface UpdateSearchProfileRequest {
   salaryMin?: number | null;
   salaryMax?: number | null;
   highestDegree?: DegreeType | null;
-  employmentType?: number[];
+  employmentTypes?: BackendEmploymentType[];
   country?: string | null;
-  skillTags?: number[];
+  companyId?: string;
+  skillTagIds?: number[];
 }
 
 /**
