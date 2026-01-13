@@ -118,7 +118,7 @@ export default function DiscoveryAdminPage() {
       },
     },
     {
-      key: 'educationList',
+      key: 'educations',
       header: 'Education',
       render: (value) => {
         const education = value as { degree?: string }[] | undefined;
@@ -136,7 +136,7 @@ export default function DiscoveryAdminPage() {
       },
     },
     {
-      key: 'workExperienceList',
+      key: 'workExperiences',
       header: 'Experience',
       render: (value) => {
         const experience = value as unknown[] | undefined;

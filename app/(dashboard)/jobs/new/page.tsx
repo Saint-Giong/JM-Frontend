@@ -34,10 +34,13 @@ export default function CreateJobPage() {
     try {
       // Resolve skill names to IDs
       const skillTagIds = await resolveSkillTags(data.skills);
+      console.log('Resolved skill IDs for creation:', skillTagIds);
 
       // Transform form data to API request format (isPublished = true)
       const request = toCreateRequest(data, companyId, true);
       request.skillTagIds = skillTagIds;
+
+      console.log('Sending Create Job Request:', request);
 
       const job = await createJob(request);
 
@@ -62,10 +65,13 @@ export default function CreateJobPage() {
     try {
       // Resolve skill names to IDs
       const skillTagIds = await resolveSkillTags(data.skills);
+      console.log('Resolved skill IDs for draft:', skillTagIds);
 
       // Transform form data to API request format (isPublished = false for draft)
       const request = toCreateRequest(data, companyId, false);
       request.skillTagIds = skillTagIds;
+
+      console.log('Sending Create Draft Request:', request);
 
       const job = await createJob(request);
 

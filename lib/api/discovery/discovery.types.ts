@@ -68,8 +68,8 @@ export interface ApplicantDocument {
   biography: string;
   avatarUrl: string;
   country: string;
-  educationList: Education[];
-  workExperienceList: WorkExperience[];
+  educations: Education[];
+  workExperiences: WorkExperience[];
   skillIds: number[];
   createdAt: string;
   updatedAt: string;

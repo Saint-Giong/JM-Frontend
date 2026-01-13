@@ -73,7 +73,9 @@ function toFrontendApplicant(
   const degreeOrder: DegreeType[] = ['BACHELOR', 'MASTER', 'DOCTORATE'];
   let highestIndex = -1;
 
-  for (const edu of doc.educationList) {
+  // Add null check for educations
+  const educationList = doc.educations ?? [];
+  for (const edu of educationList) {
     const index = degreeOrder.indexOf(edu.degree);
     if (index > highestIndex) {
       highestIndex = index;
@@ -82,12 +84,13 @@ function toFrontendApplicant(
   }
 
   // Convert skills
-  const skills = doc.skillIds
+  const skillIds = doc.skillIds ?? [];
+  const skills = skillIds
     .map((id) => skillNames.get(id))
     .filter((name): name is string => !!name);
 
   // Convert education
-  const education = doc.educationList.map((edu) => ({
+  const education = educationList.map((edu) => ({
     degree: fromBackendDegree(edu.degree),
     field: edu.description,
     institution: edu.institutionName,
@@ -95,7 +98,8 @@ function toFrontendApplicant(
   }));
 
   // Convert work experience
-  const workExperience = doc.workExperienceList.map((exp) => ({
+  const workExperienceList = doc.workExperiences ?? [];
+  const workExperience = workExperienceList.map((exp) => ({
     title: exp.position,
     company: exp.companyName,
     startDate: exp.startDate,
