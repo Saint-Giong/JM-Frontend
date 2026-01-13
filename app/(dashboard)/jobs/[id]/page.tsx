@@ -13,21 +13,24 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { Info, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import type { JobApplication } from '@/components/job/types';
 import { useJobPost } from '@/hooks/use-jobpost';
 import { toJobPost } from '@/lib/api/jobpost';
 import { resolveSkillNames } from '@/lib/api/tag/tag.utils';
-import { getApplicationsForJob } from '@/mocks';
+import { getApplicationCountsByStatus, getApplicationsForJob } from '@/mocks';
+import { useAuthStore } from '@/stores/auth';
 import { JobDetailsContent, JobDetailsHeader } from './_components';
 import { JobApplicationsTab } from './_components/job-applications-tab';
 
 export default function JobDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const jobId = params.id as string;
   const [activeTab, setActiveTab] = useState('job-post');
   const { currentJob, isLoading, error, fetchJob } = useJobPost();
+  const { companyId } = useAuthStore();
 
   const [resolvedSkills, setResolvedSkills] = useState<string[]>([]);
 
@@ -36,6 +39,97 @@ export default function JobDetailsPage() {
     if (jobId) {
       fetchJob(jobId);
     }
+  }, [jobId, fetchJob]);
+
+  // Check ownership
+  useEffect(() => {
+    // Wait until both currentJob and companyId are available to avoid premature redirect
+    if (
+      !isLoading &&
+      currentJob &&
+      companyId &&
+      currentJob.companyId !== companyId
+    ) {
+      // Redirect to jobs list if trying to access another company's job
+      router.replace('/jobs');
+    }
+  }, [currentJob, companyId, router, isLoading]);
+
+  // Resolve skill names when job data is loaded
+  useEffect(() => {
+    if (currentJob?.skillTagIds?.length) {
+      resolveSkillNames(currentJob.skillTagIds).then(setResolvedSkills);
+    }
+  }, [currentJob]);
+
+  // Transform API response to frontend JobPost type
+  const jobPost = useMemo(() => {
+    if (!currentJob) return null;
+    const post = toJobPost(currentJob);
+    // Override skills with resolved names if available
+    if (resolvedSkills.length > 0) {
+      post.skills = resolvedSkills;
+    }
+    return post;
+  }, [currentJob, resolvedSkills]);
+
+  // Get applications
+  const mockApplications = useMemo(() => getApplicationsForJob(jobId), [jobId]);
+
+  // TODO: Fetch real applications from API
+  // Currently simulating empty real applications until API is ready
+  const realApplications = useMemo<JobApplication[]>(() => [], []);
+
+  const applications = useMemo(() => {
+    return [...realApplications, ...mockApplications];
+  }, [realApplications, mockApplications]);
+
+  const applicationCounts = useMemo(() => {
+    const all = applications.length;
+    const pending = applications.filter((a) => a.status === 'pending').length;
+    const favorite = applications.filter((a) => a.status === 'favorite').length;
+    const archived = applications.filter((a) => a.status === 'archived').length;
+    const hiring = applications.filter((a) => a.status === 'hiring').length;
+    return { all, pending, favorite, archived, hiring };
+  }, [applications]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <p className="text-muted-foreground">Loading job details...</p>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <h1 className="font-semibold text-2xl">Error loading job</h1>
+        <p className="text-muted-foreground">{error}</p>
+        <Link href="/jobs">
+          <Button>Back to Jobs</Button>
+        </Link>
+      </div>
+    );
+  }
+
+  // Not found state or unauthorized (will redirect)
+  if (!jobPost || (companyId && currentJob?.companyId !== companyId)) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <h1 className="font-semibold text-2xl">Job not found</h1>
+        <p className="text-muted-foreground">
+          The job post you&apos;re looking for doesn&apos;t exist.
+        </p>
+        <Link href="/jobs">
+          <Button>Back to Jobs</Button>
+        </Link>
+      </div>
+    );
+  }
   }, [jobId, fetchJob]);
 
   // Resolve skill names when job data is loaded
