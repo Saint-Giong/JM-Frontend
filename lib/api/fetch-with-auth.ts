@@ -9,6 +9,17 @@
 
 import { buildEndpoint } from './config';
 
+/**
+ * Helper to get cookie value
+ */
+const getCookie = (name: string) => {
+  if (typeof document === 'undefined') return null;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift();
+  return null;
+};
+
 // Track if a refresh is in progress to avoid multiple simultaneous refreshes
 let isRefreshing = false;
 let refreshPromise: Promise<RefreshResult> | null = null;
@@ -121,6 +132,17 @@ export async function fetchWithAuth(
     credentials: 'include',
   };
 
+  // Attempt to extract ACCESS_TOKEN from cookies and add Authorization header
+  const accessToken = getCookie('ACCESS_TOKEN');
+  if (accessToken) {
+    const headers = new Headers(fetchOptions.headers);
+    // Only set if not already present
+    if (!headers.has('Authorization')) {
+      headers.set('Authorization', `Bearer ${accessToken}`);
+      fetchOptions.headers = headers;
+    }
+  }
+
   // First attempt
   let response: Response;
   try {
@@ -162,6 +184,14 @@ export async function fetchWithAuth(
 
       // Retry the original request
       try {
+        // Update Authorization header with new token if available
+        const newAccessToken = getCookie('ACCESS_TOKEN');
+        if (newAccessToken) {
+          const headers = new Headers(fetchOptions.headers);
+          headers.set('Authorization', `Bearer ${newAccessToken}`);
+          fetchOptions.headers = headers;
+        }
+
         response = await fetch(url, fetchOptions);
       } catch (error) {
         // Handle network error on retry
