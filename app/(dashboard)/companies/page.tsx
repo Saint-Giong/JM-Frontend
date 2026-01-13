@@ -152,84 +152,86 @@ export default function CompaniesPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-8 flex flex-col gap-4">
-        <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-primary/10 p-2">
-            <Building2 className="h-6 w-6 text-primary" />
+    <div className="h-full overflow-auto">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8 flex flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <div className="rounded-lg bg-primary/10 p-2">
+              <Building2 className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="font-bold text-2xl">Companies</h1>
+              <p className="text-muted-foreground">
+                Browse all registered companies
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-bold text-2xl">Companies</h1>
-            <p className="text-muted-foreground">
-              Browse all registered companies
-            </p>
+
+          {/* Search Bar */}
+          <div className="relative max-w-md">
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search companies..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
           </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="relative max-w-md">
-          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search companies..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-      </div>
+        {/* Error State */}
+        {error && (
+          <Card className="mb-6 border-destructive/50 bg-destructive/5">
+            <CardContent className="flex items-center justify-between py-4">
+              <p className="text-destructive">{error}</p>
+              <Button variant="outline" size="sm" onClick={fetchCompanies}>
+                Retry
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
-      {/* Error State */}
-      {error && (
-        <Card className="mb-6 border-destructive/50 bg-destructive/5">
-          <CardContent className="flex items-center justify-between py-4">
-            <p className="text-destructive">{error}</p>
-            <Button variant="outline" size="sm" onClick={fetchCompanies}>
-              Retry
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Loading State */}
-      {isLoading && (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <CompanyCardSkeleton key={i} />
-          ))}
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!isLoading && !error && filteredCompanies.length === 0 && (
-        <Card className="py-12">
-          <CardContent className="flex flex-col items-center text-center">
-            <Users className="mb-4 h-12 w-12 text-muted-foreground/50" />
-            <h3 className="mb-2 font-semibold text-lg">
-              {searchQuery ? 'No companies found' : 'No companies yet'}
-            </h3>
-            <p className="max-w-sm text-muted-foreground">
-              {searchQuery
-                ? 'Try adjusting your search terms'
-                : 'Companies will appear here once registered'}
-            </p>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Companies Grid */}
-      {!isLoading && !error && filteredCompanies.length > 0 && (
-        <>
-          <p className="mb-4 text-muted-foreground text-sm">
-            Showing {filteredCompanies.length} of {companies.length} companies
-          </p>
+        {/* Loading State */}
+        {isLoading && (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredCompanies.map((company) => (
-              <CompanyCard key={company.id} company={company} />
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CompanyCardSkeleton key={i} />
             ))}
           </div>
-        </>
-      )}
+        )}
+
+        {/* Empty State */}
+        {!isLoading && !error && filteredCompanies.length === 0 && (
+          <Card className="py-12">
+            <CardContent className="flex flex-col items-center text-center">
+              <Users className="mb-4 h-12 w-12 text-muted-foreground/50" />
+              <h3 className="mb-2 font-semibold text-lg">
+                {searchQuery ? 'No companies found' : 'No companies yet'}
+              </h3>
+              <p className="max-w-sm text-muted-foreground">
+                {searchQuery
+                  ? 'Try adjusting your search terms'
+                  : 'Companies will appear here once registered'}
+              </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Companies Grid */}
+        {!isLoading && !error && filteredCompanies.length > 0 && (
+          <>
+            <p className="mb-4 text-muted-foreground text-sm">
+              Showing {filteredCompanies.length} of {companies.length} companies
+            </p>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {filteredCompanies.map((company) => (
+                <CompanyCard key={company.id} company={company} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
