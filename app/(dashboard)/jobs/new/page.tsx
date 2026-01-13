@@ -37,8 +37,7 @@ export default function CreateJobPage() {
       console.log('Resolved skill IDs for creation:', skillTagIds);
 
       // Transform form data to API request format (isPublished = true)
-      const request = toCreateRequest(data, companyId, true);
-      request.skillTagIds = skillTagIds;
+      const request = toCreateRequest(data, companyId, true, skillTagIds);
 
       console.log('Sending Create Job Request:', request);
 
@@ -68,8 +67,7 @@ export default function CreateJobPage() {
       console.log('Resolved skill IDs for draft:', skillTagIds);
 
       // Transform form data to API request format (isPublished = false for draft)
-      const request = toCreateRequest(data, companyId, false);
-      request.skillTagIds = skillTagIds;
+      const request = toCreateRequest(data, companyId, false, skillTagIds);
 
       console.log('Sending Create Draft Request:', request);
 

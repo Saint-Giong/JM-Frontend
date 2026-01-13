@@ -1,13 +1,24 @@
 'use client';
 
-import { Badge, Card } from '@saint-giong/bamboo-ui';
+import {
+  Badge,
+  Card,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@saint-giong/bamboo-ui';
 import {
   Briefcase,
   Calendar,
   Clock,
+  Eye,
   MapPin,
   MoreVertical,
   Pencil,
+  Send,
+  Trash2,
   Users,
   Wallet,
 } from 'lucide-react';
@@ -39,10 +50,10 @@ export function JobCard({
     applicants,
     meta,
     skills,
+    actions,
     getRootProps,
     getTitleProps,
     getEditButtonProps,
-    getMenuButtonProps,
   } = useJobCard({ job, onEdit, onMenuAction });
 
   const handleCardClick = () => {
@@ -52,6 +63,10 @@ export function JobCard({
   const handleButtonClick = (e: React.MouseEvent, callback: () => void) => {
     e.stopPropagation();
     callback();
+  };
+
+  const handleDropdownAction = (action: string) => {
+    actions.menuAction(action);
   };
 
   return (
@@ -80,13 +95,43 @@ export function JobCard({
           >
             <Pencil className="h-4 w-4" />
           </button>
-          <button
-            {...getMenuButtonProps()}
-            onClick={(e) => handleButtonClick(e, getMenuButtonProps().onClick)}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
-          >
-            <MoreVertical className="h-4 w-4" />
-          </button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                aria-label={`More options for ${job.title}`}
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <DropdownMenuItem onClick={() => handleDropdownAction('view')}>
+                <Eye className="mr-2 h-4 w-4" />
+                View Details
+              </DropdownMenuItem>
+              {status.value === 'draft' && (
+                <DropdownMenuItem
+                  onClick={() => handleDropdownAction('publish')}
+                >
+                  <Send className="mr-2 h-4 w-4" />
+                  Publish
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => handleDropdownAction('delete')}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 

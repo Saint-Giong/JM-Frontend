@@ -10,7 +10,7 @@ import {
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { resolveSkillNames } from '@/lib/api/tag/tag.utils';
+import { resolveSkillNames, resolveSkillTags } from '@/lib/api/tag/tag.utils';
 import { useEffect, useMemo, useState } from 'react';
 import { JobForm, type JobFormData } from '@/components/job';
 import { useJobPost } from '@/hooks/use-jobpost';
@@ -67,16 +67,29 @@ export default function EditJobPage() {
 
     clearError();
 
-    // Transform form data to API request format
-    // Preserve the published status from the current job
-    const isPublished = currentJob?.published ?? false;
-    const request = toUpdateRequest(data, companyId, isPublished);
+    try {
+      // Resolve skill names to IDs
+      const skillTagIds = await resolveSkillTags(data.skills);
+      console.log('Resolved skill IDs for update:', skillTagIds);
 
-    const success = await updateJob(jobId, request);
+      // Transform form data to API request format
+      // Preserve the published status from the current job
+      const isPublished = currentJob?.published ?? false;
+      const request = toUpdateRequest(
+        data,
+        companyId,
+        isPublished,
+        skillTagIds
+      );
 
-    if (success) {
-      // Redirect to job details after successful update
-      router.push(`/jobs/${jobId}`);
+      const success = await updateJob(jobId, request);
+
+      if (success) {
+        // Redirect to job details after successful update
+        router.push(`/jobs/${jobId}`);
+      }
+    } catch (err) {
+      console.error('Failed to update job:', err);
     }
   };
 

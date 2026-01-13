@@ -291,7 +291,8 @@ export function toJob(response: JobPostResponse): Job {
 export function toCreateRequest(
   data: JobFormData,
   companyId: string,
-  isPublished = false
+  isPublished = false,
+  skillTagIds: number[] = []
 ): CreateJobPostRequest {
   const [city, country] = parseLocation(data.location);
   const salaryData = toBackendSalary(data.salary);
@@ -302,7 +303,7 @@ export function toCreateRequest(
     city,
     country,
     employmentTypes: data.employmentTypes.map(toBackendEmploymentType),
-    skillTagIds: [], // TODO: Convert skill names to IDs
+    skillTagIds,
     ...salaryData,
     expiryDate: data.expiryDate
       ? new Date(data.expiryDate).toISOString()
@@ -318,7 +319,8 @@ export function toCreateRequest(
 export function toUpdateRequest(
   data: JobFormData,
   companyId: string,
-  isPublished = false
+  isPublished = false,
+  skillTagIds: number[] = []
 ): UpdateJobPostRequest {
   const [city, country] = parseLocation(data.location);
   const salaryData = toBackendSalary(data.salary);
@@ -329,7 +331,7 @@ export function toUpdateRequest(
     city,
     country,
     employmentTypes: data.employmentTypes.map(toBackendEmploymentType),
-    skillTagIds: [], // TODO: Convert skill names to IDs
+    skillTagIds,
     ...salaryData,
     expiryDate: data.expiryDate
       ? new Date(data.expiryDate).toISOString()
