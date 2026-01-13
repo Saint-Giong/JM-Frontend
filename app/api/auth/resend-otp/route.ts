@@ -11,9 +11,11 @@ export async function POST(request: NextRequest) {
       'Content-Type': 'application/json',
     };
 
-    // Forward the access token as Cookie header (Gateway expects cookies, not Authorization header)
+    // Forward the access token as Cookie header (Gateway expects cookies)
+    // AND as Authorization header (Service expects Bearer token)
     if (accessToken) {
       headers.Cookie = `ACCESS_TOKEN=${accessToken}`;
+      headers.Authorization = `Bearer ${accessToken}`;
     }
 
     const backendResponse = await fetch(buildEndpoint('auth/resend-otp'), {

@@ -12,8 +12,10 @@ export async function POST(request: NextRequest) {
     };
 
     // Forward the refresh token as Cookie header (Gateway expects cookies)
+    // AND as X-Refresh-Token header (Service filter expects this)
     if (refreshToken) {
       headers.Cookie = `REFRESH_TOKEN=${refreshToken}`;
+      headers['X-Refresh-Token'] = refreshToken;
     }
 
     const backendResponse = await fetch(buildEndpoint('auth/refresh-token'), {

@@ -1,15 +1,21 @@
-import { NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { buildEndpoint } from '@/lib/api/config';
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   // First, call the backend logout endpoint to invalidate tokens on the server
   try {
+    const accessToken = request.cookies.get('ACCESS_TOKEN')?.value;
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+
     await fetch(buildEndpoint('auth/logout'), {
       method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
     });
   } catch (error) {
     // Log but don't fail - we still want to clear frontend cookies

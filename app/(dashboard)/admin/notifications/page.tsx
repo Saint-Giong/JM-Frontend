@@ -13,6 +13,7 @@ import {
 } from '@saint-giong/bamboo-ui';
 import { Send } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
+import { buildEndpoint, fetchWithAuth } from '@/lib/api';
 import { notificationApi } from '@/lib/api/notifications';
 import { useAuthStore } from '@/stores';
 import {
@@ -227,11 +228,10 @@ export default function NotificationsAdminPage() {
                     try {
                       // Note: This endpoint needs to be exposed on the backend
                       // POST /v1/noti/?type=NEW
-                      const response = await fetch(
-                        `https://localhost:8072/v1/noti/?type=NEW`,
+                      const response = await fetchWithAuth(
+                        buildEndpoint('noti/?type=NEW'),
                         {
                           method: 'POST',
-                          credentials: 'include',
                         }
                       );
                       if (response.ok) {
