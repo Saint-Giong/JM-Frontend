@@ -1,3 +1,6 @@
+import { getApiUrl } from './api/config';
+import { buildProxyUrl } from './api/fetch-with-auth';
+
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
 interface RequestConfig<TBody = unknown> {
@@ -24,6 +27,36 @@ export class HttpError extends Error {
     super(`HTTP Error ${status}: ${statusText}`);
     this.name = 'HttpError';
   }
+}
+
+/**
+ * Check if URL should be proxied (is a backend URL)
+ */
+function shouldProxy(url: string): boolean {
+  // If it starts with /api/proxy, it's already proxied
+  if (url.startsWith('/api/proxy')) {
+    return false;
+  }
+
+  // If it's a full URL
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    // Check if it's the backend URL
+    const apiUrl = getApiUrl();
+    return url.startsWith(apiUrl);
+  }
+
+  // It's a relative path, proxy it
+  return true;
+}
+
+/**
+ * Get the URL to use (proxy or direct)
+ */
+function getRequestUrl(url: string): string {
+  if (shouldProxy(url)) {
+    return buildProxyUrl(url);
+  }
+  return url;
 }
 
 export class HttpClient {
@@ -67,7 +100,9 @@ export class HttpClient {
   ): Promise<HttpResponse<TResponse>> {
     const { headers, body, params, timeout, signal } = config;
 
-    const url = this.buildUrl(endpoint, params);
+    // Build the URL and route through proxy if needed
+    const builtUrl = this.buildUrl(endpoint, params);
+    const url = getRequestUrl(builtUrl);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(
@@ -75,16 +110,24 @@ export class HttpClient {
       timeout ?? this.defaultTimeout
     );
 
-    const mergedHeaders: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...this.defaultHeaders,
-      ...headers,
-    };
+    const headersObj = new Headers(this.defaultHeaders);
+    if (headers) {
+      new Headers(headers).forEach((value, key) => {
+        headersObj.set(key, value);
+      });
+    }
+
+    if (!headersObj.has('Content-Type')) {
+      headersObj.set('Content-Type', 'application/json');
+    }
+
+    // No need to inject Authorization header - proxy handles it
 
     const fetchOptions: RequestInit = {
       method,
-      headers: mergedHeaders,
+      headers: headersObj,
       signal: signal ?? controller.signal,
+      credentials: 'include', // Include cookies for proxy
     };
 
     if (body !== undefined && method !== 'GET') {

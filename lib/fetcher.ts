@@ -1,3 +1,5 @@
+import { getApiUrl } from './api/config';
+import { buildProxyUrl } from './api/fetch-with-auth';
 import { type HttpClient, HttpError } from './http';
 
 type QueryParams = Record<string, string | number | boolean | undefined>;
@@ -12,11 +14,50 @@ interface MutationContext<TBody> {
   params?: QueryParams;
 }
 
+/**
+ * Check if URL should be proxied (is a backend URL)
+ */
+function shouldProxy(url: string): boolean {
+  // If it starts with /api/proxy, it's already proxied
+  if (url.startsWith('/api/proxy')) {
+    return false;
+  }
+
+  // If it's a full URL
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    // Check if it's the backend URL
+    const apiUrl = getApiUrl();
+    return url.startsWith(apiUrl);
+  }
+
+  // It's a relative path, proxy it
+  return true;
+}
+
+/**
+ * Get the URL to use (proxy or direct)
+ */
+function getRequestUrl(url: string): string {
+  if (shouldProxy(url)) {
+    return buildProxyUrl(url);
+  }
+  return url;
+}
+
 // Base fetch function with error handling
 async function baseFetch<T>(url: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(url, {
-    headers: { 'Content-Type': 'application/json' },
+  const mergedHeaders = new Headers(options?.headers);
+  if (!mergedHeaders.has('Content-Type')) {
+    mergedHeaders.set('Content-Type', 'application/json');
+  }
+
+  // Route through proxy for authenticated requests
+  const requestUrl = getRequestUrl(url);
+
+  const response = await fetch(requestUrl, {
     ...options,
+    headers: mergedHeaders,
+    credentials: 'include', // Include cookies
   });
 
   if (!response.ok) {
@@ -102,18 +143,22 @@ export function createApiClient(options: {
   baseUrl: string;
   getToken?: () => string | null | Promise<string | null>;
 }) {
-  const { baseUrl, getToken } = options;
+  const { baseUrl } = options;
 
-  async function fetchWithAuth<T>(url: string, init?: RequestInit): Promise<T> {
-    const token = getToken ? await getToken() : null;
+  async function fetchWithAuthInternal<T>(
+    url: string,
+    init?: RequestInit
+  ): Promise<T> {
+    // Route through proxy - no need to manually inject tokens
+    const requestUrl = getRequestUrl(url);
 
-    const response = await fetch(url, {
+    const response = await fetch(requestUrl, {
       ...init,
       headers: {
         'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...init?.headers,
       },
+      credentials: 'include', // Include cookies
     });
 
     if (!response.ok) {
@@ -128,7 +173,7 @@ export function createApiClient(options: {
     query<T>(endpoint: string) {
       return (context?: QueryFnContext): Promise<T> => {
         const url = buildUrl(endpoint, context?.params, baseUrl);
-        return fetchWithAuth<T>(url, { signal: context?.signal });
+        return fetchWithAuthInternal<T>(url, { signal: context?.signal });
       };
     },
 
@@ -138,7 +183,7 @@ export function createApiClient(options: {
     ) {
       return (context: MutationContext<TBody>): Promise<TResponse> => {
         const url = buildUrl(endpoint, context.params, baseUrl);
-        return fetchWithAuth<TResponse>(url, {
+        return fetchWithAuthInternal<TResponse>(url, {
           method,
           body: JSON.stringify(context.body),
         });
@@ -160,7 +205,7 @@ export function createApiClient(options: {
     delete<TResponse>(endpoint: string) {
       return (context?: { params?: QueryParams }): Promise<TResponse> => {
         const url = buildUrl(endpoint, context?.params, baseUrl);
-        return fetchWithAuth<TResponse>(url, { method: 'DELETE' });
+        return fetchWithAuthInternal<TResponse>(url, { method: 'DELETE' });
       };
     },
   };

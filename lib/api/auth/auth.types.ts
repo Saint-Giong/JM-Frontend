@@ -89,6 +89,8 @@ export interface GoogleCallbackPrefillData {
 export interface GoogleLoginData {
   companyId: string;
   email: string;
+  accessToken?: string;
+  refreshToken?: string;
 }
 
 // The data can be prefill data (new user) or login data (existing user)

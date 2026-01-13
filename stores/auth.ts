@@ -3,7 +3,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { SignupFormData } from '@/app/(auth)/signup/api/schema';
-import { authApi, profileApi } from '@/lib/api';
+import { authApi, onTokenRefreshed, profileApi } from '@/lib/api';
 import type { GoogleCallbackPrefillData, LoginRequest } from '@/lib/api/auth';
 import { isGoogleLoginData, isGooglePrefillData } from '@/lib/api/auth';
 import type { CompanyProfile } from '@/lib/api/profile';
@@ -30,6 +30,8 @@ export interface AuthState {
   companyId: string | null;
   userEmail: string | null;
   companyProfile: CompanyProfile | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   isLoading: boolean;
   error: string | null;
   fieldErrors: Record<string, string> | null;
@@ -59,6 +61,8 @@ export const useAuthStore = create<AuthState>()(
       companyId: null,
       userEmail: null,
       companyProfile: null,
+      accessToken: null,
+      refreshToken: null,
       isLoading: false,
       error: null,
       fieldErrors: null,
@@ -78,6 +82,8 @@ export const useAuthStore = create<AuthState>()(
             isActivated: isActivated,
             companyId: result.companyId || null,
             userEmail: data.email,
+            accessToken: result.accessToken || null,
+            refreshToken: result.refreshToken || null,
             isLoading: false,
           });
 
@@ -140,6 +146,8 @@ export const useAuthStore = create<AuthState>()(
                 isActivated: true,
                 companyId: result.data.companyId,
                 userEmail: result.data.email,
+                accessToken: result.data.accessToken || null,
+                refreshToken: result.data.refreshToken || null,
                 isLoading: false,
               });
 
@@ -198,6 +206,8 @@ export const useAuthStore = create<AuthState>()(
                 isActivated: isActivated,
                 companyId: loginResult.companyId || null,
                 userEmail: data.email,
+                accessToken: loginResult.accessToken || null,
+                refreshToken: loginResult.refreshToken || null,
                 isLoading: false,
               });
 
@@ -293,6 +303,8 @@ export const useAuthStore = create<AuthState>()(
             companyId: null,
             userEmail: null,
             companyProfile: null,
+            accessToken: null,
+            refreshToken: null,
             error: null,
             fieldErrors: null,
           });
@@ -310,6 +322,20 @@ export const useAuthStore = create<AuthState>()(
 
       setHasHydrated: (hasHydrated) => {
         set({ hasHydrated });
+
+        if (hasHydrated) {
+          // Listen for token refresh events
+          onTokenRefreshed((data) => {
+            const updates: Partial<AuthState> = {};
+            if (data.companyId) updates.companyId = data.companyId;
+            if (data.accessToken) updates.accessToken = data.accessToken;
+            if (data.refreshToken) updates.refreshToken = data.refreshToken;
+
+            if (Object.keys(updates).length > 0) {
+              set(updates);
+            }
+          });
+        }
       },
     }),
     {
@@ -321,6 +347,8 @@ export const useAuthStore = create<AuthState>()(
         companyId: state.companyId,
         userEmail: state.userEmail,
         companyProfile: state.companyProfile,
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
       }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);

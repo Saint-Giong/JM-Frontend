@@ -1,216 +1,141 @@
 /**
- * Fetch wrapper with automatic token refresh on 401 errors
+ * Fetch wrapper that routes through the proxy for authenticated requests
  *
  * Flow:
- * 1. FE calls API (e.g., Profile) → gets 401
- * 2. FE calls /refresh-token to get new tokens
- * 3. After refresh, FE retries the original request
+ * 1. Client calls fetchWithAuth with backend path (e.g., 'profile/me')
+ * 2. Request goes through /api/proxy/v1/profile/me
+ * 3. Proxy reads HttpOnly cookies and adds Authorization header
+ * 4. Proxy handles 401 by refreshing token and retrying
+ * 5. Response returned to client with any new cookies set
  */
 
-import { buildEndpoint } from './config';
+import { getApiUrl } from './config';
 
 /**
- * Helper to get cookie value
+ * Extract path from a URL or return path as-is
+ * Handles both:
+ * - Full URLs: https://localhost:8072/v1/profile/me -> profile/me
+ * - Paths: profile/me -> profile/me
+ * - Paths with v1: v1/profile/me -> v1/profile/me
  */
-const getCookie = (name: string) => {
-  if (typeof document === 'undefined') return null;
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift();
-  return null;
-};
-
-// Track if a refresh is in progress to avoid multiple simultaneous refreshes
-let isRefreshing = false;
-let refreshPromise: Promise<RefreshResult> | null = null;
-
-// Result of token refresh
-interface RefreshResult {
-  success: boolean;
-  companyId?: string;
-}
-
-// Queue of requests waiting for token refresh
-type QueueItem = {
-  resolve: (value: RefreshResult) => void;
-  reject: (error: Error) => void;
-};
-let failedQueue: QueueItem[] = [];
-
-const processQueue = (result: RefreshResult, error?: Error) => {
-  failedQueue.forEach((item) => {
-    if (result.success) {
-      item.resolve(result);
-    } else {
-      item.reject(error || new Error('Token refresh failed'));
+function extractPath(urlOrPath: string): string {
+  // If it's a full URL, extract the path
+  if (urlOrPath.startsWith('http://') || urlOrPath.startsWith('https://')) {
+    try {
+      const url = new URL(urlOrPath);
+      // Remove leading slash
+      return url.pathname.slice(1);
+    } catch {
+      // Invalid URL, treat as path
+      return urlOrPath;
     }
-  });
-  failedQueue = [];
-};
-
-/**
- * Refresh the access token using the refresh token cookie
- * Returns companyId and email from the refresh response
- */
-async function refreshAccessToken(): Promise<RefreshResult> {
-  try {
-    const response = await fetch(buildEndpoint('auth/refresh-token'), {
-      method: 'POST',
-      credentials: 'include', // Include cookies
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      console.error('[Auth] Token refresh failed:', response.status);
-      return { success: false };
-    }
-    const data = await response.json();
-    if (data.success === true) {
-      return {
-        success: true,
-        companyId: data.companyId,
-      };
-    }
-    return { success: false };
-  } catch (error) {
-    console.error('[Auth] Token refresh error:', error);
-    return { success: false };
   }
+
+  // It's already a path
+  return urlOrPath;
 }
 
 /**
- * Handle 401 error by refreshing token and retrying the request
+ * Build proxy URL for a given path or URL
+ * @param urlOrPath - The API path (e.g., 'profile/me') or full URL
  */
-async function handleUnauthorized(): Promise<RefreshResult> {
-  if (isRefreshing) {
-    // If already refreshing, wait for it to complete
-    return new Promise<RefreshResult>((resolve, reject) => {
-      failedQueue.push({ resolve, reject });
-    });
+export function buildProxyUrl(urlOrPath: string): string {
+  // Extract path from URL if needed
+  let cleanPath = extractPath(urlOrPath);
+
+  // Remove leading slash
+  if (cleanPath.startsWith('/')) {
+    cleanPath = cleanPath.slice(1);
   }
 
-  isRefreshing = true;
-  refreshPromise = refreshAccessToken();
-
-  try {
-    const result = await refreshPromise;
-    processQueue(result);
-    return result;
-  } catch (error) {
-    const failedResult: RefreshResult = { success: false };
-    processQueue(
-      failedResult,
-      error instanceof Error ? error : new Error('Unknown error')
-    );
-    return failedResult;
-  } finally {
-    isRefreshing = false;
-    refreshPromise = null;
+  // Add v1 prefix if not present
+  if (!cleanPath.startsWith('v1/')) {
+    cleanPath = `v1/${cleanPath}`;
   }
+
+  // In browser, use relative path; on server, use absolute
+  if (typeof window === 'undefined') {
+    // Server-side - use absolute URL
+    const host = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    return `${host}/api/proxy/${cleanPath}`;
+  }
+
+  return `/api/proxy/${cleanPath}`;
 }
 
 /**
- * Fetch with automatic token refresh on 401 errors
+ * Check if the URL should be proxied
+ * Only proxy requests to the backend API
+ */
+function shouldProxy(urlOrPath: string): boolean {
+  // If it starts with /api/proxy, it's already proxied
+  if (urlOrPath.startsWith('/api/proxy')) {
+    return false;
+  }
+
+  // If it's a full URL
+  if (urlOrPath.startsWith('http://') || urlOrPath.startsWith('https://')) {
+    // Check if it's the backend URL
+    const apiUrl = getApiUrl();
+    return urlOrPath.startsWith(apiUrl);
+  }
+
+  // It's a path, proxy it
+  return true;
+}
+
+/**
+ * Fetch with automatic routing through proxy
  *
  * Usage:
  * ```ts
- * const response = await fetchWithAuth('/api/proxy/v1/profile/me', {
- *   method: 'GET',
- *   credentials: 'include',
+ * // Using path only (recommended)
+ * const response = await fetchWithAuth('profile/me');
+ *
+ * // With full URL (backward compatible)
+ * const response = await fetchWithAuth(buildEndpoint('profile/me'));
+ *
+ * // With options
+ * const response = await fetchWithAuth('companies/123', {
+ *   method: 'PUT',
+ *   body: JSON.stringify(data),
  * });
  * ```
  */
 export async function fetchWithAuth(
-  url: string,
+  urlOrPath: string,
   options: RequestInit = {}
 ): Promise<Response> {
+  // Build the URL - either proxy or direct
+  const url = shouldProxy(urlOrPath) ? buildProxyUrl(urlOrPath) : urlOrPath;
+
   // Ensure credentials are included for cookies
   const fetchOptions: RequestInit = {
     ...options,
     credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
   };
 
-  // Attempt to extract ACCESS_TOKEN from cookies and add Authorization header
-  const accessToken = getCookie('ACCESS_TOKEN');
-  if (accessToken) {
-    const headers = new Headers(fetchOptions.headers);
-    // Only set if not already present
-    if (!headers.has('Authorization')) {
-      headers.set('Authorization', `Bearer ${accessToken}`);
-      fetchOptions.headers = headers;
-    }
-  }
-
-  // First attempt
-  let response: Response;
   try {
-    response = await fetch(url, fetchOptions);
-  } catch (error) {
-    console.error('[Auth] Network error during request:', error);
-    // Network errors should NOT trigger session expiry - could be temporary connectivity issues
-    throw error;
-  }
+    const response = await fetch(url, fetchOptions);
 
-  // Handle server errors (5xx) - log but don't trigger session expiry
-  // Server errors are temporary issues, not authentication failures
-  if (response.status >= 500) {
-    console.error('[Auth] Server error:', response.status);
-    // Return response to let caller handle the error appropriately
-    return response;
-  }
-
-  // If 401, try to refresh token and retry
-  if (response.status === 401) {
-    console.log('[Auth] Got 401, attempting token refresh...');
-
-    const refreshResult = await handleUnauthorized();
-
-    if (refreshResult.success) {
-      console.log('[Auth] Token refreshed, retrying original request...');
-      // Update auth store with companyId from refresh response
-      if (refreshResult.companyId) {
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(
-            new CustomEvent('auth:token-refreshed', {
-              detail: {
-                companyId: refreshResult.companyId,
-              },
-            })
-          );
-        }
-      }
-
-      // Retry the original request
-      try {
-        // Update Authorization header with new token if available
-        const newAccessToken = getCookie('ACCESS_TOKEN');
-        if (newAccessToken) {
-          const headers = new Headers(fetchOptions.headers);
-          headers.set('Authorization', `Bearer ${newAccessToken}`);
-          fetchOptions.headers = headers;
-        }
-
-        response = await fetch(url, fetchOptions);
-      } catch (error) {
-        // Handle network error on retry
-        console.error('[Auth] Network error during retry:', error);
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('auth:session-expired'));
-        }
-        throw error;
-      }
-    } else {
-      console.log('[Auth] Token refresh failed, user needs to re-login');
-      // Dispatch an event that can be caught to redirect to login
+    // If 401, the proxy already tried to refresh
+    // This means the session is truly expired
+    if (response.status === 401) {
+      console.log('[Auth] Session expired (proxy refresh failed)');
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('auth:session-expired'));
       }
     }
-  }
 
-  return response;
+    return response;
+  } catch (error) {
+    console.error('[Auth] Network error during request:', error);
+    throw error;
+  }
 }
 
 /**
@@ -235,14 +160,22 @@ export function onSessionExpired(callback: () => void): () => void {
  * Returns the cleanup function
  */
 export function onTokenRefreshed(
-  callback: (data: { companyId?: string }) => void
+  callback: (data: {
+    companyId?: string;
+    accessToken?: string;
+    refreshToken?: string;
+  }) => void
 ): () => void {
   if (typeof window === 'undefined') {
     return () => {};
   }
 
   const handler = (event: Event) => {
-    const customEvent = event as CustomEvent<{ companyId?: string }>;
+    const customEvent = event as CustomEvent<{
+      companyId?: string;
+      accessToken?: string;
+      refreshToken?: string;
+    }>;
     callback(customEvent.detail);
   };
 
