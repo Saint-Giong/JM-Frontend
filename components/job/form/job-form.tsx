@@ -8,7 +8,7 @@ import {
   Separator,
   Textarea,
 } from '@saint-giong/bamboo-ui';
-import { CalendarIcon, Loader2, X } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 import { SkillCombobox } from '@/components/ui/skill-combobox';
 import type { JobFormData } from '../types';
 import { EmploymentTypeSelector } from './employment-type-selector';
@@ -181,9 +181,7 @@ export function JobForm({
             type="date"
             value={formData.expiryDate || ''}
             onChange={(e) => setExpiryDate(e.target.value || undefined)}
-            className="pr-10"
           />
-          <CalendarIcon className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         </div>
         <p className="text-muted-foreground text-xs">
           Leave empty for no expiry date

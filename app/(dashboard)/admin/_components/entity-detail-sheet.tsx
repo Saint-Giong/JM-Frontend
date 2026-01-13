@@ -1,14 +1,12 @@
 'use client';
 
 import {
-  Button,
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
 } from '@saint-giong/bamboo-ui';
-import { X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { JsonViewer } from './json-viewer';
 
@@ -42,14 +40,6 @@ export function EntityDetailSheet({
                 </SheetDescription>
               )}
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8"
-              onClick={onClose}
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </div>
         </SheetHeader>
 

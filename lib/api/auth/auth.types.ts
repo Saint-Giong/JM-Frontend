@@ -95,17 +95,19 @@ export interface GoogleLoginData {
 export type GoogleCallbackData = GoogleCallbackPrefillData | GoogleLoginData;
 
 // Helper to check if data is for new user registration
+// Must check for truthy values since Java backend includes all fields with null values
 export function isGooglePrefillData(
   data: GoogleCallbackData
 ): data is GoogleCallbackPrefillData {
-  return 'name' in data;
+  return 'name' in data && data.name != null && data.name !== '';
 }
 
 // Helper to check if data is for existing user login
+// Must check for truthy values since Java backend includes all fields with null values
 export function isGoogleLoginData(
   data: GoogleCallbackData
 ): data is GoogleLoginData {
-  return 'companyId' in data;
+  return 'companyId' in data && data.companyId != null && data.companyId !== '';
 }
 
 export interface GoogleCallbackResponse {
