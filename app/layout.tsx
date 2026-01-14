@@ -4,6 +4,7 @@ import '@saint-giong/bamboo-ui/globals.css';
 import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import { Familjen_Grotesk } from 'next/font/google';
+import { RealtimeInitializer } from '@/components/realtime/realtime-initializer';
 import './globals.css';
 
 const familjenGrotesk = Familjen_Grotesk({
@@ -41,7 +42,10 @@ export default function RootLayout({
         <Analytics />
         <QueryProvider>
           <ThemeProvider>
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              <RealtimeInitializer />
+              {children}
+            </AuthProvider>
           </ThemeProvider>
         </QueryProvider>
       </body>

@@ -47,10 +47,16 @@ export function RealtimeInitializer() {
     companyIdRef.current = companyId;
   }, [addNotification, companyId]);
 
-  // Initialize WebSocket connection and set up listeners (only once)
+  // Initialize WebSocket connection and set up listeners
+  // Re-runs when companyId changes (e.g., after login)
   useEffect(() => {
-    // Initialize connection
-    notificationChannel.initialize();
+    // Skip if no companyId yet (wait for auth)
+    if (!companyId) {
+      return;
+    }
+
+    // Initialize connection with companyId for authentication
+    notificationChannel.initialize(companyId);
 
     // Set up notification listener - use refs to always get latest values
     const unsubscribeNotification = notificationChannel.onNotification(
@@ -101,7 +107,7 @@ export function RealtimeInitializer() {
       };
     }
 
-    // Cleanup on unmount
+    // Cleanup on unmount or when companyId changes
     return () => {
       unsubscribeNotification();
       unsubscribeMatching();
@@ -111,7 +117,7 @@ export function RealtimeInitializer() {
           .testReceiveNotification;
       }
     };
-  }, []); // Empty dependency array - only run once on mount
+  }, [companyId]); // Re-run when companyId changes
 
   return null; // This component doesn't render anything
 }

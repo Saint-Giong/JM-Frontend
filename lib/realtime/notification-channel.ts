@@ -8,13 +8,16 @@ import { wsClient } from './ws-client';
  */
 export class NotificationChannel {
   private socket: Socket | null = null;
+  private companyId: string | undefined = undefined;
 
   /**
    * Initialize the channel with a socket instance.
+   * @param companyId - Optional company ID for WebSocket authentication.
    * Returns false if WebSocket is unavailable.
    */
-  initialize(): boolean {
-    this.socket = wsClient.connect();
+  initialize(companyId?: string): boolean {
+    this.companyId = companyId;
+    this.socket = wsClient.connect(companyId);
     return this.socket !== null;
   }
 
@@ -27,11 +30,16 @@ export class NotificationChannel {
 
   /**
    * Subscribe to new notification events.
+   * @param handler - Callback for notification data.
+   * @param companyId - Optional company ID if not already initialized.
    * Returns a no-op unsubscribe if WebSocket is unavailable.
    */
-  onNotification(handler: (data: Record<string, unknown>) => void): () => void {
+  onNotification(
+    handler: (data: Record<string, unknown>) => void,
+    companyId?: string
+  ): () => void {
     if (!this.socket) {
-      this.initialize();
+      this.initialize(companyId ?? this.companyId);
     }
 
     if (!this.socket) {
@@ -49,13 +57,16 @@ export class NotificationChannel {
 
   /**
    * Subscribe to matching applicant events (Premium feature).
+   * @param handler - Callback for matching applicant data.
+   * @param companyId - Optional company ID if not already initialized.
    * Returns a no-op unsubscribe if WebSocket is unavailable.
    */
   onMatchingApplicant(
-    handler: (data: Record<string, unknown>) => void
+    handler: (data: Record<string, unknown>) => void,
+    companyId?: string
   ): () => void {
     if (!this.socket) {
-      this.initialize();
+      this.initialize(companyId ?? this.companyId);
     }
 
     if (!this.socket) {
