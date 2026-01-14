@@ -11,6 +11,7 @@ class WSClient {
   private baseUrl: string;
   private isEnabled: boolean;
   private connectionAttempted: boolean = false;
+  private currentCompanyId: string | undefined = undefined;
 
   constructor() {
     // Check if WebSocket is enabled (opt-in via environment variable)
@@ -27,9 +28,10 @@ class WSClient {
 
   /**
    * Initialize and connect the WebSocket.
+   * @param companyId - Optional company ID used for authentication.
    * Returns null if WebSocket is disabled or unavailable.
    */
-  connect(): Socket | null {
+  connect(companyId?: string): Socket | null {
     // Skip connection if WS is disabled
     if (!this.isEnabled) {
       if (!this.connectionAttempted) {
@@ -41,24 +43,48 @@ class WSClient {
       return null;
     }
 
-    if (this.socket?.connected) {
+    // If already connected with the same companyId, return existing socket
+    if (this.socket && this.currentCompanyId === companyId) {
       return this.socket;
     }
 
+    // If socket exists but companyId changed, disconnect first
+    if (this.socket && this.currentCompanyId !== companyId) {
+      console.log('[WS] CompanyId changed, reconnecting...');
+      this.disconnect();
+    }
+
+    // Skip if no companyId provided (wait for auth)
+    if (!companyId) {
+      console.log('[WS] No companyId provided, skipping connection');
+      return null;
+    }
+
     try {
+      this.currentCompanyId = companyId;
+
       this.socket = io(this.baseUrl, {
         path: '/socket.io',
+        // Pass token as query parameter (appears in URL as ?token=xxx&EIO=4&...)
+        query: { token: companyId },
         withCredentials: true,
         // Use websocket only to avoid CORS issues with polling
         transports: ['websocket'],
         autoConnect: true,
         reconnection: true,
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000,
+        reconnectionAttempts: 3,
+        reconnectionDelay: 2000,
+        timeout: 5000,
+        secure: this.baseUrl.startsWith('https'), // Auto-detect secure mode
       });
 
       this.socket.on('connect', () => {
-        console.log('[WS] Connected to', this.baseUrl);
+        console.log(
+          '[WS] Connected to',
+          this.baseUrl,
+          'with companyId:',
+          companyId
+        );
       });
 
       this.socket.on('disconnect', (reason) => {
