@@ -57,7 +57,11 @@ export function RealtimeInitializer() {
       (data) => {
         console.log('[Realtime] New notification received:', data);
         addNotificationRef.current(
-          createNotificationFromWsData(data, companyIdRef.current || '', 'system')
+          createNotificationFromWsData(
+            data,
+            companyIdRef.current || '',
+            'system'
+          )
         );
       }
     );
@@ -88,7 +92,11 @@ export function RealtimeInitializer() {
       ) => {
         console.log('[Test] Simulating received notification:', data);
         addNotificationRef.current(
-          createNotificationFromWsData(data, companyIdRef.current || '', 'system')
+          createNotificationFromWsData(
+            data,
+            companyIdRef.current || '',
+            'system'
+          )
         );
       };
     }
@@ -107,4 +115,3 @@ export function RealtimeInitializer() {
 
   return null; // This component doesn't render anything
 }
-

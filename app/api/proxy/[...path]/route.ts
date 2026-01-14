@@ -210,7 +210,9 @@ async function handleProxy(
     let refreshResponseForCookies: Response | undefined;
 
     if (!accessToken && refreshTokenValue) {
-      console.log('[Proxy] ACCESS_TOKEN missing, attempting proactive token refresh...');
+      console.log(
+        '[Proxy] ACCESS_TOKEN missing, attempting proactive token refresh...'
+      );
 
       const refreshResult = await refreshToken(refreshTokenValue);
 
@@ -230,12 +232,18 @@ async function handleProxy(
         // Store the refresh response to forward cookies later
         refreshResponseForCookies = refreshResult.response;
       } else {
-        console.log('[Proxy] Proactive token refresh failed, continuing without token');
+        console.log(
+          '[Proxy] Proactive token refresh failed, continuing without token'
+        );
       }
     }
 
     // First attempt
-    let backendResponse = await forwardRequest(request, path, currentAccessToken);
+    let backendResponse = await forwardRequest(
+      request,
+      path,
+      currentAccessToken
+    );
 
     // If 401 and we have a refresh token, try to refresh and retry
     if (backendResponse.status === 401 && refreshTokenValue) {
