@@ -151,11 +151,12 @@ function PasswordToggleButton() {
 interface FormHeaderProps {
   title: string;
   subtitle?: string;
+  className?: string;
 }
 
-export function FormHeader({ title, subtitle }: FormHeaderProps) {
+export function FormHeader({ title, subtitle, className }: FormHeaderProps) {
   return (
-    <div className="space-y-2">
+    <div className={cn('space-y-2', className)}>
       <h1
         className="font-normal text-3xl"
         style={{ fontFamily: 'Georgia, serif' }}

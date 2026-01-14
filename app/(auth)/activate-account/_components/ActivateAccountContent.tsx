@@ -87,6 +87,7 @@ function SuccessState() {
         </svg>
       </div>
       <FormHeader
+        className="text-center"
         title="Account Activated!"
         subtitle="Your account has been successfully activated. You can now log in."
       />

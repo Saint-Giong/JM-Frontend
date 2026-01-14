@@ -76,12 +76,12 @@ async function forwardRequest(
     finalPath = `${finalPath}/`;
   }
 
-  // Spring Boot requires trailing slash for collection endpoints (GET on simple paths)
+  // Spring Boot requires trailing slash for collection endpoints (GET/POST on simple paths)
   // Add trailing slash for paths like 'subscription', 'payment', 'company', etc.
   // but NOT for paths with IDs like 'subscription/123' or nested paths like 'subscription/status/123'
   const pathSegments = finalPath.split('/').filter(Boolean);
   const isCollectionEndpoint =
-    request.method === 'GET' &&
+    (request.method === 'GET' || request.method === 'POST') &&
     pathSegments.length === 1 &&
     !finalPath.endsWith('/');
 
