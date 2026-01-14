@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import type { Notification, NotificationType } from '@/lib/api/notifications';
 import { notificationChannel } from '@/lib/realtime/notification-channel';
 import { wsClient } from '@/lib/realtime/ws-client';
@@ -37,16 +37,27 @@ export function RealtimeInitializer() {
   );
   const { companyId } = useAuthStore();
 
+  // Use refs to avoid stale closures in WebSocket callbacks
+  const addNotificationRef = useRef(addNotification);
+  const companyIdRef = useRef(companyId);
+
+  // Keep refs up to date
+  useEffect(() => {
+    addNotificationRef.current = addNotification;
+    companyIdRef.current = companyId;
+  }, [addNotification, companyId]);
+
+  // Initialize WebSocket connection and set up listeners (only once)
   useEffect(() => {
     // Initialize connection
     notificationChannel.initialize();
 
-    // Set up notification listener
+    // Set up notification listener - use refs to always get latest values
     const unsubscribeNotification = notificationChannel.onNotification(
       (data) => {
         console.log('[Realtime] New notification received:', data);
-        addNotification(
-          createNotificationFromWsData(data, companyId || '', 'system')
+        addNotificationRef.current(
+          createNotificationFromWsData(data, companyIdRef.current || '', 'system')
         );
       }
     );
@@ -55,7 +66,7 @@ export function RealtimeInitializer() {
     const unsubscribeMatching = notificationChannel.onMatchingApplicant(
       (data) => {
         console.log('[Realtime] New matching applicant:', data);
-        addNotification(
+        addNotificationRef.current(
           createNotificationFromWsData(
             {
               ...data,
@@ -63,7 +74,7 @@ export function RealtimeInitializer() {
               title: 'New Talent Match!',
               message: `A new applicant matching your criteria has appeared: ${data.name}`,
             },
-            companyId || '',
+            companyIdRef.current || '',
             'match'
           )
         );
@@ -76,8 +87,8 @@ export function RealtimeInitializer() {
         data: Record<string, unknown>
       ) => {
         console.log('[Test] Simulating received notification:', data);
-        addNotification(
-          createNotificationFromWsData(data, companyId || '', 'system')
+        addNotificationRef.current(
+          createNotificationFromWsData(data, companyIdRef.current || '', 'system')
         );
       };
     }
@@ -92,7 +103,8 @@ export function RealtimeInitializer() {
           .testReceiveNotification;
       }
     };
-  }, [addNotification, companyId]);
+  }, []); // Empty dependency array - only run once on mount
 
   return null; // This component doesn't render anything
 }
+
