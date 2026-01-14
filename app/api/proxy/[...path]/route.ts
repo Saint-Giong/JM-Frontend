@@ -92,10 +92,20 @@ async function forwardRequest(
   const targetUrl = new URL(`${apiUrl}/${finalPath}`);
   targetUrl.search = url.search;
 
+  // Check if this is a multipart/form-data request (file upload)
+  const contentType = request.headers.get('Content-Type') || '';
+  const isMultipart = contentType.includes('multipart/form-data');
+
   // Build headers
-  const headers: HeadersInit = {
-    'Content-Type': request.headers.get('Content-Type') || 'application/json',
-  };
+  const headers: HeadersInit = {};
+
+  // For multipart requests, preserve the original Content-Type with boundary
+  // For other requests, use the Content-Type header or default to application/json
+  if (isMultipart) {
+    headers['Content-Type'] = contentType;
+  } else {
+    headers['Content-Type'] = contentType || 'application/json';
+  }
 
   // Add Authorization header if we have a token
   if (accessToken) {
@@ -112,10 +122,17 @@ async function forwardRequest(
   }
 
   // Get request body for non-GET requests
-  let body: string | undefined;
+  // For multipart requests, use arrayBuffer to preserve binary data
+  // For other requests, use text
+  let body: BodyInit | undefined;
   if (request.method !== 'GET' && request.method !== 'HEAD') {
     try {
-      body = await request.text();
+      if (isMultipart) {
+        // Use arrayBuffer for multipart to preserve binary file data
+        body = await request.arrayBuffer();
+      } else {
+        body = await request.text();
+      }
     } catch {
       // No body
     }
@@ -188,8 +205,37 @@ async function handleProxy(
       allCookies: request.cookies.getAll().map((c) => c.name),
     });
 
+    // If access token is missing but refresh token is present, proactively refresh
+    let currentAccessToken = accessToken;
+    let refreshResponseForCookies: Response | undefined;
+
+    if (!accessToken && refreshTokenValue) {
+      console.log('[Proxy] ACCESS_TOKEN missing, attempting proactive token refresh...');
+
+      const refreshResult = await refreshToken(refreshTokenValue);
+
+      if (refreshResult.success && refreshResult.response) {
+        console.log('[Proxy] Proactive token refresh successful');
+
+        // Extract new access token from refresh response cookies
+        const setCookieHeaders = refreshResult.response.headers.getSetCookie();
+        for (const header of setCookieHeaders) {
+          const match = header.match(/^ACCESS_TOKEN=([^;]*)/);
+          if (match) {
+            currentAccessToken = match[1];
+            break;
+          }
+        }
+
+        // Store the refresh response to forward cookies later
+        refreshResponseForCookies = refreshResult.response;
+      } else {
+        console.log('[Proxy] Proactive token refresh failed, continuing without token');
+      }
+    }
+
     // First attempt
-    let backendResponse = await forwardRequest(request, path, accessToken);
+    let backendResponse = await forwardRequest(request, path, currentAccessToken);
 
     // If 401 and we have a refresh token, try to refresh and retry
     if (backendResponse.status === 401 && refreshTokenValue) {
@@ -250,6 +296,11 @@ async function handleProxy(
           backendResponse.headers.get('Content-Type') || 'application/json',
       },
     });
+
+    // Forward cookies from proactive refresh (if any)
+    if (refreshResponseForCookies) {
+      forwardCookies(refreshResponseForCookies, response);
+    }
 
     // Forward cookies from backend
     forwardCookies(backendResponse, response);
