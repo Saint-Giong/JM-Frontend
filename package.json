@@ -27,17 +27,19 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@saint-giong/bamboo-ui": "^0.6.0",
-    "@stripe/stripe-js": "^8.6.1",
-    "@tanstack/react-query": "^5.90.16",
+    "@saint-giong/bamboo-ui": "^0.5.1",
+    "@stomp/stompjs": "^7.2.1",
+    "@stripe/stripe-js": "^8.6.0",
+    "@tanstack/react-query": "^5.90.12",
     "@vercel/analytics": "^1.6.1",
     "lucide-react": "^0.562.0",
     "next": "^16.1.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "socket.io-client": "^4.8.3",
-    "stripe": "^20.1.2",
-    "zod": "^4.3.5",
+    "sockjs-client": "^1.6.1",
+    "stripe": "^20.1.0",
+    "zod": "^4.2.1",
     "zustand": "^5.0.9"
   },
   "devDependencies": {
@@ -48,6 +50,7 @@
     "@types/node": "^25.0.6",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
+    "@types/sockjs-client": "^1.5.4",
     "concurrently": "^9.2.1",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.1",

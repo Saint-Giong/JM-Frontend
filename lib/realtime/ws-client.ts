@@ -21,7 +21,7 @@ class WSClient {
     const useMock = process.env.NEXT_PUBLIC_USE_MOCK_WS === 'true';
     this.baseUrl = useMock
       ? 'http://localhost:4000'
-      : process.env.NEXT_PUBLIC_WS_URL || DEFAULT_API_BASE_URL;
+      : process.env.NEXT_PUBLIC_WS_URL || 'https://localhost:8072';
   }
 
   /**
@@ -46,13 +46,14 @@ class WSClient {
 
     try {
       this.socket = io(this.baseUrl, {
+        path: '/socket.io',
         withCredentials: true,
+        // Use websocket only to avoid CORS issues with polling
         transports: ['websocket'],
         autoConnect: true,
         reconnection: true,
-        reconnectionAttempts: 3,
-        reconnectionDelay: 2000,
-        timeout: 5000,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
       });
 
       this.socket.on('connect', () => {
@@ -75,7 +76,7 @@ class WSClient {
       });
 
       return this.socket;
-    } catch (error) {
+    } catch (error: any) {
       console.warn('[WS] Failed to initialize WebSocket:', error);
       return null;
     }
