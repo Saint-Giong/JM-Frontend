@@ -3,6 +3,7 @@
 import { SidebarInset, SidebarProvider } from '@saint-giong/bamboo-ui';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { AuthInitializer } from '@/components/auth/auth-initializer';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { MobileNav } from '@/components/layout/mobile-nav';
 import { RealtimeInitializer } from '@/components/realtime/realtime-initializer';
@@ -38,6 +39,7 @@ export default function DashboardLayout({
 
   return (
     <SidebarProvider>
+      <AuthInitializer /> {/* Proactively refresh tokens on load */}
       <RealtimeInitializer /> {/* init socket connection */}
       {/* Desktop Sidebar - hidden on mobile */}
       <div className="hidden md:block">

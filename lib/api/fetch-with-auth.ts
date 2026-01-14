@@ -109,14 +109,23 @@ export async function fetchWithAuth(
   // Build the URL - either proxy or direct
   const url = shouldProxy(urlOrPath) ? buildProxyUrl(urlOrPath) : urlOrPath;
 
+  // Check if body is FormData - if so, don't set Content-Type
+  // The browser will set it automatically with the correct boundary
+  const isFormData = options.body instanceof FormData;
+
+  // Build headers - only set Content-Type for non-FormData requests
+  const headers: HeadersInit = isFormData
+    ? { ...options.headers }
+    : {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      };
+
   // Ensure credentials are included for cookies
   const fetchOptions: RequestInit = {
     ...options,
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
+    headers,
   };
 
   try {
